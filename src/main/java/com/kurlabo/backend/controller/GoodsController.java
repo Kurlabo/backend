@@ -14,13 +14,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/shop")
+@RequestMapping(value="/shop/goods")
 public class GoodsController {
 
-    @GetMapping("/goods/goods_cart")
+    @GetMapping("goods_cart")
     public CartTestDto cartTest(){
         CartTestDto dummyDto = new CartTestDto();
-        UserInfoDto userInfoDto = new UserInfoDto((long)1, "ㅇ", "서울시 성동구 아차산로 18 (뚝섬역)");
+        UserInfoDto userInfoDto = new UserInfoDto((long)1, "noah", "서울시 성동구 아차산로 18 (뚝섬역)");
         List<ProductInfoDto> productList = new ArrayList<>();
 
         ProductInfoDto productInfoDto1 = new ProductInfoDto();
@@ -36,6 +36,8 @@ public class GoodsController {
         productInfoDto1.setSticker_image_url("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png");
         productInfoDto1.setPacking_type_text("냉장/종이포장");
 
+        productList.add(productInfoDto1);
+
         productInfoDto2.setProduct_id((long)15);
         productInfoDto2.setCategory(5);
         productInfoDto2.setName("컬리플라워 라이스 340g(냉동)");
@@ -45,6 +47,8 @@ public class GoodsController {
         productInfoDto2.setOriginal_image_url("https://img-cf.kurly.com/shop/data/goods/1564118564516l0.jpg");
         productInfoDto2.setSticker_image_url("https://img-cf.kurly.com/shop/data/my_icon/icon_save_10.png");
         productInfoDto2.setPacking_type_text("냉동/종이포장");
+
+        productList.add(productInfoDto2);
 
         dummyDto.setUserInfoDto(userInfoDto);
         dummyDto.setProductInfoDto(productList);

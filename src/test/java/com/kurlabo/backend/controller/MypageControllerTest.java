@@ -82,4 +82,18 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$[1].discounted_price").value(27965))
                 .andExpect(jsonPath("$[1].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1599797405749s0.jpg"));
     }
+
+    @DisplayName("QnaTest")
+    @Test
+    void qnaTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_qna"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.inquiry_tag[0]").value("배송지연/불만"))
+                .andExpect(jsonPath("$.inquiry_tag[5]").value("주문결제문의"))
+                .andExpect(jsonPath("$.inquiry_tag[8]").value("교환문의"))
+                .andExpect(jsonPath("$.order_id[0]").value("1945327660572"))
+                .andExpect(jsonPath("$.order_id[1]").value("3484593475423"))
+                .andExpect(jsonPath("$.email").value("noah@fastcampus.com"))
+                .andExpect(jsonPath("$.phone").value("010-4321-5678"));
+    }
 }

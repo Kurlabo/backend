@@ -1,9 +1,6 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.testdto.OrderDetailDto;
-import com.kurlabo.backend.dto.testdto.OrderListDto;
-import com.kurlabo.backend.dto.testdto.OrderedProductsDto;
-import com.kurlabo.backend.dto.testdto.WishListDto;
+import com.kurlabo.backend.dto.testdto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,5 +96,14 @@ public class MypageController {
         wishListDtoList.add(dummyDto2);
 
         return wishListDtoList;
+    }
+
+    @GetMapping("/mypage_qna")
+    public QnaDto qnaTest(){
+        String[] dummyStr = {
+            "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
+        };
+        Long[] dummyLong = {Long.parseLong("1945327660572"), Long.parseLong("3484593475423")};
+        return new QnaDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678");
     }
 }

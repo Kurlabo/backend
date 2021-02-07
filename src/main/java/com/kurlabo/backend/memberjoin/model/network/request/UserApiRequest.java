@@ -33,9 +33,9 @@ public class UserApiRequest {
 
     private String grade;
 
-//    private LocalDateTime registeredAt;
-//
-//    private LocalDateTime unregisteredAt;
+    private LocalDateTime registeredAt;
+
+    private LocalDateTime unregisteredAt;
 
     private LocalDateTime createdAt;
 

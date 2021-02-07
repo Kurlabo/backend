@@ -34,7 +34,7 @@ class MainControllerTest {
     @DisplayName("MainTest")
     @Test
     void MainTestDto() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/shop/main"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/main"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.setbyul_img").value("//img-cf.kurly.com/shop/data/main/15/pc_img_1568875999.png"))
                 .andExpect(jsonPath("$.insta_thumbnail_img_url[0]").value("https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/145829497_429910031618977_2686700364585205332_n.jpg?_nc_cat=101&ccb=2&_nc_sid=8ae9d6&_nc_ohc=-WkuqU3BZCYAX9V-8cf&_nc_oc=AQma5Jem99_iE8KN-5ZeuW8WTFP9Ffa0d88we6liTpfSpVtG-ZvhHI2xOFxZeupMS-Q&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=70036b1b024889031d3db2652ad738af&oe=6042CF55"))

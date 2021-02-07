@@ -33,7 +33,7 @@ class MypageControllerTest {
     @DisplayName("OrderListTest")
     @Test
     void orderListTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/shop/mypage//mypage_orderlist"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage//mypage_orderlist"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].checkout_date").value("2020.07.13(18시 32분)"))
                 .andExpect(jsonPath("$[0].product_name").value("[코시] 호주산 펫밀크 1L"))
@@ -52,7 +52,7 @@ class MypageControllerTest {
     @DisplayName("OrderDetailTest")
     @Test
     void orderDetailTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/shop/mypage/mypage_orderview?ordno=1594632706623"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=1594632706623"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.order_id").value(Long.parseLong("1594632706623")))
                 .andExpect(jsonPath("$.orderedProductsDtoList[0].product_name").value("[코시] 호주산 펫밀크 1L"))
@@ -68,5 +68,18 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.reciever_phone").value("010-4321-5678"))
                 .andExpect(jsonPath("$.reciever_address").value("(05123) 서울시 성동구 성동로 32 패스트캠퍼스 8층 C강의장"))
                 .andExpect(jsonPath("$.reciever_recieve_place").value("문 앞"));
+    }
+
+    @DisplayName("WishListTest")
+    @Test
+    void wishListTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_wishlist"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("절단 셀러리 500g"))
+                .andExpect(jsonPath("$[0].discounted_price").value(2990))
+                .andExpect(jsonPath("$[0].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1584515163199s0.jpg"))
+                .andExpect(jsonPath("$[1].name").value("[락앤락] 숨쉬는 발효숙성 용기 세트"))
+                .andExpect(jsonPath("$[1].discounted_price").value(27965))
+                .andExpect(jsonPath("$[1].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1599797405749s0.jpg"));
     }
 }

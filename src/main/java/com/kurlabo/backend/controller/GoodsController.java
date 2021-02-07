@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/shop/goods")
+@RequestMapping(value="/api/goods")
 public class GoodsController {
 
     @GetMapping("goods_cart")

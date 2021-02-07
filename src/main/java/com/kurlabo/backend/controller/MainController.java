@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/shop")
+@RequestMapping(value="/api")
 public class MainController {
 
     @GetMapping("/main")

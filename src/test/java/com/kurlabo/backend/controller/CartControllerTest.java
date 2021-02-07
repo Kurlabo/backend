@@ -35,7 +35,7 @@ class CartControllerTest {
     @DisplayName("CartTest")
     @Test
     void cartTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/shop/goods/goods_cart"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productInfoDto[0].product_id").value((long)1))
                 .andExpect(jsonPath("$.productInfoDto[0].category").value(0))

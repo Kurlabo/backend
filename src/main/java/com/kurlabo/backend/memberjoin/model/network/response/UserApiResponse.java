@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,8 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 public class UserApiResponse {
 
+    private Long id;
 
-    private Long uid;
+    private String uid;
 
     private String password;
 
@@ -22,16 +25,26 @@ public class UserApiResponse {
 
     private String email;
 
-    //todo is the membership grade necessary?
-    private String grade;
-
-    private String dateOfBirth;
-
-    private String gender;
+    private String phoneNumber;
 
     private String address;
 
-    private String phoneNumber;
+    private String gender;
+
+    private String dateOfBirth;
+
+    private String grade;
 
     private LocalDateTime registeredAt;
+
+    private LocalDateTime unregisteredAt;
+
+    private LocalDateTime createdAt;
+
+    private String createdBy;
+
+    private LocalDateTime updatedAt;
+
+    private String updatedBy;
+
 }

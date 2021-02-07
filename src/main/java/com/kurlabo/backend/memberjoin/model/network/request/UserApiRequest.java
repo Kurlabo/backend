@@ -5,13 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserApiRequest {
 
-    private Long uid;
+    private Long id;
+
+    private String uid;
 
     private String password;
 
@@ -19,14 +23,25 @@ public class UserApiRequest {
 
     private String email;
 
-    //todo is the membership grade necessary?
-    private String grade;
-
-    private String dateOfBirth;
-
-    private String gender;
+    private String phoneNumber;
 
     private String address;
 
-    private String phoneNumber;
+    private String gender;
+
+    private String dateOfBirth;
+
+    private String grade;
+
+//    private LocalDateTime registeredAt;
+//
+//    private LocalDateTime unregisteredAt;
+
+    private LocalDateTime createdAt;
+
+    private String createdBy;
+
+    private LocalDateTime updatedAt;
+
+    private String updatedBy;
 }

@@ -1,7 +1,8 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.testdto.MyinfoDto;
+import com.kurlabo.backend.dto.testdto.FindIdDto;
+import com.kurlabo.backend.dto.testdto.FindPwdDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,5 +48,28 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.address").value("서울시 성동구 성수길 77"))
                 .andExpect(jsonPath("$.gender").value("남자"))
                 .andExpect(jsonPath("$.date_of_birth").value("1991-03-01"));
+    }
+
+    @DisplayName("FindIdTest")
+    @Test
+    void findIdTest() throws Exception {
+
+        String content = objectMapper.writeValueAsString(new FindIdDto("임정우", "lnoah@fastcampus.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_id").content(MediaType.APPLICATION_JSON_VALUE).content(content))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("고객님의 아이디 찾기가 완료되었습니다!"));
+
+    }
+
+    @DisplayName("FindPwdTest")
+    @Test
+    void findPwdTest() throws Exception {
+
+        String content = objectMapper.writeValueAsString(new FindPwdDto("임정우", "lnoah","lnoah@fastcampus.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pwd").content(MediaType.APPLICATION_JSON_VALUE).content(content))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("고객님의 비밀번호가 이메일로 발송되었습니다!"));
     }
 }

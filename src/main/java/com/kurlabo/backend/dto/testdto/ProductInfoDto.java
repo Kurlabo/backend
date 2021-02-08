@@ -17,4 +17,7 @@ public class ProductInfoDto {
     private String sticker_image_url;
     private int category;
     private String packing_type_text;
+
+    private String detail_image_url;
+    private ProductDetailDto productDetailDto;
 }

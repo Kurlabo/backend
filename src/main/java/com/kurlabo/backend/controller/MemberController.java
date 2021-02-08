@@ -1,8 +1,6 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.testdto.FindIdDto;
-import com.kurlabo.backend.dto.testdto.FindPwdDto;
-import com.kurlabo.backend.dto.testdto.MyinfoDto;
+import com.kurlabo.backend.dto.testdto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,4 +59,40 @@ public class MemberController {
 
         return msg;
     }
+
+    // 회원가입
+    @PostMapping("/join")
+    public MemberDto join(@RequestBody MemberDto memberDto) {
+
+        memberDto.setMemberId(1L);
+        memberDto.setUid("userAccount");
+        memberDto.setName("userName!");
+        memberDto.setEmail("userAccount@gmail.com");
+        memberDto.setDateOfBirth("2020-02-02");
+        memberDto.setPhone("010-1111-2222");
+        memberDto.setPassword("password");
+        memberDto.setGender("1");
+
+        return memberDto;
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public String login(@RequestBody MemberDto memberDto) {
+
+        String message = "";
+        String id = "userAccount";
+        String pwd = "userpassword";
+
+        if (!memberDto.getUid().equals(id)) {
+            message = "아이디 또는 비밀번호 오류입니다.";
+        } else if (!memberDto.getPassword().equals(pwd)) {
+            message = "아이디 또는 비밀번호 오류입니다.";
+        } else {
+            message = "로그인 성공";
+        }
+
+        return message;
+    }
+
 }

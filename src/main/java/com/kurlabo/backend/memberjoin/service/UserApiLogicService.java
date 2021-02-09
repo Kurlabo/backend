@@ -76,7 +76,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                     .setDateOfBirth(userApiRequest.getDateOfBirth())
                     .setGrade(userApiRequest.getGrade())
                     .setRegisteredAt(userApiRequest.getRegisteredAt());
-                    ;
+
             return user;
         })
         .map(user -> userRepository.save(user))       // update -> newUser

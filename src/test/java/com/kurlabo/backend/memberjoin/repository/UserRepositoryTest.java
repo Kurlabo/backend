@@ -1,7 +1,7 @@
 package com.kurlabo.backend.memberjoin.repository;
 
 import com.kurlabo.backend.BackendApplicationTests;
-import com.kurlabo.backend.memberjoin.model.entity.User;
+//import com.kurlabo.backend.memberjoin.model.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

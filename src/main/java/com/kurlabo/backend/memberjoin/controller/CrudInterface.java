@@ -1,8 +1,6 @@
 package com.kurlabo.backend.memberjoin.controller;
 
 import com.kurlabo.backend.memberjoin.model.network.Header;
-import com.kurlabo.backend.memberjoin.model.network.request.UserApiRequest;
-import com.kurlabo.backend.memberjoin.model.network.response.UserApiResponse;
 
 public interface CrudInterface<Req, Res> {
 

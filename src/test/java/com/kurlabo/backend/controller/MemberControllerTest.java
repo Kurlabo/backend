@@ -58,7 +58,7 @@ class MemberControllerTest {
 
         String content = objectMapper.writeValueAsString(new FindIdDto("임정우", "lnoah@fastcampus.com"));
 
-        mockMvc.perform(post("/api/member/find_id").content(MediaType.APPLICATION_JSON_VALUE).content(content))
+        mockMvc.perform(post("/api/member/find_id").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("고객님의 아이디 찾기가 완료되었습니다!"));
 
@@ -70,7 +70,7 @@ class MemberControllerTest {
 
         String content = objectMapper.writeValueAsString(new FindPwdDto("임정우", "lnoah","lnoah@fastcampus.com"));
 
-        mockMvc.perform(post("/api/member/find_pwd").content(MediaType.APPLICATION_JSON_VALUE).content(content))
+        mockMvc.perform(post("/api/member/find_pwd").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("고객님의 비밀번호가 이메일로 발송되었습니다!"));
     }

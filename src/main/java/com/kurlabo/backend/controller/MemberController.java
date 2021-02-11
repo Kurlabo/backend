@@ -27,14 +27,14 @@ public class MemberController {
 
     @PostMapping("/find_id")
     public String findIdTest(@RequestBody FindIdDto findIdDto){
-
-        System.out.println(">>>> " + findIdDto);
-
         String dbMemberName = "임정우";
         String dbMemberEmail = "lnoah@fastcampus.com";
         String msg = "";
 
-        if(findIdDto.getName() != dbMemberName || findIdDto.getEmail() != dbMemberEmail){
+        System.out.println("findIdDto.name >>>> " + findIdDto.getName() + ", findIdDto.email >>>> " + findIdDto.getEmail());
+        System.out.println("dbMemberName   >>>> " + dbMemberName + ", dbMemberEmail   >>>> " + dbMemberEmail);
+
+        if(!findIdDto.getName().equals(dbMemberName) || !findIdDto.getEmail().equals(dbMemberEmail)){
             msg = "고객님께서 입력하신 정보가 정확한지 확인 후 다시 시도해주세요.";
         } else {
             msg = "고객님의 아이디 찾기가 완료되었습니다!";
@@ -51,7 +51,7 @@ public class MemberController {
         String dbMemberEmail = "lnoah@fastcampus.com";
         String msg = "";
 
-        if(findPwdDto.getName() != dbMemberName || findPwdDto.getUid() != dbMemberUid || findPwdDto.getEmail() != dbMemberEmail){
+        if(!findPwdDto.getName().equals(dbMemberName) || !findPwdDto.getUid().equals(dbMemberUid) || !findPwdDto.getEmail().equals(dbMemberEmail)){
             msg = "사용자 정보가 존재하지 않습니다";
         } else {
             msg = "고객님의 비밀번호가 이메일로 발송되었습니다!";

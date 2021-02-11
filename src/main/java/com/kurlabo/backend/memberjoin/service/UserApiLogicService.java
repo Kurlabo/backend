@@ -36,7 +36,6 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                 .gender(userApiRequest.getGender())
                 .dateOfBirth(userApiRequest.getDateOfBirth())
                 .grade(userApiRequest.getGrade())
-                .registeredAt(LocalDateTime.now())
                 .build();
 
         User newUser = userRepository.save(user);
@@ -74,8 +73,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                     .setAddress(userApiRequest.getAddress())
                     .setGender(userApiRequest.getGender())
                     .setDateOfBirth(userApiRequest.getDateOfBirth())
-                    .setGrade(userApiRequest.getGrade())
-                    .setRegisteredAt(userApiRequest.getRegisteredAt());
+                    .setGrade(userApiRequest.getGrade());
 
             return user;
         })
@@ -111,8 +109,6 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
                 .gender(user.getGender())
                 .dateOfBirth(user.getDateOfBirth())
                 .grade(user.getGrade())
-                .registeredAt(user.getRegisteredAt())
-                .unregisteredAt(user.getUnregisteredAt())
                 .build();
 
         return Header.OK(userApiResponse);

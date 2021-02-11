@@ -45,10 +45,6 @@ public class User {
 
     private String grade;
 
-    private LocalDateTime registeredAt;
-
-    private LocalDateTime unregisteredAt;
-
     @CreatedDate
     private LocalDateTime createdAt;
 

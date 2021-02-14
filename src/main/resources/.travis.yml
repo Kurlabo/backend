@@ -1,0 +1,51 @@
+language: java
+jdk:
+  - openjdk8
+
+branches:
+  only:
+    - master
+
+# Travis CI 서버의 Home
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.gradle'
+
+script: "./gradlew clean build"
+
+before_deploy:
+  - zip -r kurlabo-backend *
+  - mkdir -p deploy
+  - mv kurlabo-backend.zip deploy/kurlabo-backend.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: kurlabo-backend-deploy # 6-3-3에서 생성한 S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: https://github.com/Kurlabo/backend.git
+      branch: master
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: kurlabo-backend-deploy # S3 버킷
+    key: kurlabo-backend.zip # S3 버킷에 저장된 springboot-webservice.zip 파일을 EC2로 배포
+    bundle_type: zip
+    application: Kurlabo-backend # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
+    deployment_group: kurlabo-backend # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      repo: https://github.com/Kurlabo/backend.git
+      branch: master
+
+# CI 실행 완료시 메일로 알람
+notifications:
+  slack: fcjbsworkspace:PM3KtaJJOQz2Bj3xjwDYZBo0

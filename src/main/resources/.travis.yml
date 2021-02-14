@@ -14,6 +14,24 @@ cache:
 
 script: "./gradlew clean build"
 
+before_deploy:
+  - zip -r kurlabo-backend *
+  - mkdir -p deploy
+  - mv kurlabo-backend.zip deploy/kurlabo-backend.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: springboot-webservice-deploy # 6-3-3에서 생성한 S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: https://github.com/Kurlabo/backend.git
+      branch: master
+
 # CI 실행 완료시 메일로 알람
 notifications:
   slack: fcjbsworkspace:PM3KtaJJOQz2Bj3xjwDYZBo0

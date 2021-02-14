@@ -68,7 +68,7 @@ class MemberControllerTest {
     @Test
     void findPwdTest() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new FindPwdDto("임정우", "lnoah","lnoah@fastcampus.com"));
+        String content = objectMapper.writeValueAsString(new FindPwdDto("임정우", "lnoah", "lnoah@fastcampus.com"));
 
         mockMvc.perform(post("/api/member/find_pwd").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
                 .andExpect(status().isOk())

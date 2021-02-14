@@ -33,7 +33,7 @@ class MypageControllerTest {
     @DisplayName("OrderListTest")
     @Test
     void orderListTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage//mypage_orderlist"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].checkout_date").value("2020.07.13(18시 32분)"))
                 .andExpect(jsonPath("$[0].product_name").value("[코시] 호주산 펫밀크 1L"))

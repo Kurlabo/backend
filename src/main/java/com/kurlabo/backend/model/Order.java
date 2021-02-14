@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Data
@@ -17,6 +14,7 @@ import java.sql.Date;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
     private String sender;
     private String orderer;
@@ -25,7 +23,12 @@ public class Order {
     private String reciever_post;
     private String reciever_place;
     private String reciever_visit_method;
+    private String product_id_list;
     private Date checkout_date;
     private String checkout;
     private String delivery_condition;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
 }

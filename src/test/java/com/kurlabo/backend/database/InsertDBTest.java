@@ -2,16 +2,20 @@ package com.kurlabo.backend.database;
 
 import com.kurlabo.backend.converter.StringRevisor;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.Insta_src;
-import com.kurlabo.backend.model.Main_src;
+import com.kurlabo.backend.model.Cart;
+import com.kurlabo.backend.model.Deliver_Address;
+import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.model.Slide_img;
-import com.kurlabo.backend.repository.InsertDBRepository;
-import com.kurlabo.backend.repository.InstaSrcRepository;
-import com.kurlabo.backend.repository.MainSrcRepository;
-import com.kurlabo.backend.repository.SlideImgRepository;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.kurlabo.backend.model.db.Insta_src;
+import com.kurlabo.backend.model.db.Main_src;
+import com.kurlabo.backend.model.db.Slide_img;
+import com.kurlabo.backend.repository.CartRepository;
+import com.kurlabo.backend.repository.DeliverAddressRepository;
+import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.repository.db.InsertDBRepository;
+import com.kurlabo.backend.repository.db.InstaSrcRepository;
+import com.kurlabo.backend.repository.db.MainSrcRepository;
+import com.kurlabo.backend.repository.db.SlideImgRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +26,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -49,6 +51,12 @@ public class InsertDBTest {
     private InstaSrcRepository instaSrcRepository;
     @Autowired
     private SlideImgRepository slideImgRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private DeliverAddressRepository deliverAddressRepository;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -56,6 +64,59 @@ public class InsertDBTest {
                 .alwaysDo(print())
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
+    }
+
+    @Test
+    @Rollback(value = false)
+    void InsertCart(){
+        Member member = memberRepository.findById((long)2).orElseThrow(
+                () -> new ResourceNotFoundException()
+        );
+        System.out.println(" >>> " + member);
+
+        List<Cart> cartList = new ArrayList<>();
+        Cart cart1 = new Cart(null, (long)13, 3,member);
+        Cart cart2 = new Cart(null, (long)135, 1,member);
+        Cart cart3 = new Cart(null, (long)41, 4,member);
+        Cart cart4 = new Cart(null, (long)77, 5,member);
+        cartList.add(cart1);
+        cartList.add(cart2);
+        cartList.add(cart3);
+        cartList.add(cart4);
+        cartRepository.saveAll(cartList);
+    }
+
+    @Test
+    @Rollback(value = false)
+    void InsertDeliverAddress(){
+        Member mem = memberRepository.findById((long)2).orElseThrow(
+                () -> new ResourceNotFoundException()
+        );
+        Deliver_Address da = new Deliver_Address(
+                null,
+                "경기도 고양시 고양동 고양이파트 351번지",
+                1,
+                mem
+        );
+        deliverAddressRepository.save(da);
+    }
+
+    @Test
+    @Rollback(value = false)
+    void InsertMemberInfo(){
+        Member member = new Member(
+                null,
+                "dkyang",
+                "585858",
+                "양동경",
+                "dkyang@fastcampus.com",
+                "01043215678",
+                "남자",
+                "19891122",
+                "일반",
+                0
+        );
+        memberRepository.save(member);
     }
 
     // Insert Main page / Slide Images
@@ -151,59 +212,59 @@ public class InsertDBTest {
     @Rollback(value = false)
     void InsertProductDb() throws Exception {
 
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = new JSONObject();
-
-        int categoryIdx = 0;
-        int[] categoryNumList = {
-                0, 1, 2, 3, 4, 5, 6,
-                10,11,12,13,14,15,16,
-                20,21,22,23,24,25,26,27,28,
-                30,31,32,33,34,35,36,
-                40,41,42,43,44,45,
-                50,51,52,53,54,55,56,57,
-                60,61,62,63,64,65,
-                70,71,72,73,74,
-                80,81,82,83,
-                90,91,92,93,94,95,
-                100,101,102,103,104,105,106,
-                110,111,112,113,114,115,
-                120,121,122,123,124,
-                130,131,132,133,134,135,
-                140,141,142,
-                150,151,152,153,154,155,156,157,158,
-                160,161,162,163,164,165,166};
-
-        int cnt = 0;
-        for(int i = 0; i < 321; i++){//321
-            if(categoryNumList[categoryIdx] == 132){
-                if(cnt / 2 > 0){
-                    cnt = 0;
-                    categoryIdx++;
-                }
-            } else if(categoryNumList[categoryIdx] == 166){
-                if(cnt / 1 > 0){
-                    cnt = 0;
-                    categoryIdx++;
-                }
-            } else {
-                if(cnt / 3 > 0){//124까지 3개씩
-                    cnt = 0;
-                    categoryIdx++;
-                }
-            }
-
-            FileInputStream input = new FileInputStream("C:\\Crawling_Data\\" + i + ".json");
-            InputStreamReader reader = new InputStreamReader(input, "UTF-8");
-            BufferedReader in = new BufferedReader(reader);
-            jsonObject = (JSONObject) jsonParser.parse(in);
-            Product products = new Product(null, categoryNumList[categoryIdx], 0, jsonObject.toString(),null,null,null,null);
-            insertDBRepository.save(products);
-            cnt++;
-        }
-
-
-        Product testProduct = insertDBRepository.findById((long) 200).orElseThrow(
+//        JSONParser jsonParser = new JSONParser();
+//        JSONObject jsonObject = new JSONObject();
+//
+//        int categoryIdx = 0;
+//        int[] categoryNumList = {
+//                0, 1, 2, 3, 4, 5, 6,
+//                10,11,12,13,14,15,16,
+//                20,21,22,23,24,25,26,27,28,
+//                30,31,32,33,34,35,36,
+//                40,41,42,43,44,45,
+//                50,51,52,53,54,55,56,57,
+//                60,61,62,63,64,65,
+//                70,71,72,73,74,
+//                80,81,82,83,
+//                90,91,92,93,94,95,
+//                100,101,102,103,104,105,106,
+//                110,111,112,113,114,115,
+//                120,121,122,123,124,
+//                130,131,132,133,134,135,
+//                140,141,142,
+//                150,151,152,153,154,155,156,157,158,
+//                160,161,162,163,164,165,166};
+//
+//        int cnt = 0;
+//        for(int i = 0; i < 321; i++){//321
+//            if(categoryNumList[categoryIdx] == 132){
+//                if(cnt / 2 > 0){
+//                    cnt = 0;
+//                    categoryIdx++;
+//                }
+//            } else if(categoryNumList[categoryIdx] == 166){
+//                if(cnt / 1 > 0){
+//                    cnt = 0;
+//                    categoryIdx++;
+//                }
+//            } else {
+//                if(cnt / 3 > 0){//124까지 3개씩
+//                    cnt = 0;
+//                    categoryIdx++;
+//                }
+//            }
+//
+//            FileInputStream input = new FileInputStream("C:\\Crawling_Data\\" + i + ".json");
+//            InputStreamReader reader = new InputStreamReader(input, "UTF-8");
+//            BufferedReader in = new BufferedReader(reader);
+//            jsonObject = (JSONObject) jsonParser.parse(in);
+//            Product products = new Product(null, categoryNumList[categoryIdx], 0, jsonObject.toString(),null,null,null,null);
+//            insertDBRepository.save(products);
+//            cnt++;
+//        }
+//
+//
+        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
                 () -> new ResourceNotFoundException()
         );
         System.out.println("product >>> " + testProduct);

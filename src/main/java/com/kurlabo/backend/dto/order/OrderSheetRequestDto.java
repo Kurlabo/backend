@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderFormRequestDto {
+public class OrderSheetRequestDto {
     @NotNull
     private Long member_id;
     @NotNull

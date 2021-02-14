@@ -72,17 +72,16 @@ public class InsertDBTest {
         Member member = memberRepository.findById((long)2).orElseThrow(
                 () -> new ResourceNotFoundException()
         );
-        System.out.println(" >>> " + member);
 
         List<Cart> cartList = new ArrayList<>();
-        Cart cart1 = new Cart(null, (long)13, 3,member);
-        Cart cart2 = new Cart(null, (long)135, 1,member);
-        Cart cart3 = new Cart(null, (long)41, 4,member);
-        Cart cart4 = new Cart(null, (long)77, 5,member);
+        Cart cart1 = new Cart(null, (long)1, 3, member);
+//        Cart cart2 = new Cart(null, (long)135, 1,member);
+//        Cart cart3 = new Cart(null, (long)41, 4,member);
+//        Cart cart4 = new Cart(null, (long)77, 5,member);
         cartList.add(cart1);
-        cartList.add(cart2);
-        cartList.add(cart3);
-        cartList.add(cart4);
+//        cartList.add(cart2);
+//        cartList.add(cart3);
+//        cartList.add(cart4);
         cartRepository.saveAll(cartList);
     }
 
@@ -271,7 +270,7 @@ public class InsertDBTest {
 
         String str = testProduct.getData();
         StringRevisor sr = new StringRevisor();
-        System.out.println("StringRevisor >>> " + sr.StringRevise(str));
+        System.out.println("StringRevisor >>> " + sr.reviseBackSlash(str));
     }
 
 }

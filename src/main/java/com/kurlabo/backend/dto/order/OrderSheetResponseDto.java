@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderFormResponseDto {
+public class OrderSheetResponseDto {
     @NotNull
     private List<String> product_data;
     @NotNull

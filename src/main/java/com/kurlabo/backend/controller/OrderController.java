@@ -1,7 +1,8 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.order.OrderFormRequestDto;
-import com.kurlabo.backend.dto.order.OrderFormResponseDto;
+import com.kurlabo.backend.dto.order.CheckoutRequestDto;
+import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
+import com.kurlabo.backend.dto.order.OrderSheetResponseDto;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,17 +21,15 @@ public class OrderController {
 
     // 주문서
     @PostMapping("/orderSheet")
-    public OrderFormResponseDto setOrderSheet(@RequestBody @Valid OrderFormRequestDto dto){
+    public OrderSheetResponseDto setOrderSheet(@RequestBody @Valid OrderSheetRequestDto dto){
 
-        System.out.println("orderFormResponseDto >>>>>>>>>>>>>>>>>>>>>>>>>> " + orderService.setOrderSheet(dto));
-
-        return orderService.setOrderSheet(dto);
+        return orderService.getOrderSheet(dto);
     }
 
     // 결제하기
     @PostMapping("/checkout")
-    public String setCheckout(){
+    public String setCheckout(@RequestBody @Valid CheckoutRequestDto dto){
 
-        return "Checkout Success!";
+        return orderService.setCheckout(dto);
     }
 }

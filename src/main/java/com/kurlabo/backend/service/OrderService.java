@@ -1,20 +1,16 @@
 package com.kurlabo.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.converter.StringRevisor;
-import com.kurlabo.backend.dto.order.OrderFormRequestDto;
-import com.kurlabo.backend.dto.order.OrderFormResponseDto;
+import com.kurlabo.backend.dto.order.CheckoutRequestDto;
+import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
+import com.kurlabo.backend.dto.order.OrderSheetResponseDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.Cart;
-import com.kurlabo.backend.model.Deliver_Address;
-import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.repository.CartRepository;
-import com.kurlabo.backend.repository.DeliverAddressRepository;
-import com.kurlabo.backend.repository.MemberRepository;
-import com.kurlabo.backend.repository.ProductRepository;
+import com.kurlabo.backend.model.*;
+import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +23,15 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final DeliverAddressRepository deliverAddressRepository;
+    private final OrderRepository orderRepository;
+    private final ObjectMapper objectMapper;
 
-    @Transactional
-    public OrderFormResponseDto setOrderSheet(OrderFormRequestDto orderFormRequestDto){
-        Member member = memberRepository.findById(orderFormRequestDto.getMember_id()).orElseThrow(
+    public OrderSheetResponseDto getOrderSheet(OrderSheetRequestDto orderSheetRequestDto){
+        Member member = memberRepository.findById(orderSheetRequestDto.getMember_id()).orElseThrow(
                 () -> new ResourceNotFoundException()
         );
         List<Cart> cartList = new ArrayList<>();
-        for (Long productList : orderFormRequestDto.getSelected_cart_id()){
+        for (Long productList : orderSheetRequestDto.getSelected_cart_id()){
             cartList.add(cartRepository.findById(productList).orElseThrow(
                     () -> new ResourceNotFoundException()
             ));
@@ -46,8 +43,7 @@ public class OrderService {
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(
                     () -> new ResourceNotFoundException()
             );
-            productDataList.add(sr.StringRevise(product.getData()));
-            System.out.println("data >>>>>>>>>>>>>> " + sr.StringRevise(product.getData()));
+            productDataList.add(sr.reviseBackSlash(product.getData()));
             productCntList.add(list.getCnt());
         }
 
@@ -58,20 +54,57 @@ public class OrderService {
                 da = list;
         }
 
-        OrderFormResponseDto orderFormResponseDto = new OrderFormResponseDto(
+        OrderSheetResponseDto orderSheetResponseDto = new OrderSheetResponseDto(
                 productDataList,
                 productCntList,
-                member.getName(),
-                member.getPhone(),
-                member.getEmail(),
+                sr.reviseDoubleQuotes(member.getName()),
+                sr.reviseDoubleQuotes(member.getPhone()),
+                sr.reviseDoubleQuotes(member.getEmail()),
                 da.getDeliver_address()
         );
 
-        return orderFormResponseDto;
+        return orderSheetResponseDto;
     }
 
-    public void setCheckout() {
+    public String setCheckout(CheckoutRequestDto dto) {
+        StringRevisor sr = new StringRevisor();
+        Member mem = memberRepository.findById(dto.getMember_id()).orElseThrow(
+                () -> new ResourceNotFoundException()
+        );
+        String productIdListStr = "";
+        String returnStr = "결제에 성공하셨습니다.";
 
+        try{
+            productIdListStr = objectMapper.writeValueAsString((dto.getProduct_id_list()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        Orders orders = new Orders(
+                null,
+                sr.reviseDoubleQuotes(mem.getName()),
+                sr.reviseDoubleQuotes(mem.getName()),
+                dto.getReciever(),
+                dto.getReciever_phone(),
+                dto.getReciever_post(),
+                dto.getReciever_place(),
+                dto.getReciever_visit_method(),
+                dto.getCheckout_date(),
+                dto.getCheckout(),
+                "배송중",
+                dto.getArrived_alarm(),
+                productIdListStr,
+                dto.getTotal_cost(),
+                mem
+        );
+
+        try {
+            orderRepository.save(orders);
+        } catch (Exception e){
+            e.printStackTrace();
+            returnStr = "결제에 실패했습니다.";
+        }
+
+        return returnStr;
     }
-
 }

@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
+
 
 @Data
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "orders_id")
     private Long id;
     private String sender;
     private String orderer;
@@ -23,10 +24,12 @@ public class Order {
     private String reciever_post;
     private String reciever_place;
     private String reciever_visit_method;
-    private String product_id_list;
-    private Date checkout_date;
+    private LocalDate checkout_date;
     private String checkout;
     private String delivery_condition;
+    private String arrived_alarm;
+    private String product_id_list;
+    private int total_cost;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

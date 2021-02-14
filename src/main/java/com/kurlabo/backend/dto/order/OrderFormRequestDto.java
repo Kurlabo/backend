@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,4 +15,6 @@ import javax.validation.constraints.NotNull;
 public class OrderFormRequestDto {
     @NotNull
     private Long member_id;
+    @NotNull
+    private List<Long> selected_cart_id;
 }

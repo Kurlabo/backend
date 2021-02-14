@@ -33,7 +33,12 @@ public class OrderService {
         Member member = memberRepository.findById(orderFormRequestDto.getMember_id()).orElseThrow(
                 () -> new ResourceNotFoundException()
         );
-        List<Cart> cartList = cartRepository.findByMember(member);
+        List<Cart> cartList = new ArrayList<>();
+        for (Long productList : orderFormRequestDto.getSelected_cart_id()){
+            cartList.add(cartRepository.findById(productList).orElseThrow(
+                    () -> new ResourceNotFoundException()
+            ));
+        }
         List<String> productDataList = new ArrayList<>();
         List<Integer> productCntList = new ArrayList<>();
         StringRevisor sr = new StringRevisor();

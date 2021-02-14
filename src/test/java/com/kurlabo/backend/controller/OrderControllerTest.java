@@ -26,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,10 +52,11 @@ class OrderControllerTest {
     @DisplayName("MyinfoTest")
     @Test
     void setOrderSheet() throws Exception {
+        List<Long> productList = new ArrayList<>(Arrays.asList((long)4, (long)6));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/order/orderSheet").contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(
                         objectMapper.writeValueAsString(
-                                new OrderFormRequestDto((long)2))))
+                                new OrderFormRequestDto((long)2, productList))))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$.product_cnt[0]").value(1))
 //                .andExpect(jsonPath("$.orderer_name").value("양동경"))

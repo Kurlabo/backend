@@ -55,6 +55,8 @@ public class GoodsController {
         dummyDto.setUserInfoDto(userInfoDto);
         dummyDto.setProductInfoDto(productList);
 
+        System.out.println(dummyDto);
+
         return dummyDto;
     }
 

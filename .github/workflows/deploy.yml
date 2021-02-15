@@ -11,7 +11,7 @@ on:
     
 env:
   S3_BUCKET_NAME: kurlabo-backend-deploy
-  PROJECT_NAME: Kurlabo_backend
+  PROJECT_NAME: kurlabo-backend
 
 jobs:
   build:
@@ -34,11 +34,18 @@ jobs:
         run: ./gradlew build
         shell: bash
 
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
             AWS_S3_BUCKET: kurlabo-backend-deploy
-            AWS_ACCESS_KEY_ID: ${{ secrets. AWS_IAM_MANAGER_KEY_ID }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_IAM_MANAGER_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_IAM_MANAGER_SECRET_ACCESS_KEY }}
-            AWS_REGION: ${{ secrets. AWS_REGION }}
-            SOURCE_DIR: 'dist'
+            AWS_REGION: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+

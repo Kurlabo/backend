@@ -3,12 +3,9 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
-<<<<<<< HEAD
-=======
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
->>>>>>> release/v0.0.1210215001
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,11 +85,7 @@ class OrdersControllerTest {
 
     @Test
     void test() {
-<<<<<<< HEAD
-
-=======
         Member member = memberRepository.findById((long)2).orElseThrow(()->new ResourceNotFoundException());
         System.out.println(member);
->>>>>>> release/v0.0.1210215001
     }
 }

@@ -1,4 +1,4 @@
-package com.kurlabo.backend.model;
+package com.kurlabo.backend.model.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,13 +10,11 @@ import javax.persistence.*;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Insta_src {
+public class Slide_img {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String landing_url;
-    @Column(length = 1000)
-    private String thumbnail_img_url;
+    private String url;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "main_src_id")
     private Main_src main_src;

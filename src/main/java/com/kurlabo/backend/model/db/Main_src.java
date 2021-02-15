@@ -1,4 +1,5 @@
-package com.kurlabo.backend.model;
+package com.kurlabo.backend.model.db;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,12 +11,9 @@ import javax.persistence.*;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Slide_img {
+public class Main_src {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String url;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "main_src_id")
-    private Main_src main_src;
+    private String setbyul_img;
 }

@@ -14,9 +14,9 @@ import javax.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
     private int category;
-    private int cnt;
     @Convert(converter = JsonConverter.class)
     @Column(columnDefinition = "text")
     private String data;

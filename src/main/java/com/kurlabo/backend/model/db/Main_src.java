@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class Main_src {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "main_src_id")
     private Long id;
     private String setbyul_img;
 }

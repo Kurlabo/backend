@@ -13,6 +13,7 @@ import javax.persistence.*;
 public class Slide_img {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "slide_img_id")
     private Long id;
     private String url;
     @ManyToOne(fetch = FetchType.EAGER)

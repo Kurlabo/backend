@@ -13,6 +13,7 @@ import javax.persistence.*;
 public class Insta_src {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "insta_src_id")
     private Long id;
     private String landing_url;
     @Column(length = 1000)

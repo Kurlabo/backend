@@ -16,7 +16,7 @@ public class BoardController {
     public BoardDto read () {
         BoardDto boardDto = new BoardDto();
 
-        boardDto.setBoardId(1L);
+        boardDto.setBoard_id(1L);
         boardDto.setTitle("공지사항 제목");
         boardDto.setWriter("작성자");
         boardDto.setCnt(0);
@@ -28,7 +28,7 @@ public class BoardController {
     public BoardDto read (@PathVariable(name="id") Long id) {
         BoardDto boardDto = new BoardDto();
 
-        boardDto.setBoardId(1L);
+        boardDto.setBoard_id(1L);
         boardDto.setTitle("공지사항 제목1");
         boardDto.setWriter("작성자");
         boardDto.setContent("공지사항 내용1");

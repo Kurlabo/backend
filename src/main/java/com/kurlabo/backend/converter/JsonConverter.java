@@ -6,7 +6,7 @@ import lombok.SneakyThrows;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-@Converter(autoApply = true)
+@Converter(autoApply = false)
 public class JsonConverter implements AttributeConverter<Object, String> {
     private final static ObjectMapper objectMapper = new ObjectMapper();
 

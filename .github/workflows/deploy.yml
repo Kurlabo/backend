@@ -45,4 +45,8 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://kurlabo-backend-deploy/$PROJECT_NAME/$GITHUB_SHA.zip
+    
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name kurlabo-backend-deploy --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev --s3-location bucket=isntyet-deploy,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+
 

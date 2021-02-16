@@ -19,5 +19,12 @@ public class ProductInfoDto {
     private String packing_type_text;
 
     private String detail_image_url;
-    private ProductDetailDto productDetailDto;
+
+    private String detail_img_url;
+
+    private String detail_context;
+
+    private String detail_title;
+
+    private String product_img_url;
 }

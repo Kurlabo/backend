@@ -3,7 +3,9 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.testdto.CartTestDto;
 import com.kurlabo.backend.dto.testdto.ProductInfoDto;
+import com.kurlabo.backend.dto.testdto.ReviewDto;
 import com.kurlabo.backend.dto.testdto.UserInfoDto;
+import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value="/api/goods")
 public class GoodsController {
+
+    private final ReviewService reviewService;
+
 
     @GetMapping("goods_cart")
     public CartTestDto cartTest(){
@@ -62,7 +67,7 @@ public class GoodsController {
 
     // 상품 상세
     @GetMapping("/{id}")
-    public ProductInfoDto getProduct(@PathVariable(name = "id") Long id) {
+    public ProductInfoDto getProduct(@PathVariable(name = "id") Long id, ReviewDto reviewDto) {
         ProductInfoDto product = new ProductInfoDto();
 
         product.setDetail_context("간단히 쪄 먹기도 좋고, 다양한 요리와 함께 곁들여 먹기도 좋은 감자는 우리 식탁에 빼놓을 수 없는 식재료지요. 탄수화물은 물론이고 단백질, 비타민C까지 풍부해 마치 곡류와 채소를 동시에 먹은 것과 같은 효과를 줍니다. 컬리는 그때그때 유명산지 감자를 가락시장에서 수급하여 보내드립니다. 포슬포슬한 식감에 고소하고 은은한 단맛이 나 볶음, 구이, 튀김 등 다양하게 요리해서 먹을 수 있어요. 매일 식탁에 올려도 질리지 않는 감자를 컬리에서 간편하게 만나보세요.");
@@ -78,6 +83,9 @@ public class GoodsController {
         product.setDiscounted_price(2500);
         product.setDetail_img_url("https://img-cf.kurly.com/shop/data/goods/153017237655m0.jpg");
         product.setOriginal_image_url("https://img-cf.kurly.com/shop/data/goods/1530172373295l0.jpg");
+
+
+        reviewService.findReviewByProductId(reviewDto.getMember_id());
 
         return product;
     }

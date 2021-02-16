@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -34,72 +33,77 @@ public class ReviewService {
     public ReviewDto conditionsChk(ReviewDto reviewDto) {
         // 사용자 정보 없음
         Member member = memberRepository.findById(reviewDto.getMember_id()).orElseThrow(
-                () -> new ResourceNotFoundException()
+                ResourceNotFoundException::new
         );
 
-        // 상품 정보가 없음
+        // 상품 정보 없음
         productRepository.findById(reviewDto.getProduct_id()).orElseThrow(
-                () -> new ResourceNotFoundException()
+                ResourceNotFoundException::new
         );
 
         LocalDate fromDate = LocalDate.now(); // 현재시간 yyyy-MM-dd
-        List<Orders> orderList = orderRepository.findByMember(member.getId());
+        List<Orders> orderList = orderRepository.findByMember(member);
         List<Long> alreadyReview = new ArrayList<>();
         List<Long> reviewsToWrite = new ArrayList<>();
 
-        System.out.println("orderList---------" + orderList);
+        System.out.println(orderList.isEmpty());
 
         for (Orders order : orderList) {
             // order.setCheckout_date(LocalDate.of(2021, 1, 13));
             int dDay = (int) DAYS.between(fromDate, order.getCheckout_date()) * -1;
 
             // 상품 구매 30일 이후 체크
-            if (dDay > 30 || dDay > 31) {
+            if (dDay > 30) {
                 System.out.println("상품후기는 상품을 구매하시고 배송완료된 회원 분만 한 달 내 작성 가능합니다.");
                 throw new ResourceNotFoundException();
             }
 
             // 리뷰를 이미 남긴 사용자
-            if (order.getMember().equals(reviewDto.getMember_id())) {
+            if (order.getMember().getId().equals(reviewDto.getMember_id())) {
                 System.out.println("이미 작성한 상품 후기");
                 alreadyReview.add(reviewDto.getMember_id());
                 alreadyReview.add(reviewDto.getProduct_id());
             }
 
-            System.out.println("order-mem" + order.getMember().getId());
-            System.out.println("order-p" + order.getProduct_id_list());
+            String product = order.getProduct_id_list()
+                    .replace("[","")
+                    .replace(","," ")
+                    .replace("]","");
+            String [] productIdList = product.split(" ");
             reviewsToWrite.add(order.getMember().getId());
-            reviewsToWrite.add(Long.valueOf(order.getProduct_id_list()));
+
+            for (String products : productIdList) {
+                reviewsToWrite.add(Long.parseLong(products));
+            }
+
         } // end for
 
         create(reviewDto);
 
         reviewDto.setAlreadyReview(alreadyReview);
         reviewDto.setReviewsToWrite(reviewsToWrite);
-        System.out.println("reviewDto---------" + reviewDto.getAlreadyReview());
-        System.out.println("reviewDto---------" + reviewDto.getAlreadyReview());
-        System.out.println("reviewDto---------" + reviewDto);
 
         return reviewDto;
     }
 
     public void create(ReviewDto reviewDto) {
         Member member = memberRepository.findById(reviewDto.getMember_id()).orElseThrow(
-                () -> new ResourceNotFoundException()
+                ResourceNotFoundException::new
         );
 
         Product product = productRepository.findById(reviewDto.getProduct_id()).orElseThrow(
-                () -> new ResourceNotFoundException()
+                ResourceNotFoundException::new
         );
 
         Review review = new Review();
         review.setTitle(reviewDto.getTitle());
         review.setContent(reviewDto.getContent());
         review.setWriter(reviewDto.getWriter());
+        review.setCnt(reviewDto.getCnt());
+        review.setHelp(reviewDto.getHelp());
         review.setRegdate(LocalDate.now());
         review.setMember(member);
         review.setProduct(product);
-        System.out.println("review0--------------" + review);
 
         reviewRepository.save(review);
     }
@@ -107,7 +111,7 @@ public class ReviewService {
     // 상품 별 후기
     public Review findReviewByProductId(Long productId) {
         return reviewRepository.findByProduct(productId)
-                .orElseThrow(() -> new ResourceNotFoundException());
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
 

@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -43,12 +42,12 @@ class ReviewServiceTest {
 
     @Test
     void test() {
-        Optional<Orders> order = orderRepository.findById(1L);
+        Optional<Orders> order = orderRepository.findById(1000L);
         order.ifPresent(selectOrder -> {
-            System.out.println("getOrderer >>>>>>> " + selectOrder.getOrderer());
         });
     }
 
+    @DisplayName("Get Review")
     @Test
     void creatTest() {
         when (memberRepository.findById(1L)).thenReturn(member());
@@ -58,7 +57,6 @@ class ReviewServiceTest {
         verify(reviewRepository, times(1)).save(any(Review.class));
     }
 
-    @DisplayName("Get Review")
     @Test
     void findReviewByProductIdTest() {
         when(reviewRepository.findByProduct(1L)).thenReturn(review());
@@ -66,7 +64,7 @@ class ReviewServiceTest {
         Review review = reviewService.findReviewByProductId(1L);
 
         assertThat(review.getTitle().equals("후기제목"));
-        assertThat(review.getContent().equals("후기내용"));
+        assertThat(review.getContent().equals("후기"));
 
     }
 

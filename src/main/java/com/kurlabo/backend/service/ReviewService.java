@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -46,7 +47,7 @@ public class ReviewService {
         List<Long> alreadyReview = new ArrayList<>();
         List<Long> reviewsToWrite = new ArrayList<>();
 
-        System.out.println("orderList---------" + orderRepository.findByMember(member.getId()));
+        System.out.println("orderList---------" + orderList);
 
         for (Orders order : orderList) {
             // order.setCheckout_date(LocalDate.of(2021, 1, 13));

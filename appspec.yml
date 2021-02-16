@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/kurlabo-backend/ # 프로젝트 이름
+    destination: /opt/codedeploy-agent/deployment-root/kurlabo-backend/ # 프로젝트 이름
     overwrite: yes
 
 permissions:
@@ -14,5 +14,5 @@ permissions:
 hooks:
   ApplicationStart:
   - location: scripts/deploy.sh
-      timeout: 60
-      runas: root
+    timeout: 60
+    runas: root

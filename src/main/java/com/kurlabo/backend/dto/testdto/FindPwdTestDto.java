@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QnaDto {
-    private String[] inquiry_tag;
-    private Long order_id[];
+public class FindPwdTestDto {
+    private String name;
+    private String uid;
     private String email;
-    private String phone;
 }

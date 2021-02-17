@@ -81,10 +81,4 @@ class OrdersControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("결제에 성공하셨습니다."));
     }
-
-    @Test
-    void test() {
-        Member member = memberRepository.findById((long)2).orElseThrow(()->new ResourceNotFoundException());
-        System.out.println(member);
-    }
 }

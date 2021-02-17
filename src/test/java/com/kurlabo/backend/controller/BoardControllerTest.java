@@ -55,33 +55,4 @@ public class BoardControllerTest {
 //                .andExpect(jsonPath("$.regdate").value(LocalDate.of(2017,4,6)))   //같은 LocalDate인데 매칭이 안되는 이유는?
                 .andExpect(jsonPath("$.cnt").value(2828));
     }
-
-
-
-
-    @Test
-    void read() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/board"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.board_id").value(1L))
-                .andExpect(jsonPath("$.title").value("공지사항 제목"))
-                .andExpect(jsonPath("$.writer").value("작성자"))
-                .andExpect(jsonPath("$.cnt").value(0));
-    }
-
-    @Test
-    void getRead() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/board/1"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.board_id").value(1L))
-                .andExpect(jsonPath("$.title").value("공지사항 제목1"))
-                .andExpect(jsonPath("$.writer").value("작성자"))
-                .andExpect(jsonPath("$.cnt").value(1))
-                .andExpect(jsonPath("$.content").value("공지사항 내용1"));
-
-    }
 }

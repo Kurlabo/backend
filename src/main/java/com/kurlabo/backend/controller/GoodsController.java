@@ -1,17 +1,18 @@
 package com.kurlabo.backend.controller;
 
 
-import com.kurlabo.backend.dto.ReviewDto;
+import com.kurlabo.backend.dto.goods.GetCartResponseDto;
 import com.kurlabo.backend.dto.goods.InsertCartDto;
 import com.kurlabo.backend.dto.testdto.CartTestDto;
-import com.kurlabo.backend.dto.testdto.ProductDetailTestDto;
 import com.kurlabo.backend.dto.testdto.ProductInfoTestDto;
 import com.kurlabo.backend.dto.testdto.UserInfoTestDto;
 import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +26,15 @@ public class GoodsController {
 
     private final MemberService memberService;
     private final GoodsService goodsService;
-    private final ReviewService reviewService;
+    private final CartService cartService;
+
+    // 장바구니 조회
+    @GetMapping("/goods_cart")
+    public List<GetCartResponseDto> getCart(@AuthenticationPrincipal Member member){
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
+
+        return cartService.getCartList(mem);
+    }
 
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
@@ -34,9 +43,11 @@ public class GoodsController {
         goodsService.insertCart(mem, dto.getProduct_id(), dto.getCnt());
     }
 
+    // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
 
 
+    // 장바구니 상품 개수 수정
     @PatchMapping("/goods_cart/{cart_id}")
 
 

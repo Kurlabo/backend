@@ -45,24 +45,38 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$.productDetailDto.productImgUrl").value("//img-cf.kurly.com/shop/data/goodsview/20210202/gv10000156055_1.jpg"));
     }
 
-    @DisplayName("CartTest")
+    @DisplayName("GetCartList")
     @Test
-    void cartTest() throws Exception {
+    void getCartList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.product_info_dto[0].product_id").value((long)1))
-                .andExpect(jsonPath("$.product_info_dto[0].category").value(0))
-                .andExpect(jsonPath("$.product_info_dto[0].name").value("한끼 당근 1개"))
-                .andExpect(jsonPath("$.product_info_dto[0].short_description").value("딱 하나만 필요할 때 한끼 당근"))
-                .andExpect(jsonPath("$.product_info_dto[0].original_price").value(1300))
-                .andExpect(jsonPath("$.product_info_dto[0].discounted_price").value(1300))
-                .andExpect(jsonPath("$.product_info_dto[0].original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1583285919646l0.jpg"))
-                .andExpect(jsonPath("$.product_info_dto[0].sticker_image_url").value("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png"))
-                .andExpect(jsonPath("$.product_info_dto[0].packing_type_text").value("냉장/종이포장"))
-                .andExpect(jsonPath("$.user_info_dto.member_id").value((long)1))
-                .andExpect(jsonPath("$.user_info_dto.uid").value("noah"))
-                .andExpect(jsonPath("$.user_info_dto.address").value("서울시 성동구 아차산로 18 (뚝섬역)"));
+                .andDo(print())
+                .andExpect(jsonPath("$[0].product_id").value((long)83))
+//                .andExpect(jsonPath("$[0].data.original_price").value("[숭의가든] 한돈 목살 양념 구이"))
+                .andExpect(jsonPath("$[0].cnt").value(4))
+                .andExpect(jsonPath("$[4].product_id").value((long)135))
+//                .andExpect(jsonPath("$[4].data.name\\").value("[르네디종] 디종 머스터드 & 홀 그레인 머스터드"))
+                .andExpect(jsonPath("$[4].cnt").value(3));
     }
+
+//    @DisplayName("CartTest")
+//    @Test
+//    void cartTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.product_info_dto[0].product_id").value((long)1))
+//                .andExpect(jsonPath("$.product_info_dto[0].category").value(0))
+//                .andExpect(jsonPath("$.product_info_dto[0].name").value("한끼 당근 1개"))
+//                .andExpect(jsonPath("$.product_info_dto[0].short_description").value("딱 하나만 필요할 때 한끼 당근"))
+//                .andExpect(jsonPath("$.product_info_dto[0].original_price").value(1300))
+//                .andExpect(jsonPath("$.product_info_dto[0].discounted_price").value(1300))
+//                .andExpect(jsonPath("$.product_info_dto[0].original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1583285919646l0.jpg"))
+//                .andExpect(jsonPath("$.product_info_dto[0].sticker_image_url").value("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png"))
+//                .andExpect(jsonPath("$.product_info_dto[0].packing_type_text").value("냉장/종이포장"))
+//                .andExpect(jsonPath("$.user_info_dto.member_id").value((long)1))
+//                .andExpect(jsonPath("$.user_info_dto.uid").value("noah"))
+//                .andExpect(jsonPath("$.user_info_dto.address").value("서울시 성동구 아차산로 18 (뚝섬역)"));
+//    }
 
 
 }

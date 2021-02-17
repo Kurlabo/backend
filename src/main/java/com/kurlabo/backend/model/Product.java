@@ -2,6 +2,7 @@ package com.kurlabo.backend.model;
 
 import com.kurlabo.backend.converter.JsonConverter;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Product {

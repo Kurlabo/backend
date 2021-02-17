@@ -1,9 +1,9 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.testdto.FindIdDto;
-import com.kurlabo.backend.dto.testdto.FindPwdDto;
-import com.kurlabo.backend.dto.testdto.MemberDto;
+import com.kurlabo.backend.dto.testdto.FindIdTestDto;
+import com.kurlabo.backend.dto.testdto.FindPwdTestDto;
+import com.kurlabo.backend.dto.testdto.MemberTestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class MemberControllerTest {
     @Test
     void findIdTest() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new FindIdDto("임정우", "lnoah@fastcampus.com"));
+        String content = objectMapper.writeValueAsString(new FindIdTestDto("임정우", "lnoah@fastcampus.com"));
 
         mockMvc.perform(post("/api/member/find_id").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
                 .andExpect(status().isOk())
@@ -68,7 +68,7 @@ class MemberControllerTest {
     @Test
     void findPwdTest() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new FindPwdDto("임정우", "lnoah", "lnoah@fastcampus.com"));
+        String content = objectMapper.writeValueAsString(new FindPwdTestDto("임정우", "lnoah", "lnoah@fastcampus.com"));
 
         mockMvc.perform(post("/api/member/find_pwd").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
                 .andExpect(status().isOk())
@@ -81,7 +81,7 @@ class MemberControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/member/login")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(
-                        MemberDto.builder()
+                        MemberTestDto.builder()
                                 .uid("userAccount")
                                 .password("userpassword111")
                                 .build()

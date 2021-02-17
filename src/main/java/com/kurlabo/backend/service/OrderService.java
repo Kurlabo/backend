@@ -11,6 +11,7 @@ import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class OrderService {
         return orderSheetResponseDto;
     }
 
+    @Transactional
     public String setCheckout(CheckoutRequestDto dto) {
         StringRevisor sr = new StringRevisor();
         Member mem = memberRepository.findById(dto.getMember_id()).orElseThrow(
@@ -98,12 +100,7 @@ public class OrderService {
                 mem
         );
 
-        try {
-            orderRepository.save(orders);
-        } catch (Exception e){
-            e.printStackTrace();
-            returnStr = "결제에 실패했습니다.";
-        }
+        orderRepository.save(orders);
 
         return returnStr;
     }

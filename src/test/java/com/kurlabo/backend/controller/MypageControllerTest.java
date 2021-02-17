@@ -1,16 +1,24 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
+import com.kurlabo.backend.dto.mypage.InsertWishListDto;
+import com.kurlabo.backend.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,9 +26,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 class MypageControllerTest {
+
     private MockMvc mockMvc;
-//    @Autowired
-//    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -28,6 +41,46 @@ class MypageControllerTest {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @DisplayName("GetWishList")
+    @Test
+    void getAllFavoriteList() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_wishlist")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0)))
+                .andExpect(status().isOk())
+                .andExpect((jsonPath("$.content[0].products_id").value((long)5)))
+                .andExpect((jsonPath("$.content[1].products_id").value((long)2)))
+                .andExpect((jsonPath("$.content[2].products_id").value((long)9)))
+                .andExpect((jsonPath("$.content[3].products_id").value((long)13)))
+                .andExpect((jsonPath("$.content[4].products_id").value((long)129)));
+
+    }
+
+    @DisplayName("InsertWishList")
+    @Test
+    void insertWishlist() throws Exception {
+
+        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)21));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_wishlist")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(content))
+                .andExpect(status().isOk());//andExpect로 data 확인 필요
+    }
+
+    @DisplayName("DeleteWishList")
+    @Test
+    void deleteWishList() throws Exception {
+        List<Long> lists = new ArrayList<>(Arrays.asList((long)129, (long)2));
+        String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0))
+                .content(content))
+                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 
     @DisplayName("OrderListTest")

@@ -10,6 +10,7 @@ import com.kurlabo.backend.repository.CartRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +43,21 @@ public class CartService {
         }
 
         return dtoLists;
+    }
+
+    @Transactional
+    public void insertCart(Member member, Long product_id, int cnt){
+//        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
+//
+//        }
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
+
+        if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
+            cart.setCnt(cart.getCnt() + cnt);
+            cartRepository.save(cart);
+        } else {            // 카트에 없는 상품이면 바로 저장해 줌
+            cart = new Cart(null, product_id, cnt, member);
+            cartRepository.save(cart);
+        }
     }
 }

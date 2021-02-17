@@ -14,11 +14,5 @@ public class GoodsService {
 
     private final CartRepository cartRepository;
 
-    @Transactional
-    public void insertCart(Member member, Long product_id, int cnt){
-        if(cnt < 1){
 
-        }
-        cartRepository.save(new Cart(null, product_id, cnt, member));
-    }
 }

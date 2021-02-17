@@ -68,10 +68,8 @@ public class InsertDBTest {
     @Test
     void test(){
         Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
-        List<Cart> lists = cartRepository.findByMember(mem);
-        System.out.println("cartLists >>>>>>>>>>>>>>> " + lists);
-        System.out.println("cartLists[0] >>>>>>>>>>>>>>> " + lists.get(0));
-        System.out.println("cartLists[3] >>>>>>>>>>>>>>> " + lists.get(3));
+        Cart cart = cartRepository.findByMemberAndProduct_id(mem, (long)5);
+        System.out.println("Cart >>>>>>>>>>>>>>>>>>>>>>>>>>> " + cart);
     }
 
     @Test

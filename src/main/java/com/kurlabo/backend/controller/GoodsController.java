@@ -25,7 +25,6 @@ import java.util.List;
 public class GoodsController {
 
     private final MemberService memberService;
-    private final GoodsService goodsService;
     private final CartService cartService;
 
     // 장바구니 조회
@@ -38,9 +37,9 @@ public class GoodsController {
 
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
-    public void insertCart(@RequestBody @Valid InsertCartDto dto){    // Security에서 member 가져와야함
-        Member mem = memberService.findById((long)1);
-        goodsService.insertCart(mem, dto.getProduct_id(), dto.getCnt());
+    public void insertCart(@AuthenticationPrincipal Member member, @RequestBody @Valid InsertCartDto dto){    // Security에서 member 가져와야함
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
+        cartService.insertCart(mem, dto.getProduct_id(), dto.getCnt());
     }
 
     // 장바구니 삭제

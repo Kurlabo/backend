@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoDto {
-    private Long member_id;
-    private String uid;
-    private String address;
+public class FindIdTestDto {
+    private String name;
+    private String email;
 }

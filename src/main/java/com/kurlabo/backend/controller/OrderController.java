@@ -22,14 +22,16 @@ public class OrderController {
     // 주문서
     @PostMapping("/orderSheet")
     public OrderSheetResponseDto setOrderSheet(@RequestBody @Valid OrderSheetRequestDto dto){
-
         return orderService.getOrderSheet(dto);
     }
 
     // 결제하기
     @PostMapping("/checkout")
     public String setCheckout(@RequestBody @Valid CheckoutRequestDto dto){
+        String returnStr = "결제에 실패하셨습니다.";
 
-        return orderService.setCheckout(dto);
+        returnStr = orderService.setCheckout(dto);
+
+        return returnStr;
     }
 }

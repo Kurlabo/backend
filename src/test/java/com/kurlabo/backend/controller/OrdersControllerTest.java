@@ -66,7 +66,7 @@ class OrdersControllerTest {
                 .content(
                         objectMapper.writeValueAsString(
                                 new CheckoutRequestDto(
-                                        (long)2,
+                                        (long)1,
                                         "임정우",
                                         "01087239582",
                                         "서울시 강남구 강남동 강낭콩",
@@ -80,11 +80,5 @@ class OrdersControllerTest {
                                 ))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("결제에 성공하셨습니다."));
-    }
-
-    @Test
-    void test() {
-        Member member = memberRepository.findById((long)2).orElseThrow(()->new ResourceNotFoundException());
-        System.out.println(member);
     }
 }

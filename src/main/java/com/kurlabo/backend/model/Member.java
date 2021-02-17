@@ -33,5 +33,4 @@ public class Member {
     private String grade;
 
     private int total_cost;
-
 }

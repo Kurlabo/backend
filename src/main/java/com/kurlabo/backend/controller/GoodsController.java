@@ -44,6 +44,10 @@ public class GoodsController {
 
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
+    public void deleteCart(@AuthenticationPrincipal Member member, @RequestBody Long product_id) {
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
+        cartService.deleteCart(mem, product_id);
+    }
 
 
     // 장바구니 상품 개수 수정

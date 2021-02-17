@@ -79,4 +79,16 @@ public class GoodsControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
+    @DisplayName("DeleteCart")
+    @Test
+    void deleteCart() throws Exception {
+        Long product_id = (long)77;
+        String content = objectMapper.writeValueAsString(product_id);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(content))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }

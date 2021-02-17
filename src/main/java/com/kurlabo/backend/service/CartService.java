@@ -60,4 +60,16 @@ public class CartService {
             cartRepository.save(cart);
         }
     }
+
+    @Transactional
+    public void deleteCart(Member memer, Long product_id) {
+        Cart cart = cartRepository.findByMemberAndProduct_id(memer, product_id);
+        if(cart != null){
+            cartRepository.delete(cart);
+        } else {
+            System.out.println("테스트용 >>>> 카트 검색 결과 없음");
+            // Exception 만들어야함
+        }
+
+    }
 }

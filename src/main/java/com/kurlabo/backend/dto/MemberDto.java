@@ -1,4 +1,4 @@
-package com.kurlabo.backend.dto.testdto;
+package com.kurlabo.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,9 +25,7 @@ public class MemberDto {
 
     private String phone;
 
-    private String address;
-
     private String gender;
 
-    private String dateOfBirth;
+    private String date_of_birth;
 }

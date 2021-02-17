@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QnaDto {
-    private String[] inquiry_tag;
-    private Long order_id[];
-    private String email;
-    private String phone;
+public class OrderedProductsTestDto {
+    private String product_name;
+    private int checkout_price;
+    private int cnt;
+    private String deliver_condition;
 }

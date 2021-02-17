@@ -7,13 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyinfoDto {
+public class UserInfoTestDto {
+    private Long member_id;
     private String uid;
-    private String password;
-    private String name;
-    private String email;
-    private String phone;
     private String address;
-    private String gender;
-    private String date_of_birth;
 }

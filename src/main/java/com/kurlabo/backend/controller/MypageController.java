@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,27 +31,45 @@ public class MypageController {
 
     // 늘 사는 것 리스트 불러오기
     @GetMapping("/mypage_wishlist")
-    public Page<Favorite> getAllWishList(@AuthenticationPrincipal Member member, @PageableDefault(size = 5) Pageable pageable){
+    public ResponseEntity<?> getAllWishList(@AuthenticationPrincipal Member member, @PageableDefault(size = 5) Pageable pageable){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return favoriteService.getFavoriteList(mem, pageable);
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(favoriteService.getFavoriteList(mem, pageable));
+
     }
 
     // 늘 사는 것 Insert
     @PostMapping("/mypage_wishlist")
-    public String insertWishlist(@RequestBody @Valid InsertWishListDto dto){
+    public ResponseEntity<?> insertWishlist(@RequestBody @Valid InsertWishListDto dto){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return favoriteService.insertFavorite(mem, dto.getProduct_id());
+
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(favoriteService.insertFavorite(mem, dto.getProduct_id()));
     }
 
     // 늘 사는 것 비우기
     @DeleteMapping("/mypage_wishlist")
-    public Page<Favorite> deleteWishList (@AuthenticationPrincipal Member member, @RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<?> deleteWishList (@AuthenticationPrincipal Member member, @RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable);
+
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
     }
 
     @GetMapping("/mypage_orderlist")
-    public List<OrderListTestDto> orderListTest(){
+    public ResponseEntity<?> orderListTest(){
         List<OrderListTestDto> dummyDtoList = new ArrayList<>();
 
         OrderListTestDto orderListTestDto1 = new OrderListTestDto(
@@ -72,11 +92,16 @@ public class MypageController {
         dummyDtoList.add(orderListTestDto1);
         dummyDtoList.add(orderListTestDto2);
 
-        return dummyDtoList;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(dummyDtoList);
     }
 
     @GetMapping("/mypage_orderview")
-    public OrderDetailDto orderDetailTest(@RequestParam Long ordno){
+    public ResponseEntity<?> orderDetailTest(@RequestParam Long ordno){
         OrderDetailDto dummyDto = new OrderDetailDto();
         List<OrderedProductsTestDto> orderedProductsTestDtoList = new ArrayList<>();
 
@@ -108,15 +133,26 @@ public class MypageController {
         dummyDto.setReciever_address("(05123) 서울시 성동구 성동로 32 패스트캠퍼스 8층 C강의장");
         dummyDto.setReciever_recieve_place("문 앞");
 
-        return dummyDto;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(dummyDto);
     }
 
     @GetMapping("/mypage_qna")
-    public QnaTestDto qnaTest(){
+    public ResponseEntity<?> qnaTest(){
         String[] dummyStr = {
             "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
         };
         Long[] dummyLong = {Long.parseLong("1945327660572"), Long.parseLong("3484593475423")};
-        return new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678");
+
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678"));
     }
 }

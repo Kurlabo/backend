@@ -51,10 +51,10 @@ class MypageControllerTest {
                 .param("page", String.valueOf(0)))
                 .andExpect(status().isOk())
                 .andExpect((jsonPath("$.content[0].products_id").value((long)5)))
-                .andExpect((jsonPath("$.content[1].products_id").value((long)2)))
-                .andExpect((jsonPath("$.content[2].products_id").value((long)9)))
-                .andExpect((jsonPath("$.content[3].products_id").value((long)13)))
-                .andExpect((jsonPath("$.content[4].products_id").value((long)129)));
+                .andExpect((jsonPath("$.content[1].products_id").value((long)9)))
+                .andExpect((jsonPath("$.content[2].products_id").value((long)13)))
+                .andExpect((jsonPath("$.content[3].products_id").value((long)139)))
+                .andExpect((jsonPath("$.content[4].products_id").value((long)111)));
 
     }
 

@@ -1,5 +1,6 @@
 package com.kurlabo.backend.database;
 
+import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
@@ -66,6 +67,13 @@ public class InsertDBTest {
                 .alwaysDo(print())
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
+    }
+
+    @Test
+    void test(){
+        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
+        Cart cart = cartRepository.findByMemberAndProduct_id(mem, (long)5);
+        System.out.println("Cart >>>>>>>>>>>>>>>>>>>>>>>>>>> " + cart);
     }
 
     @Test
@@ -356,9 +364,9 @@ public class InsertDBTest {
         );
         System.out.println("product >>> " + testProduct);
 
-        String str = testProduct.getData();
-        StringRevisor sr = new StringRevisor();
-        System.out.println("StringRevisor >>> " + sr.reviseBackSlash(str));
+//        JsonObject str = testProduct.getData();
+//        StringRevisor sr = new StringRevisor();
+//        System.out.println("StringRevisor >>> " + sr.reviseBackSlash(str));
     }
 
     @Test

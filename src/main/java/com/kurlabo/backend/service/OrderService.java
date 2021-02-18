@@ -2,7 +2,9 @@ package com.kurlabo.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
+import com.kurlabo.backend.dto.ProductDto;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetResponseDto;
@@ -10,6 +12,7 @@ import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +47,8 @@ public class OrderService {
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(
                     () -> new ResourceNotFoundException()
             );
-            productDataList.add(sr.reviseBackSlash(product.getData()));
+//            productDataList.add(sr.reviseBackSlash(product.getData()));
+            productDataList.add(product.getData());
             productCntList.add(list.getCnt());
         }
 

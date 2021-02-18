@@ -1,9 +1,14 @@
 package com.kurlabo.backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.cart.InsertCartDto;
+import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -16,7 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 public class GoodsControllerTest {
+
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -45,24 +54,49 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$.productDetailDto.productImgUrl").value("//img-cf.kurly.com/shop/data/goodsview/20210202/gv10000156055_1.jpg"));
     }
 
-    @DisplayName("CartTest")
+    @DisplayName("GetCartList")
     @Test
-    void cartTest() throws Exception {
+    void getCartList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.product_info_dto[0].product_id").value((long)1))
-                .andExpect(jsonPath("$.product_info_dto[0].category").value(0))
-                .andExpect(jsonPath("$.product_info_dto[0].name").value("한끼 당근 1개"))
-                .andExpect(jsonPath("$.product_info_dto[0].short_description").value("딱 하나만 필요할 때 한끼 당근"))
-                .andExpect(jsonPath("$.product_info_dto[0].original_price").value(1300))
-                .andExpect(jsonPath("$.product_info_dto[0].discounted_price").value(1300))
-                .andExpect(jsonPath("$.product_info_dto[0].original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1583285919646l0.jpg"))
-                .andExpect(jsonPath("$.product_info_dto[0].sticker_image_url").value("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png"))
-                .andExpect(jsonPath("$.product_info_dto[0].packing_type_text").value("냉장/종이포장"))
-                .andExpect(jsonPath("$.user_info_dto.member_id").value((long)1))
-                .andExpect(jsonPath("$.user_info_dto.uid").value("noah"))
-                .andExpect(jsonPath("$.user_info_dto.address").value("서울시 성동구 아차산로 18 (뚝섬역)"));
+                .andDo(print());
+//                .andExpect(jsonPath("$.cartDataDto[4].product_id").value((long)41))
+//                .andExpect(jsonPath("$.cartDataDto[4].cnt").value(2))
+////                .andExpect(jsonPath("$.cartDataDto[4].data").value("{\"original_price\":7200,\"list_image_url\":\"https://img-cf.kurly.com/shop/data/goods/152646445497s0.jpg\",\"is_suggested_retail_price\":false,\"effective_date_start\":\"\",\"delivery_time_types\":[0,1],\"not_sales_text\":\"\",\"is_buy_now\":false,\"discount_start_timestamp\":0,\"discount_level\":\"\",\"review_count\":8339,\"expiration_date\":\"\",\"packing_type_text\":\"냉장/종이포장\",\"package_type\":0,\"discount_rate\":0,\"expected_point_ratio\":0,\"is_star_delivery\":false,\"contactant\":\"\",\"guides\":[\"20년산 햅쌀입니다.\",\"식품 특성상 중량은 3%내외의 차이가 발생할 수 있습니다.\"],\"event_type\":0,\"delivery_type\":0,\"main_image_url\":\"https://img-cf.kurly.com/shop/data/goods/1526464454125i0.jpg\",\"discount_start_datetime\":\"\",\"is_package_sold_out\":false,\"weight\":\"\",\"tags\":{\"types\":[],\"names\":[]},\"brand_title\":\"\",\"is_detail_sold_out\":false,\"extended_infos\":[],\"today_brix\":\"\",\"name\":\"[조선마켓] 조선향미 현미 1kg\",\"sales_unit\":1,\"discount_end_datetime\":\"\",\"delivery_price_text\":\"0원 이상 무료배송\",\"sold_out_text\":\"\",\"discount_percent\":0,\"delivery_time_type_text\":\"샛별배송/택배배송\",\"delivery_price\":0,\"use_stocked_notify\":true,\"no\":\"25578\",\"short_description\":\"조선향미의 구수한향을 간직한 현미 20년산 햅쌀(1봉/1kg) \",\"expected_point\":0,\"sticker_image_url\":null,\"origin\":\"국산\",\"is_reserve_delivery\":false,\"mobile_list_image_url\":\"\",\"discounted_price\":7200,\"sales_status\":\"ing\",\"is_sales\":true,\"unit_text\":\"\",\"delivery_area\":\"\",\"min_ea\":1,\"is_shown\":true,\"buyable_kind\":1,\"delivery_method\":\"\",\"is_kurly_pass_product\":false,\"delivery_type_text\":\"배송비\",\"max_ea\":999,\"is_expected_point\":true,\"is_divide_check\":false,\"original_image_url\":\"https://img-cf.kurly.com/shop/data/goods/1526464451559l0.jpg\",\"mobile_detail_image_url\":\"https://img-cf.kurly.com/shop/data/goods/1526464451499y0.jpg\",\"is_package\":false,\"user_event_coupon\":null,\"package_products\":[],\"is_purchase_status\":true,\"sticker\":null,\"detail_image_url\":\"https://img-cf.kurly.com/shop/data/goods/1526464454529m0.jpg\",\"long_description\":\"\",\"under_specific_quantity\":0,\"use_discount_percent\":false,\"effective_date_end\":\"\",\"discount_end_timestamp\":0,\"is_sold_out\":false}"))
+//                .andExpect(jsonPath("$.address").value("서울시 강동구 고덕동 삼성아파트 111동 111호"));
     }
 
+    @DisplayName("InsertCart")
+    @Test
+    void insertAndUpdateCart() throws Exception {
+        String content = objectMapper.writeValueAsString(new InsertCartDto((long)13, 9));
 
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(content))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("DeleteCart")
+    @Test
+    void deleteCart() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString((long)83)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("UpdateCartCnt")
+    @Test
+    void updateCartCnt() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/13")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(
+                        new UpdateCartCntRequestDto(-1)
+                )))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }

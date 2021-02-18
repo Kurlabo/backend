@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +25,21 @@ public class BoardController {
 
     // 공지사항 리스트
     @GetMapping("/list")
-    public Page<Board> getBoardList(@PageableDefault(size = 3) Pageable pageable){
-        return boardService.getBoardList(pageable);
+    public ResponseEntity<?> getBoardList(@PageableDefault(size = 3) Pageable pageable){
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(boardService.getBoardList(pageable));
     }
 
     // 공지사항 보기
     @GetMapping("/view/{id}")
-    public Board getBoard(@PathVariable Long id){
-        return boardService.getBoard(id);
+    public ResponseEntity<?> getBoard(@PathVariable Long id){
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(boardService.getBoard(id));
     }
 }

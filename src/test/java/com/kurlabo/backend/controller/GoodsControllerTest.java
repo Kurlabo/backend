@@ -1,26 +1,35 @@
 package com.kurlabo.backend.controller;
 
+import lombok.var;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Transactional
 @SpringBootTest
+@AutoConfigureMockMvc
 public class GoodsControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    void before(WebApplicationContext wac) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+    void before(WebApplicationContext was) {
+        mockMvc = MockMvcBuilders.webAppContextSetup(was)
                 .alwaysDo(print())
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
@@ -28,21 +37,11 @@ public class GoodsControllerTest {
 
     @Test
     void getProduct() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/320"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.product_id").value(1L))
-                .andExpect(jsonPath("$.name").value("[KF365] 감자 1kg"))
-                .andExpect(jsonPath("$.short_description").value("믿고 먹을 수 있는 상품을 합리적인 가격에, KF365"))
-                .andExpect(jsonPath("$.original_price").value(2500))
-                .andExpect(jsonPath("$.discounted_price").value(2500))
-                .andExpect(jsonPath("$.detail_image_url").value("https://img-cf.kurly.com/shop/data/goods/153017237655m0.jpg"))
-                .andExpect(jsonPath("$.original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1530172373295l0.jpg"))
-                .andExpect(jsonPath("$.productDetailDto.productDetailId").value(1L))
-                .andExpect(jsonPath("$.productDetailDto.detailImgUrl").value("//img-cf.kurly.com/shop/data/goodsview/20180628/gv40000026292_1.jpg"))
-                .andExpect(jsonPath("$.productDetailDto.detailTitle").value("\\n포슬포슬하고 고소한 맛\\n감자 1kg\\n"))
-                .andExpect(jsonPath("$.productDetailDto.detailContext").value("간단히 쪄 먹기도 좋고, 다양한 요리와 함께 곁들여 먹기도 좋은 감자는 우리 식탁에 빼놓을 수 없는 식재료지요. 탄수화물은 물론이고 단백질, 비타민C까지 풍부해 마치 곡류와 채소를 동시에 먹은 것과 같은 효과를 줍니다. 컬리는 그때그때 유명산지 감자를 가락시장에서 수급하여 보내드립니다. 포슬포슬한 식감에 고소하고 은은한 단맛이 나 볶음, 구이, 튀김 등 다양하게 요리해서 먹을 수 있어요. 매일 식탁에 올려도 질리지 않는 감자를 컬리에서 간편하게 만나보세요."))
-                .andExpect(jsonPath("$.productDetailDto.productImgUrl").value("//img-cf.kurly.com/shop/data/goodsview/20210202/gv10000156055_1.jpg"));
+                .andExpect(jsonPath("$.product_id").value((long)320))
+                .andExpect(jsonPath("$.data").value("{\"original_price\":2500,\"list_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/goods\\/1530172376806s0.jpg\",\"is_suggested_retail_price\":false,\"effective_date_start\":\"\",\"delivery_time_types\":[0,1],\"not_sales_text\":\"\",\"is_buy_now\":false,\"discount_start_timestamp\":0,\"discount_level\":\"\",\"review_count\":47632,\"expiration_date\":\"농산물로 별도의 유통기한은 없응나 가급적 빠르게 드시기 바랍니다.\",\"packing_type_text\":\"상온\\/종이포장\",\"package_type\":0,\"discount_rate\":0,\"expected_point_ratio\":0,\"is_star_delivery\":false,\"contactant\":\"\",\"guides\":[\"식품 특성상 중량은 3% 내외의 차이가 발생할 수 있습니다.\",\"시세에 따라 가격이 변동 될 수 있습니다.\",\"햇빛을 피해 보관해 주시기 바라며 햇빛을 받아 껍질이나 내부가 초록색으로 변한 경우 섭취하지 마시기 바랍니다.\"],\"event_type\":0,\"delivery_type\":0,\"main_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/goods\\/153017237651i0.jpg\",\"discount_start_datetime\":\"\",\"is_package_sold_out\":false,\"weight\":\"1kg\",\"tags\":{\"types\":[],\"names\":[]},\"brand_title\":\"\",\"is_detail_sold_out\":false,\"extended_infos\":[],\"today_brix\":\"\",\"name\":\"[KF365] 감자 1kg\",\"sales_unit\":1,\"discount_end_datetime\":\"\",\"delivery_price_text\":\"0원 이상 무료배송\",\"sold_out_text\":\"\",\"discount_percent\":0,\"delivery_time_type_text\":\"샛별배송\\/택배배송\",\"delivery_price\":0,\"use_stocked_notify\":true,\"no\":\"26448\",\"short_description\":\"믿고 먹을 수 있는 상품을 합리적인 가격에, KF365\",\"expected_point\":0,\"sticker_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/my_icon\\/icon_farming_coupon_20_percent.png\",\"origin\":\"국내산\",\"is_reserve_delivery\":false,\"mobile_list_image_url\":\"\",\"discounted_price\":2500,\"sales_status\":\"ing\",\"is_sales\":true,\"unit_text\":\"1봉\",\"delivery_area\":\"\",\"min_ea\":1,\"is_shown\":true,\"buyable_kind\":1,\"delivery_method\":\"\",\"is_kurly_pass_product\":false,\"delivery_type_text\":\"배송비\",\"max_ea\":999,\"is_expected_point\":true,\"is_divide_check\":false,\"original_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/goods\\/1530172373295l0.jpg\",\"mobile_detail_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/goods\\/1530172373565y0.jpg\",\"is_package\":false,\"user_event_coupon\":null,\"package_products\":[],\"is_purchase_status\":true,\"sticker\":null,\"detail_image_url\":\"https:\\/\\/img-cf.kurly.com\\/shop\\/data\\/goods\\/153017237655m0.jpg\",\"long_description\":\"\",\"under_specific_quantity\":0,\"use_discount_percent\":false,\"effective_date_end\":\"\",\"discount_end_timestamp\":0,\"is_sold_out\":false}"));
     }
 
     @DisplayName("CartTest")

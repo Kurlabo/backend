@@ -2,6 +2,8 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.testdto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     @GetMapping("/myinfo")
-    public MyinfoTestDto myinfoTest(){
+    public ResponseEntity<?> myinfoTest(){
         MyinfoTestDto dummyDto = new MyinfoTestDto();
 
         dummyDto.setUid("lnoah");
@@ -22,11 +24,16 @@ public class MemberController {
         dummyDto.setGender("남자");
         dummyDto.setDate_of_birth("1991-03-01");
 
-        return dummyDto;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(dummyDto);
     }
 
     @PostMapping("/find_id")
-    public String findIdTest(@RequestBody FindIdTestDto findIdTestDto){
+    public ResponseEntity<?> findIdTest(@RequestBody FindIdTestDto findIdTestDto){
         String dbMemberName = "임정우";
         String dbMemberEmail = "lnoah@fastcampus.com";
         String msg = "";
@@ -40,11 +47,16 @@ public class MemberController {
             msg = "고객님의 아이디 찾기가 완료되었습니다!";
         }
 
-        return msg;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(msg);
     }
 
     @PostMapping("/find_pwd")
-    public String findPwdTest(@RequestBody FindPwdTestDto findPwdTestDto){
+    public ResponseEntity<?> findPwdTest(@RequestBody FindPwdTestDto findPwdTestDto){
 
         String dbMemberName = "임정우";
         String dbMemberUid = "lnoah";
@@ -57,12 +69,17 @@ public class MemberController {
             msg = "고객님의 비밀번호가 이메일로 발송되었습니다!";
         }
 
-        return msg;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(msg);
     }
 
     // 회원가입
     @PostMapping("/join")
-    public MemberTestDto join(@RequestBody MemberTestDto memberTestDto) {
+    public ResponseEntity<?> join(@RequestBody MemberTestDto memberTestDto) {
 
         memberTestDto.setMemberId(1L);
         memberTestDto.setUid("userAccount");
@@ -73,12 +90,17 @@ public class MemberController {
         memberTestDto.setPassword("password");
         memberTestDto.setGender("1");
 
-        return memberTestDto;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(memberTestDto);
     }
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody MemberTestDto memberTestDto) {
+    public ResponseEntity<?> login(@RequestBody MemberTestDto memberTestDto) {
 
         String message = "";
         String id = "userAccount";
@@ -92,7 +114,12 @@ public class MemberController {
             message = "로그인 성공";
         }
 
-        return message;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(message);
     }
 
 }

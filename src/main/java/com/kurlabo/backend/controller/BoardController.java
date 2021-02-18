@@ -26,8 +26,10 @@ public class BoardController {
     // 공지사항 리스트
     @GetMapping("/list")
     public ResponseEntity<?> getBoardList(@PageableDefault(size = 3) Pageable pageable){
+
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
+
         return ResponseEntity.ok()
                 .headers(hh)
                 .body(boardService.getBoardList(pageable));
@@ -36,8 +38,10 @@ public class BoardController {
     // 공지사항 보기
     @GetMapping("/view/{id}")
     public ResponseEntity<?> getBoard(@PathVariable Long id){
+
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
+
         return ResponseEntity.ok()
                 .headers(hh)
                 .body(boardService.getBoard(id));

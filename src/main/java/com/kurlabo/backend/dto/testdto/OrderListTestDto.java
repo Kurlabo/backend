@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderedProductsDto {
+public class OrderListTestDto {
+    private String checkout_date;
     private String product_name;
+    private Long order_id;
     private int checkout_price;
-    private int cnt;
     private String deliver_condition;
+    private String list_image_url;
 }

@@ -1,4 +1,4 @@
-package com.kurlabo.backend.dto.testdto;
+package com.kurlabo.backend.dto.mypage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartTestDto {
-    List<ProductInfoTestDto> productInfoTestDto;
-    UserInfoTestDto userInfoTestDto;
+public class DeleteWishListDto {
+    private List<Long> product_id;
 }

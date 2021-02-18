@@ -2,7 +2,9 @@ package com.kurlabo.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
+import com.kurlabo.backend.dto.ProductDto;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetResponseDto;
@@ -10,7 +12,9 @@ import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,8 @@ public class OrderService {
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(
                     () -> new ResourceNotFoundException()
             );
-            productDataList.add(sr.reviseBackSlash(product.getData()));
+//            productDataList.add(sr.reviseBackSlash(product.getData()));
+            productDataList.add(product.getData());
             productCntList.add(list.getCnt());
         }
 
@@ -66,6 +71,7 @@ public class OrderService {
         return orderSheetResponseDto;
     }
 
+    @Transactional
     public String setCheckout(CheckoutRequestDto dto) {
         StringRevisor sr = new StringRevisor();
         Member mem = memberRepository.findById(dto.getMember_id()).orElseThrow(
@@ -98,12 +104,7 @@ public class OrderService {
                 mem
         );
 
-        try {
-            orderRepository.save(orders);
-        } catch (Exception e){
-            e.printStackTrace();
-            returnStr = "결제에 실패했습니다.";
-        }
+        orderRepository.save(orders);
 
         return returnStr;
     }

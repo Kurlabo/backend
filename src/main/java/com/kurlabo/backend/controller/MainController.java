@@ -2,8 +2,11 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.testdto.MainTestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -11,11 +14,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/api")
+@RequestMapping(value="/api/shop")
 public class MainController {
 
     @GetMapping("/main")
-    public MainTestDto main() {
+    public ResponseEntity<?> main() {
         MainTestDto dummyDto = new MainTestDto();
 
         List<String> thumbnail_img_list = new ArrayList<String>();
@@ -53,6 +56,11 @@ public class MainController {
         dummyDto.setSticker_image_url("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png");
         dummyDto.setCategory(0);
 
-        return dummyDto;
+        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
+        hh.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok()
+                .headers(hh)
+                .body(dummyDto);
     }
 }

@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WishListDto {
+public class FindIdTestDto {
     private String name;
-    private int discounted_price;
-    private String list_image_url;
+    private String email;
 }

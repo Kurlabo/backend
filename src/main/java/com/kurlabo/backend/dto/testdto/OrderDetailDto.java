@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDetailDto {
     private Long order_id;
-    private List<OrderedProductsDto> orderedProductsDtoList;
+    private List<OrderedProductsTestDto> orderedProductsTestDtoList;
     private int checkout_total_price;
     private String checkout_method;
     private String orderer_name;

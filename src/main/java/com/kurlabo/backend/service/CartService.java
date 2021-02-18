@@ -38,7 +38,7 @@ public class CartService {
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
             StringRevisor sr = new StringRevisor();
             String str = product.getData();
-            System.out.println("바로 가져온 data 값 >>>>>>>>>>>>>>> " + str);
+            System.out.println("바로 가져온 data 값 >>>>>>>>>>>>>>> " + product.getData());
             str = sr.reviseBackSlash(str);
             System.out.println("StringRevisor 돌린 값 >>>>>>>>>>>>>>> " + str);
             CartDataDto dto = new CartDataDto(product.getId(), str, list.getCnt());

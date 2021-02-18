@@ -20,8 +20,5 @@ public class ProductDto {
 
     private List<Review> reviews;
 
-    public ProductDto (Product product) {
-        this.product_id = product.getId();
-        this.data = product.getData();
-    }
+    private List<Product> related_product;
 }

@@ -6,7 +6,6 @@ import com.kurlabo.backend.dto.goods.InsertCartDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
-import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class GoodsController {
 
     private final MemberService memberService;
     private final GoodsService goodsService;
-    private final ReviewService reviewService;
+//  private final ReviewService reviewService;
 
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
@@ -31,7 +30,8 @@ public class GoodsController {
     @CrossOrigin(origins = "*")
     @GetMapping("/{id}")
     public ProductDto goodDetail(@PathVariable(name = "id") Long id) {
-//        reviewService.findReviewByProductId(id);
+    // reviewService.findReviewByProductId(id);
+
         return goodsService.goodDetail(id);
     }
 }

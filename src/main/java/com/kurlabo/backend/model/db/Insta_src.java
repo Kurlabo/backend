@@ -18,7 +18,4 @@ public class Insta_src {
     private String landing_url;
     @Column(length = 1000)
     private String thumbnail_img_url;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "main_src_id")
-    private Main_src main_src;
 }

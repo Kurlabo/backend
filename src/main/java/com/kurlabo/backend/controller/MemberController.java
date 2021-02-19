@@ -1,18 +1,89 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.testdto.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import com.kurlabo.backend.config.security.CurrentUser;
+import com.kurlabo.backend.config.security.JwtTokenProvider;
+import com.kurlabo.backend.exception.CUserNotFoundException;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.repository.MemberRepository;
+import lombok.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+import javax.validation.Valid;
+import java.nio.file.attribute.UserPrincipal;
+
+//@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/member")
 public class MemberController {
+    private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/myinfo")
+    @PostMapping(value = "/signup")
+    public SignUpRes signup(@Valid @RequestBody SignUpReq signUpReq) {
+        Member member = Member.builder()
+                .uid(signUpReq.getUid())
+                .email(signUpReq.getEmail())
+                .password(passwordEncoder.encode(signUpReq.getPassword()))
+                .name(signUpReq.getName())
+                .phone(signUpReq.getPhone())
+                .gender(signUpReq.getGender())
+                .grade(signUpReq.getGrade())
+                .build();
+
+        Member savedMember = memberRepository.save(member);
+        String token = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()), "USER");
+
+        return SignUpRes.builder()
+                .accessToken(token)
+                .build();
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignUpReq {
+        private String uid;
+        private String email;
+        private String password;
+        private String name;
+        private String phone;
+        private String gender;
+        private String grade;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SignUpRes {
+        private String accessToken;
+    }
+
+    @GetMapping
+    public UserInfo me(Authentication authentication) {
+        String email = authentication.getName();
+        Member member = memberRepository.findByEmail(email).orElseThrow(CUserNotFoundException::new);
+
+        UserInfo userInfo = UserInfo.builder()
+                .name(member.getName())
+                .build();
+
+        return userInfo;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UserInfo {
+        private String name;
+    }
+   /* @GetMapping("/myinfo")
     public ResponseEntity<?> myinfoTest(){
         MyinfoTestDto dummyDto = new MyinfoTestDto();
 
@@ -121,6 +192,6 @@ public class MemberController {
         return ResponseEntity.ok()
                 .headers(hh)
                 .body(message);
-    }
+    }*/
 
 }

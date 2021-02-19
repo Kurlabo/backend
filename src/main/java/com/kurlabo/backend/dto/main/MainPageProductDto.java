@@ -10,5 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MainPageProductDto {
-    private Long id;
+    private Long product_id;
+    private String product_img;
+    private String sticker_img;
+    private String product_name;
+    private int original_price;
+    private int discounted_price;
+    private int discount_rate;
 }

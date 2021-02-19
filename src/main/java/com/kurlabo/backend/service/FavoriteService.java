@@ -30,6 +30,7 @@ public class FavoriteService {
         for(Favorite list: favoList){
             Product product = productRepository.findById(list.getProducts_id()).orElseThrow(ResourceNotFoundException::new);
             FavoriteProductDto dto = new FavoriteProductDto(
+                    product.getId(),
                     product.getList_image_url(),
                     product.getName(),
                     product.getOriginal_price(),

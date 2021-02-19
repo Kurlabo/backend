@@ -49,12 +49,12 @@ class MypageControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_wishlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("page", String.valueOf(0)))
-                .andExpect(status().isOk());
-//                .andExpect((jsonPath("$.content[0].products_id").value((long)5)))
-//                .andExpect((jsonPath("$.content[1].products_id").value((long)9)))
-//                .andExpect((jsonPath("$.content[2].products_id").value((long)13)))
-//                .andExpect((jsonPath("$.content[3].products_id").value((long)139)))
-//                .andExpect((jsonPath("$.content[4].products_id").value((long)111)));
+                .andExpect(status().isOk())
+                .andExpect((jsonPath("$[0].product_id").value((long)5)))
+                .andExpect((jsonPath("$[1].product_id").value((long)9)))
+                .andExpect((jsonPath("$[2].product_id").value((long)13)))
+                .andExpect((jsonPath("$[3].product_id").value((long)139)))
+                .andExpect((jsonPath("$[4].product_id").value((long)111)));
 
     }
 
@@ -62,7 +62,7 @@ class MypageControllerTest {
     @Test
     void insertWishlist() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)21));
+        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)33));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_wishlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,7 +73,7 @@ class MypageControllerTest {
     @DisplayName("DeleteWishList")
     @Test
     void deleteWishList() throws Exception {
-        List<Long> lists = new ArrayList<>(Arrays.asList((long)129, (long)2));
+        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
         String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")

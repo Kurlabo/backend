@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FavoriteProductDto {
+    private Long product_id;
     private String list_image_url;
     private String name;
     private int original_price;

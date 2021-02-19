@@ -1,24 +1,32 @@
 package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.testdto.MainTestDto;
+import com.kurlabo.backend.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/shop")
 public class MainController {
 
+    private final MainService mainService;
+
+    // 메인 페이지
+    @GetMapping
+    public ResponseEntity<?> mainPage(){
+
+        return ResponseEntity.ok(mainService.setMainPage());
+    }
+
     @GetMapping("/main")
-    public ResponseEntity<?> main() {
+    public ResponseEntity<?> maintest() {
         MainTestDto dummyDto = new MainTestDto();
 
         List<String> thumbnail_img_list = new ArrayList<String>();

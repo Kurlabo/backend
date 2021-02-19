@@ -9,7 +9,6 @@ import com.kurlabo.backend.repository.CartRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

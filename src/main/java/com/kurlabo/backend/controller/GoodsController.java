@@ -10,7 +10,7 @@ import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,58 +33,49 @@ public class GoodsController {
         return goodsService.goodDetail(id);
     }
 
+    //@AuthenticationPrincipal Member member
     // 장바구니 조회
     @GetMapping("/goods_cart")
-    public ResponseEntity<?> getCart(@AuthenticationPrincipal Member member){
+    public ResponseEntity<?> getCart(){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
 
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(cartService.getCartList(mem));
+        return ResponseEntity.ok(cartService.getCartList(mem));
     }
 
+    //@AuthenticationPrincipal Member member,
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
-    public ResponseEntity<?> insertAndUpdateCart(@AuthenticationPrincipal Member member, @RequestBody @Valid InsertCartDto dto){    // Security에서 member 가져와야함
+    public ResponseEntity<?> insertAndUpdateCart(@RequestBody @Valid InsertCartDto dto){    // Security에서 member 가져와야함
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
 
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
 
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(cartService.insertCart(mem, dto.getProduct_id(), dto.getCnt()));
+        return ResponseEntity.ok(cartService.insertCart(mem, dto.getProduct_id(), dto.getCnt()));
     }
 
+    // @AuthenticationPrincipal Member member,
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
-    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal Member member, @RequestBody Long product_id) {
+    public ResponseEntity<?> deleteCart(@RequestBody Long product_id) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
 
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
 
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(cartService.deleteCart(mem, product_id));
+        return ResponseEntity.ok(cartService.deleteCart(mem, product_id));
     }
 
-
+    // @AuthenticationPrincipal Member member,
     // 장바구니 상품 개수 수정
     @PatchMapping("/goods_cart/{product_id}")
-    public ResponseEntity<?> updateCartCnt(@AuthenticationPrincipal Member member
-            , @PathVariable Long product_id
+    public ResponseEntity<?> updateCartCnt(@PathVariable Long product_id
             , @RequestBody @Valid UpdateCartCntRequestDto dto){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
 
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
 
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(cartService.updateCnt(mem, product_id, dto));
+        return ResponseEntity.ok(cartService.updateCnt(mem, product_id, dto));
     }
 }

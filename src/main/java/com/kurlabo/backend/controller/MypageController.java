@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/mypage")
@@ -29,9 +30,10 @@ public class MypageController {
     private final FavoriteService favoriteService;
     private final MemberService memberService;
 
+    //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
     @GetMapping("/mypage_wishlist")
-    public ResponseEntity<?> getAllWishList(@AuthenticationPrincipal Member member, @PageableDefault(size = 5) Pageable pageable){
+    public ResponseEntity<?> getAllWishList(@PageableDefault(size = 5) Pageable pageable){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
         hh.set("Access-Control-Allow-Origin", "*");
@@ -55,9 +57,10 @@ public class MypageController {
                 .body(favoriteService.insertFavorite(mem, dto.getProduct_id()));
     }
 
+    // @AuthenticationPrincipal Member member,
     // 늘 사는 것 비우기
     @DeleteMapping("/mypage_wishlist")
-    public ResponseEntity<?> deleteWishList (@AuthenticationPrincipal Member member, @RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<?> deleteWishList (@RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
 
         HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함

@@ -1,7 +1,5 @@
-package com.kurlabo.backend.dto;
+package com.kurlabo.backend.dto.main;
 
-import com.kurlabo.backend.dto.main.InstaSrcDto;
-import com.kurlabo.backend.dto.main.MainPageProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MainDto {
-    private Long id;
+public class InstaSrcDto {
+    private List<String> landing_url_list;
+    private List<String> thumbnail_img_list;
 }

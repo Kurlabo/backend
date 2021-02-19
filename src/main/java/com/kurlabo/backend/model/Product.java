@@ -4,6 +4,7 @@ import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.JsonConverter;
 import com.kurlabo.backend.dto.ProductDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Product {

@@ -1,10 +1,11 @@
 package com.kurlabo.backend.controller;
 
-
+import com.kurlabo.backend.dto.ProductDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.service.CartService;
+import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/goods")
@@ -21,6 +23,15 @@ public class GoodsController {
 
     private final MemberService memberService;
     private final CartService cartService;
+    private final GoodsService goodsService;
+//  private final ReviewService reviewService;
+
+    @GetMapping("/{id}")
+    public ProductDto goodDetail(@PathVariable(name = "id") Long id) {
+        // reviewService.findReviewByProductId(id);
+
+        return goodsService.goodDetail(id);
+    }
 
     // 장바구니 조회
     @GetMapping("/goods_cart")

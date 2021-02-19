@@ -73,7 +73,8 @@ class MypageControllerTest {
     @DisplayName("DeleteWishList")
     @Test
     void deleteWishList() throws Exception {
-        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
+//        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
+        List<Long> lists = new ArrayList<>();
         String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")

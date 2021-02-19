@@ -13,7 +13,7 @@ public class ProductDetailTestDto {
     private Long productDetailId;
 
     @JoinColumn(name = "product_id")
-    private ProductInfoDto productInfoDto;
+    private ProductInfoTestDto productInfoTestDto;
 //    private Long productId;
 
     private String detailImgUrl;

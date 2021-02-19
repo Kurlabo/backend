@@ -1,6 +1,6 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.testdto.ReviewDto;
+import com.kurlabo.backend.dto.ReviewDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.model.Product;

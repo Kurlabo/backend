@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductInfoDto {
+public class ProductInfoTestDto {
     private Long product_id;
     private String short_description;
     private String name;
@@ -17,8 +17,6 @@ public class ProductInfoDto {
     private String sticker_image_url;
     private int category;
     private String packing_type_text;
-
-    private String detail_image_url;
 
     private String detail_img_url;
 

@@ -1,8 +1,8 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.MemberDto;
-import com.kurlabo.backend.dto.testdto.MemberTestDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-
     private final MemberRepository memberRepository;
-
-
 
     @Transactional
     public Member join(MemberDto memberDto) {
@@ -42,4 +39,9 @@ public class MemberService {
     }
 
 
+    private final MemberRepository memberRepository;
+
+    public Member findById(Long id){
+        return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    }
 }

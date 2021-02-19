@@ -20,8 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MainControllerTest {
 
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {

@@ -84,10 +84,10 @@ public class GoodsControllerTest {
     @DisplayName("UpdateCartCnt")
     @Test
     void updateCartCnt() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/13")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/99")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(
-                        new UpdateCartCntRequestDto(-1)
+                        new UpdateCartCntRequestDto(1)
                 )))
                 .andExpect(status().isOk())
                 .andDo(print());

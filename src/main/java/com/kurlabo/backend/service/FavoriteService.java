@@ -1,9 +1,13 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.mypage.FavoriteProductDto;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Favorite;
 import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.FavoriteRepository;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +22,23 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
+    private final ProductRepository productRepository;
 
-    public Page<Favorite> getFavoriteList(Member member, Pageable pageable){
-        return favoriteRepository.findByMember(member, pageable);
+    public List<FavoriteProductDto> getFavoriteList(Member member, Pageable pageable){
+        List<Favorite> favoList = favoriteRepository.findByMember(member, pageable);
+        List<FavoriteProductDto> productList = new ArrayList<>();
+        for(Favorite list: favoList){
+            Product product = productRepository.findById(list.getProducts_id()).orElseThrow(ResourceNotFoundException::new);
+            FavoriteProductDto dto = new FavoriteProductDto(
+                    product.getList_image_url(),
+                    product.getName(),
+                    product.getOriginal_price(),
+                    product.getDiscounted_price()
+            );
+
+            productList.add(dto);
+        }
+        return productList;
     }
 
     @Transactional
@@ -35,7 +53,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Page<Favorite> deleteFavorite(Member member, List<Long> product_id, Pageable pageable){
+    public List<FavoriteProductDto> deleteFavorite(Member member, List<Long> product_id, Pageable pageable){
         List<Favorite> deleteLists = new ArrayList<>();
         for(int i = 0; i < product_id.size(); i++){
             Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, product_id.get(i));

@@ -67,13 +67,13 @@ public class GoodsControllerTest {
     @DisplayName("InsertCart")
     @Test
     void insertAndUpdateCart() throws Exception {
-        String content = objectMapper.writeValueAsString(new InsertCartDto((long)13, 9));
+        String content = objectMapper.writeValueAsString(new InsertCartDto((long)109, 3));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(content))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
+//                .andExpect(jsonPath("$").value("Increase cart cnt succeed"));
     }
 
     @DisplayName("DeleteCart")
@@ -81,7 +81,7 @@ public class GoodsControllerTest {
     void deleteCart() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString((long)83)))
+                .content(objectMapper.writeValueAsString((long)99)))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

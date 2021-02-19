@@ -2,6 +2,7 @@ package com.kurlabo.backend.database;
 
 import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
+import com.kurlabo.backend.dto.main.MainPageProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -24,6 +25,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,7 +62,10 @@ public class InsertDBTest {
     private BoardRepository boardRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -72,7 +77,30 @@ public class InsertDBTest {
 
     @Test
     void test(){
-
+        Random random = new Random();
+        List<Product> productsList = productRepository.findByDiscount_percent();
+//        List<Integer> intlist = new ArrayList<>();
+//        List<MainPageProductDto> list = new ArrayList<>();
+//
+//        for(int i = 0; i < 8; i++){
+//            int n = random.nextInt(productsList.size());
+//            while (intlist.contains(n)){
+//                n = random.nextInt(productsList.size());
+//            }
+//            intlist.add(n);
+//            Product product = productsList.get(n);
+//
+//            list.add(new MainPageProductDto(
+//                    product.getId(),
+//                    product.getOriginal_image_url(),
+//                    product.getSticker_image_url(),
+//                    product.getName(),
+//                    product.getOriginal_price(),
+//                    product.getDiscounted_price(),
+//                    product.getDiscount_percent()
+//            ));
+//        }
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + productsList.size());
     }
 
     @Test
@@ -198,19 +226,19 @@ public class InsertDBTest {
     @Test
     @Rollback(value = false)
     void InsertMemberInfo(){
-        Member member = new Member(
-                null,
-                "dkyang",
-                "585858",
-                "양동경",
-                "dkyang@fastcampus.com",
-                "01043215678",
-                "남자",
-                "19891122",
-                "일반",
-                0
-        );
-        memberRepository.save(member);
+//        Member member = new Member(
+//                null,
+//                "dkyang",
+//                "585858",
+//                "양동경",
+//                "dkyang@fastcampus.com",
+//                "01043215678",
+//                "남자",
+//                "19891122",
+//                "일반",
+//                0
+//        );
+//        memberRepository.save(member);
     }
 
     // Insert Main page / Slide Images

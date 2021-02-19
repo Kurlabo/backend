@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +36,6 @@ public class Member {
     private String grade;
 
     private int total_cost;
+
+    private String role;
 }

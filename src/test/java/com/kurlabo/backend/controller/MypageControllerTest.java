@@ -62,7 +62,7 @@ class MypageControllerTest {
     @Test
     void insertWishlist() throws Exception {
 
-        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)33));
+        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)5));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_wishlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -226,19 +226,19 @@ public class InsertDBTest {
     @Test
     @Rollback(value = false)
     void InsertMemberInfo(){
-        Member member = new Member(
-                null,
-                "dkyang",
-                "585858",
-                "양동경",
-                "dkyang@fastcampus.com",
-                "01043215678",
-                "남자",
-                "19891122",
-                "일반",
-                0
-        );
-        memberRepository.save(member);
+//        Member member = new Member(
+//                null,
+//                "dkyang",
+//                "585858",
+//                "양동경",
+//                "dkyang@fastcampus.com",
+//                "01043215678",
+//                "남자",
+//                "19891122",
+//                "일반",
+//                0
+//        );
+//        memberRepository.save(member);
     }
 
     // Insert Main page / Slide Images

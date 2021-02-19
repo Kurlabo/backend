@@ -4,7 +4,6 @@ import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.model.db.Insta_src;
 import com.kurlabo.backend.model.db.Main_src;
 import com.kurlabo.backend.model.db.Slide_img;
 import com.kurlabo.backend.repository.*;
@@ -12,7 +11,6 @@ import com.kurlabo.backend.repository.db.InsertDBRepository;
 import com.kurlabo.backend.repository.db.InstaSrcRepository;
 import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
-import org.apache.tomcat.jni.Time;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class InsertDBTest {
@@ -57,6 +58,9 @@ public class InsertDBTest {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    private ReviewRepository reviewRepository;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -68,9 +72,7 @@ public class InsertDBTest {
 
     @Test
     void test(){
-        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
-        Cart cart = cartRepository.findByMemberAndProduct_id(mem, (long)5);
-        System.out.println("Cart >>>>>>>>>>>>>>>>>>>>>>>>>>> " + cart);
+
     }
 
     @Test
@@ -233,7 +235,7 @@ public class InsertDBTest {
         );
 
         for(int i = 0; i < slideImgs.length; i++){
-            Slide_img slideImg = new Slide_img(null, slideImgs[i], mainSrc);
+            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
             slideImgRepository.save(slideImg);
         }
     }
@@ -364,6 +366,31 @@ public class InsertDBTest {
 //        JsonObject str = testProduct.getData();
 //        StringRevisor sr = new StringRevisor();
 //        System.out.println("StringRevisor >>> " + sr.reviseBackSlash(str));
+    }
+
+    @Test
+    @Rollback
+    void insertReview() throws Exception {
+        Member mem = new Member();
+        mem.setId(1L);
+
+        Product pro =  new Product();
+        pro.setId(319L);
+
+        Review review = new Review(
+                null,
+                "후기제목",
+                "후기내용",
+                "작성자",
+                LocalDate.now(),
+                3L,
+                10L,
+                pro,
+                mem
+        );
+
+        reviewRepository.save(review);
+        //verify(reviewRepository, times(1)).save(any(Review.class));
     }
 
 }

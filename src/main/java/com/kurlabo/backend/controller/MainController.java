@@ -25,8 +25,8 @@ public class MainController {
     }
 
     // MD의 추천 페이지
-    @GetMapping("/main?{category}")
+    @GetMapping("/main/{category}")
     public ResponseEntity<?> mdRecommend(@PathVariable int category){
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(mainService.setMdRecommend(category));
     }
 }

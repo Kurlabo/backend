@@ -36,13 +36,17 @@ public class CartService {
 
         for(Cart list : cartList){
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
-            StringRevisor sr = new StringRevisor();
-            String str = product.getData();
-            System.out.println("바로 가져온 data 값 >>>>>>>>>>>>>>> " + product.getData());
-            str = sr.reviseBackSlash(str);
-            System.out.println("StringRevisor 돌린 값 >>>>>>>>>>>>>>> " + str);
-            CartDataDto dto = new CartDataDto(product.getId(), str, list.getCnt());
-            System.out.println("DTO.data에 저장된 data 값 >>>>>>>>>>>>>>> " + dto.getData());
+            CartDataDto dto = new CartDataDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getOriginal_price(),
+                    product.getDiscounted_price(),
+                    product.getPacking_type_text(),
+                    1,
+                    99,
+                    product.getList_image_url(),
+                    list.getCnt()
+            );
             dtoLists.add(dto);
         }
 

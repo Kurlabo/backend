@@ -1,14 +1,9 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.testdto.MainTestDto;
 import com.kurlabo.backend.service.MainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin
 @RestController

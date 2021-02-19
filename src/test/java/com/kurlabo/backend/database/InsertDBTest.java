@@ -57,6 +57,8 @@ public class InsertDBTest {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -68,9 +70,7 @@ public class InsertDBTest {
 
     @Test
     void test(){
-        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
-        Cart cart = cartRepository.findByMemberAndProduct_id(mem, (long)5);
-        System.out.println("Cart >>>>>>>>>>>>>>>>>>>>>>>>>>> " + cart);
+
     }
 
     @Test
@@ -233,7 +233,7 @@ public class InsertDBTest {
         );
 
         for(int i = 0; i < slideImgs.length; i++){
-            Slide_img slideImg = new Slide_img(null, slideImgs[i], mainSrc);
+            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
             slideImgRepository.save(slideImg);
         }
     }

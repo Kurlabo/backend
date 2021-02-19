@@ -9,7 +9,6 @@ import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sun.rmi.rmic.Main;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -207,15 +207,16 @@ public class InsertDBTest {
     void InsertMemberInfo(){
 //        Member member = new Member(
 //                null,
-//                "dkyang",
-//                "585858",
-//                "양동경",
-//                "dkyang@fastcampus.com",
-//                "01043215678",
-//                "남자",
+//                "choiyusun",
+//                "18181818",
+//                "최유선",
+//                "choiyusun@fastcampus.com",
+//                "01099991111",
+//                "여자",
 //                "19891122",
 //                "일반",
-//                0
+//                0,
+//                "USER"
 //        );
 //        memberRepository.save(member);
     }

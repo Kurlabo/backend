@@ -2,10 +2,10 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
 import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
-import com.kurlabo.backend.dto.order.OrderSheetResponseDto;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,31 +18,20 @@ import javax.validation.Valid;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MemberService memberService;
 
     // 주문서
     @PostMapping("/orderSheet")
-    public ResponseEntity<?> setOrderSheet(@RequestBody @Valid OrderSheetRequestDto dto){
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(orderService.getOrderSheet(dto));
+    public ResponseEntity<?> setOrderSheet(){
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
+        return ResponseEntity.ok(orderService.getOrderSheet(mem));
     }
 
     // 결제하기
     @PostMapping("/checkout")
     public ResponseEntity<?> setCheckout(@RequestBody @Valid CheckoutRequestDto dto){
         String returnStr = "결제에 실패하셨습니다.";
-
         returnStr = orderService.setCheckout(dto);
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(returnStr);
+        return ResponseEntity.ok(returnStr);
     }
 }

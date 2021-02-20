@@ -33,7 +33,7 @@ public class CheckoutRequestDto {
     @NotNull
     private String checkout;
     @NotNull
-    private List<Long> product_id_list;
+    private List<OrderListDto> product_id_list;
     @NotNull
     private int total_cost;
 }

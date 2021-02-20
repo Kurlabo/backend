@@ -17,10 +17,6 @@ import java.util.List;
 @Builder
 public class OrderSheetResponseDto {
     @NotNull
-    private List<String> product_data;
-    @NotNull
-    private List<Integer> product_cnt;
-    @NotNull
     private String orderer_name;
     @NotNull
     private String orderer_phone;

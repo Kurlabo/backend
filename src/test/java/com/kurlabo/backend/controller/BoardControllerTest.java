@@ -31,7 +31,6 @@ public class BoardControllerTest {
     void getBoardList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/board/list").param("page", String.valueOf(1)))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(jsonPath("$.content[0].id").value(4))
                 .andExpect(jsonPath("$.content[0].title").value("주문취소마감 시간 변경 공지"))
                 .andExpect(jsonPath("$.content[0].writer").value("MarketKurly"))

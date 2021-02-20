@@ -60,6 +60,7 @@ public class InsertDBTest {
     private BoardRepository boardRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @BeforeEach
@@ -202,7 +203,7 @@ public class InsertDBTest {
                 null,
                 "dkyang",
                 "585858",
-                "양동경",
+                "테스트",
                 "dkyang@fastcampus.com",
                 "01043215678",
                 "남자",

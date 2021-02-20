@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @Entity
-@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -31,7 +31,7 @@ public class Member {
 
     private String gender;
 
-    private String date_of_birth;
+    private LocalDate date_of_birth;
 
     private String grade;
 

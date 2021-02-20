@@ -1,76 +1,93 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.config.security.CurrentUser;
 import com.kurlabo.backend.config.security.JwtTokenProvider;
+import com.kurlabo.backend.dto.member.LoginRequestDto;
+import com.kurlabo.backend.dto.member.LoginResponseDto;
+import com.kurlabo.backend.dto.member.SignupRequestDto;
+import com.kurlabo.backend.dto.member.SignupResponseDto;
 import com.kurlabo.backend.exception.CUserNotFoundException;
+import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.LoginFailException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.service.MemberService;
 import lombok.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipal;
+import java.time.LocalDate;
 
 //@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/member")
 public class MemberController {
+
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping(value = "/signup")
-    public SignUpRes signup(@Valid @RequestBody SignUpReq signUpReq) {
+    public SignupResponseDto signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         Member member = Member.builder()
-                .uid(signUpReq.getUid())
-                .email(signUpReq.getEmail())
-                .password(passwordEncoder.encode(signUpReq.getPassword()))
-                .name(signUpReq.getName())
-                .phone(signUpReq.getPhone())
-                .gender(signUpReq.getGender())
-                .grade(signUpReq.getGrade())
+                .uid(signupRequestDto.getUid())
+                .email(signupRequestDto.getEmail())
+                .password(passwordEncoder.encode(signupRequestDto.getPassword()))
+                .name(signupRequestDto.getName())
+                .phone(signupRequestDto.getPhone())
+                .gender(signupRequestDto.getGender())
+                .date_of_birth(signupRequestDto.getDate_of_birth())
+                .grade(signupRequestDto.getGrade())
                 .build();
 
         Member savedMember = memberRepository.save(member);
         String token = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()), "USER");
 
-        return SignUpRes.builder()
+        return SignupResponseDto.builder()
                 .accessToken(token)
                 .build();
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SignUpReq {
-        private String uid;
-        private String email;
-        private String password;
-        private String name;
-        private String phone;
-        private String gender;
-        private String grade;
-    }
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class SignUpReq {
+//        private String uid;
+//        private String email;
+//        private String password;
+//        private String name;
+//        private String phone;
+//        private String gender;
+//        private LocalDate date_of_birth;
+//        private String grade;
+//    }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SignUpRes {
-        private String accessToken;
-    }
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    @Builder
+//    public static class SignUpRes {
+//        private String accessToken;
+//    }
 
-    @GetMapping
-    public UserInfo me(Authentication authentication) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @GetMapping (value = "/myinfo")
+    public UserInfo getMember(Authentication authentication) {
         String email = authentication.getName();
-        Member member = memberRepository.findByEmail(email).orElseThrow(CUserNotFoundException::new);
+        Member member = memberRepository
+                .findByEmail(email).orElseThrow(() -> new CUserNotFoundException("회원이 존재하지 않습니다."));
 
         UserInfo userInfo = UserInfo.builder()
                 .name(member.getName())
+                .email(member.getEmail())
+                .phone(member.getPhone())
+                .gender(member.getGender())
+                .date_of_birth(member.getDate_of_birth())
                 .build();
 
         return userInfo;
@@ -82,7 +99,115 @@ public class MemberController {
     @Builder
     public static class UserInfo {
         private String name;
+        private String email;
+        private String phone;
+        private String gender;
+        private LocalDate date_of_birth;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    @PutMapping(value = "/{member_id}")
+//    public UpdateMemberRes updateMember(@Valid @RequestBody UpdateMemberReq updateMemberReq) {
+//
+//        Member member = memberRepository
+//                .findByEmail(email).orElseThrow(() -> new CUserNotFoundException("회원이 존재하지 않습니다."));
+//
+//        Member updatedMember = memberRepository.save(member);
+//        String token = jwtTokenProvider.createAccessToken(String.valueOf(updatedMember.getId()), "USER");
+//
+//        return UpdateMemberRes.builder()
+//                .accessToken(token)
+//                .build();
+//    }
+//
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class UpdateMemberReq {
+//        private String email;
+//        private String password;
+//        private String name;
+//        private String phone;
+//        private String gender;
+//        private LocalDate date_of_birth;
+//    }
+//
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    @Builder
+//    public static class UpdateMemberRes {
+//        private String accessToken;
+//    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    @DeleteMapping(value = "{/member_id}")
+//    public DeleteMemberRes deleteMember(@Valid @RequestBody DeleteMemberReq deleteMemberReq) {
+//        Member member = Member.builder()
+//                .id(deleteMemberReq.getId())
+//                .build();
+//
+//        Member deleteMember = memberRepository.findById()
+//                .orElseThrow(()-> new DataNotFoundException("회원이 존재하지 않습니다."));
+//
+//        member.
+//
+//        Member deletedMember = memberRepository.save(deleteMember);
+//
+//        String token = jwtTokenProvider
+//                .createAccessToken(String.valueOf(deleteMember.getId()), "USER");
+//
+//        return DeleteMemberRes.builder()
+//                .accessToken(token)
+//                .build();
+//    }
+//
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class DeleteMemberReq {
+//        private Long id;
+//    }
+//
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    @Builder
+//    public static class DeleteMemberRes {
+//        private String accessToken;
+//    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+        Member member = memberService.findByUid(loginRequestDto.getUid());
+
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
+            throw new LoginFailException();
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(member.getId()), "USER");
+        LoginResponseDto loginRes = LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .build();
+
+        return ResponseEntity.ok().body(loginRes);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    /* @GetMapping("/myinfo")
     public ResponseEntity<?> myinfoTest(){
         MyinfoTestDto dummyDto = new MyinfoTestDto();
@@ -168,30 +293,7 @@ public class MemberController {
         return ResponseEntity.ok()
                 .headers(hh)
                 .body(memberTestDto);
-    }
 
-    // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberTestDto memberTestDto) {
-
-        String message = "";
-        String id = "userAccount";
-        String pwd = "userpassword";
-
-        if (!memberTestDto.getUid().equals(id)) {
-            message = "아이디 또는 비밀번호 오류입니다.";
-        } else if (!memberTestDto.getPassword().equals(pwd)) {
-            message = "아이디 또는 비밀번호 오류입니다.";
-        } else {
-            message = "로그인 성공";
-        }
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(message);
     }*/
 
 }

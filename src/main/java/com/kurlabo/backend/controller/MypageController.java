@@ -145,19 +145,19 @@ public class MypageController {
                 .body(new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678"));
     }
 
-    @GetMapping("/written-reviews")
-    public ResponseEntity<?> writtenReviews(@PageableDefault Pageable pageable, Review review){
-        // 작성완료 후기 리스트
-        return ResponseEntity.ok()
-                .body(reviewService.reviewList(pageable, review));
-    }
-
-    @GetMapping("/writable-reviews")
-    public ResponseEntity<?> writableReviews(@PageableDefault Pageable pageable, Review review){
-        // 작성가능 후기 리스트
-        return ResponseEntity.ok()
-                .body(reviewService.reviewList(pageable, review));
-    }
+//    @GetMapping("/written-reviews")
+//    public ResponseEntity<?> writtenReviews(@PageableDefault Pageable pageable, Review review){
+//        // 작성완료 후기 리스트
+//        return ResponseEntity.ok()
+//                .body(reviewService.reviewList(pageable, review));
+//    }
+//
+//    @GetMapping("/writable-reviews")
+//    public ResponseEntity<?> writableReviews(@PageableDefault Pageable pageable, Review review){
+//        // 작성가능 후기 리스트
+//        return ResponseEntity.ok()
+//                .body(reviewService.reviewList(pageable, review));
+//    }
 
     //mypage_review.php?write_goodsno=53329
     @PostMapping("/mypage_review/{pId}")

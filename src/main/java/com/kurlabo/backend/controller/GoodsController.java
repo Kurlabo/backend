@@ -8,6 +8,7 @@ import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -70,7 +71,7 @@ public class GoodsController {
 
     // 상품 리스트
     @GetMapping("/goods_list?{category}")
-    public ResponseEntity<?> goodsList(@PathVariable int category, Pageable pageable){
+    public ResponseEntity<?> goodsList(@PathVariable int category, @PageableDefault(size = 6) Pageable pageable){
         return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }
 }

@@ -2,6 +2,7 @@ package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
+import com.kurlabo.backend.dto.order.OrderListDto;
 import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
@@ -47,15 +48,12 @@ class OrdersControllerTest {
     @Test
     void setOrderSheet() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/order/orderSheet").contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(
-                        objectMapper.writeValueAsString(
-                                new OrderSheetRequestDto((long)2, new ArrayList<>(Arrays.asList((long)4, (long)6))))))
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$.product_cnt[0]").value(1))
-//                .andExpect(jsonPath("$.orderer_name").value("양동경"))
-//                .andExpect(jsonPath("$.orderer_phone").value("01043215678"))
-//                .andExpect(jsonPath("$.orderer_email").value("dkyang@fastcampus.com"))
-//                .andExpect(jsonPath("$.orderer_address").value("경기도 고양시 고양동 고양이파트 351번지"));
+                .content(objectMapper.writeValueAsString(new OrderSheetRequestDto((long)2))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderer_name").value("양동경"))
+                .andExpect(jsonPath("$.orderer_phone").value("01043215678"))
+                .andExpect(jsonPath("$.orderer_email").value("dkyang@fastcampus.com"))
+                .andExpect(jsonPath("$.orderer_address").value("경기도 고양시 고양동 고양이파트 351번지"));
     }
 
     @DisplayName("Checkout")
@@ -75,8 +73,8 @@ class OrdersControllerTest {
                                         "배송 직후",
                                         localDate,
                                         "신용카드",
-                                        new ArrayList<>(Arrays.asList((long)34, (long)109, (long)31)),
-                                        36900
+                                        new ArrayList<>(Arrays.asList(new OrderListDto((long)11, 2), new OrderListDto((long)51,1))),
+                                        53000
                                 ))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("결제에 성공하셨습니다."));

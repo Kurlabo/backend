@@ -28,7 +28,7 @@ public class Orders {
     private String checkout;
     private String delivery_condition;
     private String arrived_alarm;
-    private String product_id_list;
+    private String product_id_cnt_list;
     private int total_cost;
     @ManyToOne
     @JoinColumn(name = "member_id")

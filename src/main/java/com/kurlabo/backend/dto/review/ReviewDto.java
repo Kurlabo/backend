@@ -1,5 +1,7 @@
-package com.kurlabo.backend.dto;
+package com.kurlabo.backend.dto.review;
 
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,8 +32,4 @@ public class ReviewDto {
     private Long help;
 
     private Long cnt;
-
-    private List<Long> alreadyReview;
-
-    private List<Long> reviewsToWrite;
 }

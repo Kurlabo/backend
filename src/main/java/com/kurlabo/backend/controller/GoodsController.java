@@ -1,8 +1,8 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.ProductDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
+import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
@@ -10,7 +10,6 @@ import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,14 +26,14 @@ public class GoodsController {
     private final MemberService memberService;
     private final CartService cartService;
     private final GoodsService goodsService;
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
-//                                                 @PathVariable(name = "id") Long id) {
-//        // 리뷰 개수 7개 이상 보내주기
-//        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
-//    }
-//
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
+                                                 @PathVariable(name = "id") Long id) {
+        // 리뷰 개수 7개 이상 보내주기
+        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
+    }
+
     @PostMapping("/{pid}/{rid}")
     public Long reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid) {
         return goodsService.reviewHelpCount(rid);

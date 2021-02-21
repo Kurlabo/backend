@@ -49,6 +49,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryHomeAppliance();
     @Query("select p from Product p where p.category >= 150 and p.category <= 159")
     List<Product> findByCategoryBabyKiz();
-    @Query("select p from Product p where p.category >= 600 and p.category <= 169")
+    @Query("select p from Product p where p.category >= 160 and p.category <= 169")
     List<Product> findByCategoryPet();
 }

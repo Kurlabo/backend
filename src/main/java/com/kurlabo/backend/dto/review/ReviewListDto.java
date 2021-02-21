@@ -13,6 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ReviewListDto {
+    private Long product_id;
+
+    private String list_image_url;
+
+    private String product_name;
+
+    private int original_price;
+
+    private int discounted_price;
 
     private List<Long> writableReviews; // 후기 작성 가능
 

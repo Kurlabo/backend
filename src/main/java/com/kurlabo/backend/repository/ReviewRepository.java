@@ -16,8 +16,6 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long > {
 
-    // Optional<Review> findByMemberAndReview_id(Member member, Long review_id);
-
     @Transactional
     @Modifying
     @Query("update Review r set r.help = r.help + 1 where r.review_id = :review_id")

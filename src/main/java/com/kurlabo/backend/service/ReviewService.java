@@ -31,6 +31,7 @@ public class ReviewService {
     private final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
 
+    // 리뷰 작성 조건 체크
     public Review conditionsChk(Review review) {
         // 사용자 정보 없음
         Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
@@ -48,7 +49,7 @@ public class ReviewService {
         for (Orders order : orderList) {
             int dDay = (int) DAYS.between(fromDate, order.getCheckout_date()) * -1;
 
-            // 상품 구매 30일 이후 체크
+            // 상품 구매 후 30일 이상 지남
             if (dDay > 30) {
                 System.out.println("상품후기는 상품을 구매하시고 배송완료된 회원 분만 한 달 내 작성 가능합니다.");
                 throw new ResourceNotFoundException();
@@ -60,10 +61,11 @@ public class ReviewService {
     }
 
     // 리뷰 리스트 리턴
-    public ReviewListDto reviewList(Pageable pageable, Review review) {
+    public Page<ReviewListDto> reviewList(Pageable pageable, Review review) {
          List<Long> writableReviews = new ArrayList<>(); // 작성가능 후기
          List<Long> writtenReviews = new ArrayList<>(); // 작성완료 후기
 
+        // 사용자 검색
         Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
                 ResourceNotFoundException::new
         );
@@ -100,9 +102,10 @@ public class ReviewService {
         reviewListDto.setWritableReviews(writableReviews);
         reviewListDto.setWrittenReviews(writtenReviews);
 
-        return reviewListDto;
+        return (Page<ReviewListDto>) reviewListDto;
     }
 
+    // 리뷰작성
     public void create(Review review) {
         Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
                 ResourceNotFoundException::new

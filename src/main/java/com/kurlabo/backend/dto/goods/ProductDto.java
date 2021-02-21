@@ -1,6 +1,5 @@
-package com.kurlabo.backend.dto;
+package com.kurlabo.backend.dto.goods;
 
-import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,5 +62,6 @@ public class ProductDto {
 
     private Page<Review> reviews;
 
-    private List<Product> related_product;
+    private List<RelatedProductDto> related_product;
+
 }

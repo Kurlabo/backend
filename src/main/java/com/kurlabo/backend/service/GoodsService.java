@@ -1,6 +1,7 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.ProductDto;
+import com.kurlabo.backend.dto.goods.ProductDto;
+import com.kurlabo.backend.dto.goods.RelatedProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
@@ -29,8 +30,14 @@ public class GoodsService {
 
         // review info -> id, title, content, writer, regdate, help, cnt, product, member
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+//        List<Review> reviewsResults = reviews.getContent().stream().map(
+//                review -> sourceToDestination(review, new Review())
+//        ).collect(Collectors.toList());
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
+        List<RelatedProductDto> list = new ArrayList<>();
+        Random random = new Random();
+
         switch (product.getCategory()/10) {
             case 0:
                 related_product = productRepository.findByCategoryVege();
@@ -85,18 +92,18 @@ public class GoodsService {
                 break;
         }
 
-        Random random = new Random();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 20; i++) {
             int n = random.nextInt(related_product.size());
-        }
+            Product getRelate = related_product.get(n);
 
-//            list.add(new MainPageProductDto(
-//                    product.getId(),
-//                    product.getList_image_url(),
-//                    product.getName(),z
-//                    product.getOriginal_price(),
-//                    product.getDiscounted_price(),
-//            ));
+            list.add(new RelatedProductDto(
+                    getRelate.getId(),
+                    getRelate.getList_image_url(),
+                    getRelate.getName(),
+                    getRelate.getOriginal_price(),
+                    getRelate.getDiscounted_price()
+            ));
+        }
 
         ProductDto productDto = new ProductDto();
         productDto.setProduct_id(product.getId());
@@ -123,7 +130,7 @@ public class GoodsService {
         productDto.setProduct_img_url(product.getProduct_img_url());
 
         productDto.setReviews(reviews);
-        productDto.setRelated_product(related_product);
+        productDto.setRelated_product(list);
 
         return productDto;
     }

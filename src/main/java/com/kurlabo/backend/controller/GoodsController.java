@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.awt.print.Pageable;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -69,7 +70,7 @@ public class GoodsController {
 
     // 상품 리스트
     @GetMapping("/goods_list?{category}")
-    public ResponseEntity<?> goodsList(@PathVariable int category){
-        return ResponseEntity.ok(goodsService.getGoodsList(category));
+    public ResponseEntity<?> goodsList(@PathVariable int category, Pageable pageable){
+        return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }
 }

@@ -25,9 +25,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +79,14 @@ public class InsertDBTest {
 
     @Test
     void test(){
+        List<String> list1 = new ArrayList<String>(Arrays.asList("aaa", "bbb"));
+        List<String> list2 = new ArrayList<String>(Arrays.asList("ccc", "ddd"));
+
+        list1.addAll(list2);
+
+        for(String strList: list1){
+            System.out.println("productList >>>>>>>>>>>>>>>>>>>>>> " + strList);
+        }
 
     }
 
@@ -225,27 +233,27 @@ public class InsertDBTest {
     @Test
     @Rollback(value = false)
     void InsertSlideImgDb(){
-        String[] slideImgs ={
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612751700.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094368.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612347518.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612699410.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094440.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094559.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094297.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1602809211.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1596164134.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1583112495.jpg"
-        };
-
-        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
-                () -> new ResourceNotFoundException()
-        );
-
-        for(int i = 0; i < slideImgs.length; i++){
-            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
-            slideImgRepository.save(slideImg);
-        }
+//        String[] slideImgs ={
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612751700.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094368.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612347518.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612699410.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094440.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094559.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094297.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1602809211.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1596164134.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1583112495.jpg"
+//        };
+//
+//        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
+//                () -> new ResourceNotFoundException()
+//        );
+//
+//        for(int i = 0; i < slideImgs.length; i++){
+//            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
+//            slideImgRepository.save(slideImg);
+//        }
     }
 
     // Insert Main page / Insta Images, Landing URLs
@@ -366,10 +374,10 @@ public class InsertDBTest {
 //        }
 //
 //
-        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
-                () -> new ResourceNotFoundException()
-        );
-        System.out.println("product >>> " + testProduct);
+//        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
+//                () -> new ResourceNotFoundException()
+//        );
+//        System.out.println("product >>> " + testProduct);
 
 //        JsonObject str = testProduct.getData();
 //        StringRevisor sr = new StringRevisor();

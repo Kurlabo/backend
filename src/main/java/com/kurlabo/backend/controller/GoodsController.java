@@ -8,12 +8,13 @@ import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -65,5 +66,11 @@ public class GoodsController {
             , @RequestBody @Valid UpdateCartCntRequestDto dto){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         return ResponseEntity.ok(cartService.updateCnt(mem, product_id, dto));
+    }
+
+    // 상품 리스트
+    @GetMapping("/goods_list/{category}")
+    public ResponseEntity<?> goodsList(@PathVariable int category, @PageableDefault(size = 6) Pageable pageable){
+        return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }
 }

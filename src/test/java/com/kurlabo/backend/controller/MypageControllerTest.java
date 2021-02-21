@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
+import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -149,5 +150,18 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.order_id[1]").value("3484593475423"))
                 .andExpect(jsonPath("$.email").value("noah@fastcampus.com"))
                 .andExpect(jsonPath("$.phone").value("010-4321-5678"));
+    }
+
+    @DisplayName("writtenReviewsTest")
+    @Test
+    void writtenReviewsTest() throws Exception {
+        List<Long> lists = new ArrayList<>();
+        String content = objectMapper.writeValueAsString(new ReviewListDto());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/written-reviews")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0))
+                .content(content))
+                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 }

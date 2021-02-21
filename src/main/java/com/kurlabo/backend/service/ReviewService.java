@@ -61,49 +61,49 @@ public class ReviewService {
     }
 
     // 리뷰 리스트 리턴
-    public Page<ReviewListDto> reviewList(Pageable pageable, Review review) {
-         List<Long> writableReviews = new ArrayList<>(); // 작성가능 후기
-         List<Long> writtenReviews = new ArrayList<>(); // 작성완료 후기
-
-        // 사용자 검색
-        Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
-                ResourceNotFoundException::new
-        );
-
-        //productRepository.findById(review.getProduct().getId(), pageable);
-
-        List<Orders> orderByMember = orderRepository.findByMember(member);
-        Long orderByMemberId = orderByMember.get(0).getMember().getId();
-
-        writableReviews.add(orderByMemberId);
-        writtenReviews.add(orderByMemberId);
-
-        for (Orders order : orderByMember) {
-            // 주문내역의 사용자 == 리뷰남긴 사용자 면 작성완료 후기 리스트에 추가
-            if (order.getMember().getId().equals(review.getMember().getId())) {
-                writtenReviews.add(review.getProduct().getId());
-            }
-            else {
-            // 아니라면 주문내역 상품 리스트 작성가능 후기리스트에 추가
-                String x = order.getProduct_id_cnt_list()
-                        .replace("[", "")
-                        .replace(",", " ")
-                        .replace("]", "");
-                String[] productIdList = x.split(" ");
-
-                for (String products : productIdList) {
-                    writableReviews.add(Long.parseLong(products));
-                } // end for
-            }
-
-        } // end for
-
-        ReviewListDto reviewListDto = new ReviewListDto();
-        reviewListDto.setWritableReviews(writableReviews);
-        reviewListDto.setWrittenReviews(writtenReviews);
-
-        return (Page<ReviewListDto>) reviewListDto;
-    }
+//    public Page<ReviewListDto> reviewList(Pageable pageable, Review review) {
+//         List<Long> writableReviews = new ArrayList<>(); // 작성가능 후기
+//         List<Long> writtenReviews = new ArrayList<>(); // 작성완료 후기
+//
+//        // 사용자 검색
+//        Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
+//                ResourceNotFoundException::new
+//        );
+//
+//        //productRepository.findById(review.getProduct().getId(), pageable);
+//
+//        List<Orders> orderByMember = orderRepository.findByMember(member);
+//        Long orderByMemberId = orderByMember.get(0).getMember().getId();
+//
+//        writableReviews.add(orderByMemberId);
+//        writtenReviews.add(orderByMemberId);
+//
+//        for (Orders order : orderByMember) {
+//            // 주문내역의 사용자 == 리뷰남긴 사용자 면 작성완료 후기 리스트에 추가
+//            if (order.getMember().getId().equals(review.getMember().getId())) {
+//                writtenReviews.add(review.getProduct().getId());
+//            }
+//            else {
+//            // 아니라면 주문내역 상품 리스트 작성가능 후기리스트에 추가
+//                String x = order.getProduct_id_cnt_list()
+//                        .replace("[", "")
+//                        .replace(",", " ")
+//                        .replace("]", "");
+//                String[] productIdList = x.split(" ");
+//
+//                for (String products : productIdList) {
+//                    writableReviews.add(Long.parseLong(products));
+//                } // end for
+//            }
+//
+//        } // end for
+//
+//        ReviewListDto reviewListDto = new ReviewListDto();
+//        reviewListDto.setWritableReviews(writableReviews);
+//        reviewListDto.setWrittenReviews(writtenReviews);
+//
+//        return (Page<ReviewListDto>) reviewListDto;
+//    }
 
     // 리뷰작성
     public void create(Review review) {

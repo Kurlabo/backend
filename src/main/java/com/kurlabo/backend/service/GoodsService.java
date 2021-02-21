@@ -28,11 +28,7 @@ public class GoodsService {
         Product product = productRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        // review info -> id, title, content, writer, regdate, help, cnt, product, member
-        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
-//        List<Review> reviewsResults = reviews.getContent().stream().map(
-//                review -> sourceToDestination(review, new Review())
-//        ).collect(Collectors.toList());
+        // Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
         List<RelatedProductDto> list = new ArrayList<>();
@@ -129,7 +125,7 @@ public class GoodsService {
         productDto.setDetail_context(product.getDetail_context());
         productDto.setProduct_img_url(product.getProduct_img_url());
 
-        productDto.setReviews(reviews);
+        //productDto.setReviews(reviews);
         productDto.setRelated_product(list);
 
         return productDto;

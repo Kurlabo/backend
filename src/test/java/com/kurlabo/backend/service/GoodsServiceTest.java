@@ -62,7 +62,7 @@ class GoodsServiceTest {
     }
 
     @Test
-    @DisplayName("도움이 돼요 테스트")
+    @DisplayName("조회수 테스트")
     void reviewCountTest() {
         goodsService.reviewUpdateCnt(3L);
 
@@ -70,6 +70,10 @@ class GoodsServiceTest {
                 ResourceNotFoundException::new
         );
 
-        assertThat (review.getHelp()).isEqualTo(1L);
+        Review after = reviewRepository.findById(3L).orElseThrow(
+                ResourceNotFoundException::new
+        );
+
+        assertThat (after.getCnt()).isEqualTo(2L);
     }
 }

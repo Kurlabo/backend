@@ -27,17 +27,17 @@ public class GoodsController {
     private final CartService cartService;
     private final GoodsService goodsService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
-                                                 @PathVariable(name = "id") Long id) {
-        // 리뷰 개수 7개 이상 보내주기
-        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
+//                                                 @PathVariable(name = "id") Long id) {
+//        // 리뷰 개수 7개 이상 보내주기
+//        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
+//    }
 
-    @PostMapping("/{pid}/{rid}")
-    public Long reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid) {
-        return goodsService.reviewHelpCount(rid);
-    }
+//    @PostMapping("/{pid}/{rid}")
+//    public Long reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid) {
+//        return goodsService.reviewHelpCount(rid);
+//    }
 
 
     //@AuthenticationPrincipal Member member

@@ -1,13 +1,27 @@
 package com.kurlabo.backend.repository;
 
 import com.kurlabo.backend.model.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.awt.print.Pageable;
+
 import java.util.List;
 
 public interface ProductPageableRepository extends JpaRepository<Product, Long> {
+
+    @Query("select p from Product p")
+    List<Product> findAllPageable(Pageable pageable);
+
+    @Query("select p from Product p where p.category = :category")
+    List<Product> findByCategoryPageable(int category, Pageable pageable);
+
+    @Query("select p from Product p where p.category = :category order by p.id desc")
+    List<Product> findByCategoryDescPageable(int category, Pageable pageable);
+
+    @Query("select p from Product p where p.discount_percent > 0")
+    List<Product> findByDiscount_percentPageable(Pageable pageable);
+
     @Query("select p from Product p where p.category >= 0 and p.category <= 9")
     List<Product> findByCategoryVegePageable(Pageable pageable);
 

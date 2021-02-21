@@ -83,7 +83,7 @@ public class ReviewService {
             }
             else {
             // 아니라면 주문내역 상품 리스트 작성가능 후기리스트에 추가
-                String x = order.getProduct_id_list()
+                String x = order.getProduct_id_cnt_list()
                         .replace("[", "")
                         .replace(",", " ")
                         .replace("]", "");

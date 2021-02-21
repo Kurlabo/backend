@@ -11,6 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDataDto {
     private Long product_id;
-    private String data;
+    private String name;
+    private int original_price;
+    private int discounted_price;
+    private String packing_type_text;
+    private int min_ea;
+    private int max_ea;
+    private String list_image_url;
     private int cnt;
 }

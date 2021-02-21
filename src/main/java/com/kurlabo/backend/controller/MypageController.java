@@ -37,26 +37,14 @@ public class MypageController {
     @GetMapping("/mypage_wishlist")
     public ResponseEntity<?> getAllWishList(@PageableDefault(size = 5) Pageable pageable){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(favoriteService.getFavoriteList(mem, pageable));
-
+        return ResponseEntity.ok(favoriteService.getFavoriteList(mem, pageable));
     }
 
     // 늘 사는 것 Insert
     @PostMapping("/mypage_wishlist")
     public ResponseEntity<?> insertWishlist(@RequestBody @Valid InsertWishListDto dto){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(favoriteService.insertFavorite(mem, dto.getProduct_id()));
+        return ResponseEntity.ok(favoriteService.insertFavorite(mem, dto.getProduct_id()));
     }
 
     // @AuthenticationPrincipal Member member,
@@ -64,14 +52,10 @@ public class MypageController {
     @DeleteMapping("/mypage_wishlist")
     public ResponseEntity<?> deleteWishList (@RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
+        return ResponseEntity.ok(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
     }
+
+
 
     @GetMapping("/mypage_orderlist")
     public ResponseEntity<?> orderListTest(){

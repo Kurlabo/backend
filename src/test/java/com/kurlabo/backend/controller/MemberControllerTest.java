@@ -37,58 +37,57 @@ class MemberControllerTest {
                 .build();
     }
 
-    @DisplayName("MyinfoTest")
-    @Test
-    void myinfoTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uid").value("lnoah"))
-                .andExpect(jsonPath("$.password").value("fastcampus123"))
-                .andExpect(jsonPath("$.name").value("임정우"))
-                .andExpect(jsonPath("$.email").value("lnoah@fastcampus.com"))
-                .andExpect(jsonPath("$.phone").value("010-4321-5678"))
-                .andExpect(jsonPath("$.address").value("서울시 성동구 성수길 77"))
-                .andExpect(jsonPath("$.gender").value("남자"))
-                .andExpect(jsonPath("$.date_of_birth").value("1991-03-01"));
-    }
-
-    @DisplayName("FindIdTest")
-    @Test
-    void findIdTest() throws Exception {
-
-        String content = objectMapper.writeValueAsString(new FindIdTestDto("임정우", "lnoah@fastcampus.com"));
-
-        mockMvc.perform(post("/api/member/find_id").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("고객님의 아이디 찾기가 완료되었습니다!"));
-
-    }
-
-    @DisplayName("FindPwdTest")
-    @Test
-    void findPwdTest() throws Exception {
-
-        String content = objectMapper.writeValueAsString(new FindPwdTestDto("임정우", "lnoah", "lnoah@fastcampus.com"));
-
-        mockMvc.perform(post("/api/member/find_pwd").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("고객님의 비밀번호가 이메일로 발송되었습니다!"));
-    }
-
-    @Test
-    @DisplayName("MemberLoginTest")
-    public void loginTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/login")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(
-                        MemberTestDto.builder()
-                                .uid("userAccount")
-                                .password("userpassword111")
-                                .build()
-                        )
-                ))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
+//    @DisplayName("MyinfoTest")
+//    @Test
+//    void myinfoTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.uid").value("lnoah"))
+//                .andExpect(jsonPath("$.password").value("fastcampus123"))
+//                .andExpect(jsonPath("$.name").value("임정우"))
+//                .andExpect(jsonPath("$.email").value("lnoah@fastcampus.com"))
+//                .andExpect(jsonPath("$.phone").value("010-4321-5678"))
+//                .andExpect(jsonPath("$.address").value("서울시 성동구 성수길 77"))
+//                .andExpect(jsonPath("$.gender").value("남자"))
+//                .andExpect(jsonPath("$.date_of_birth").value("1991-03-01"));
+//    }
+//
+//    @DisplayName("FindIdTest")
+//    @Test
+//    void findIdTest() throws Exception {
+//
+//        String content = objectMapper.writeValueAsString(new FindIdTestDto("임정우", "lnoah@fastcampus.com"));
+//
+//        mockMvc.perform(post("/api/member/find_id").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").value("고객님의 아이디 찾기가 완료되었습니다!"));
+//
+//    }
+//
+//    @DisplayName("FindPwdTest")
+//    @Test
+//    void findPwdTest() throws Exception {
+//
+//        String content = objectMapper.writeValueAsString(new FindPwdTestDto("임정우", "lnoah", "lnoah@fastcampus.com"));
+//
+//        mockMvc.perform(post("/api/member/find_pwd").contentType(MediaType.APPLICATION_JSON_VALUE).content(content))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").value("고객님의 비밀번호가 이메일로 발송되었습니다!"));
+//    }
+//
+//    @Test
+//    @DisplayName("MemberLoginTest")
+//    public void loginTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/login")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(
+//                        MemberTestDto.builder()
+//                                .uid("userAccount")
+//                                .password("userpassword111")
+//                                .build()
+//                        )
+//                ))
+//                .andExpect(status().isOk())
+//                .andDo(print());
+//    }
 }

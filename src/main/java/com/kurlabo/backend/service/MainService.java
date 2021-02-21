@@ -61,14 +61,14 @@ public class MainService {
     public List<MainPageProductDto> setHowAbout(){
         Random random = new Random();
         List<MainPageProductDto> list = new ArrayList<>();
-        List<Long> longlist = new ArrayList<>();
+        List<Long> longList = new ArrayList<>();
 
         for(int i = 0; i < 8; i++){
             Long n = (long)random.nextInt(321) + 1;
-            while (longlist.contains(n)){
+            while (longList.contains(n)){
                 n = (long)random.nextInt(321) + 1;
             }
-            longlist.add(n);
+            longList.add(n);
 
             Product product = productRepository.findById(n).orElseThrow(ResourceNotFoundException::new);
             list.add(new MainPageProductDto(
@@ -115,67 +115,15 @@ public class MainService {
         Random random = new Random();
         List<MainPageProductDto> list = new ArrayList<>();
         List<Product> productsList = new ArrayList<>();
-        List<Integer> intlist = new ArrayList<>();
-        switch (mainCategory){
-            case 0:
-                productsList = productRepository.findByCategoryVege();
-                break;
-            case 1:
-                productsList = productRepository.findByCategoryFruits();
-                break;
-            case 2:
-                productsList = productRepository.findByCategorySeafood();
-                break;
-            case 3:
-                productsList = productRepository.findByCategoryMeat();
-                break;
-            case 4:
-                productsList = productRepository.findByCategoryMaindish();
-                break;
-            case 5:
-                productsList = productRepository.findByCategoryFastFood();
-                break;
-            case 6:
-                productsList = productRepository.findByCategoryNoodleoil();
-                break;
-            case 7:
-                productsList = productRepository.findByCategoryDring();
-                break;
-            case 8:
-                productsList = productRepository.findByCategorySnacks();
-                break;
-            case 9:
-                productsList = productRepository.findByCategoryBakery();
-                break;
-            case 10:
-                productsList = productRepository.findByCategoryHealthFood();
-                break;
-            case 11:
-                productsList = productRepository.findByCategoryLiving();
-                break;
-            case 12:
-                productsList = productRepository.findByCategoryBeauty();
-                break;
-            case 13:
-                productsList = productRepository.findByCategoryKitchen();
-                break;
-            case 14:
-                productsList = productRepository.findByCategoryHomeAppliance();
-                break;
-            case 15:
-                productsList = productRepository.findByCategoryBabyKiz();
-                break;
-            case 16:
-                productsList = productRepository.findByCategoryPet();
-                break;
-        }
+        List<Integer> intList = new ArrayList<>();
+        productsList = getProducts(mainCategory, productsList, productRepository);
 
         for(int i = 0; i < 8; i++){
             int n = random.nextInt(productsList.size());
-            while (intlist.contains(n)){
+            while (intList.contains(n)){
                 n = random.nextInt(productsList.size());
             }
-            intlist.add(n);
+            intList.add(n);
             Product product = productsList.get(n);
 
             list.add(new MainPageProductDto(
@@ -226,5 +174,28 @@ public class MainService {
         }
 
         return list;
+    }
+
+    private List<Product> getProducts(int category, List<Product> productList, ProductRepository productRepository) {
+        switch (category){
+            case 0: productList = productRepository.findByCategoryVege();           break;
+            case 1: productList = productRepository.findByCategoryFruits();         break;
+            case 2: productList = productRepository.findByCategorySeafood();        break;
+            case 3: productList = productRepository.findByCategoryMeat();           break;
+            case 4: productList = productRepository.findByCategoryMaindish();       break;
+            case 5: productList = productRepository.findByCategoryFastFood();       break;
+            case 6: productList = productRepository.findByCategoryNoodleoil();      break;
+            case 7: productList = productRepository.findByCategoryDring();          break;
+            case 8: productList = productRepository.findByCategorySnacks();         break;
+            case 9: productList = productRepository.findByCategoryBakery();         break;
+            case 10: productList = productRepository.findByCategoryHealthFood();    break;
+            case 11: productList = productRepository.findByCategoryLiving();        break;
+            case 12: productList = productRepository.findByCategoryBeauty();        break;
+            case 13: productList = productRepository.findByCategoryKitchen();       break;
+            case 14: productList = productRepository.findByCategoryHomeAppliance(); break;
+            case 15: productList = productRepository.findByCategoryBabyKiz();       break;
+            case 16: productList = productRepository.findByCategoryPet();           break;
+        }
+        return productList;
     }
 }

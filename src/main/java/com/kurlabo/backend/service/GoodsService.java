@@ -28,7 +28,7 @@ public class GoodsService {
         Product product = productRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        //Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+        // Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
         List<RelatedProductDto> list = new ArrayList<>();

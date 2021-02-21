@@ -68,7 +68,7 @@ public class GoodsController {
     }
 
     // 상품 리스트
-    @GetMapping("/goods_list")
+    @GetMapping("/goods_list?{category}")
     public ResponseEntity<?> goodsList(@PathVariable int category){
         return ResponseEntity.ok(goodsService.getGoodsList(category));
     }

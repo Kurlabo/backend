@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
+import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MypageControllerTest {
 
     private MockMvc mockMvc;
-
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -61,27 +60,24 @@ class MypageControllerTest {
     @DisplayName("InsertWishList")
     @Test
     void insertWishlist() throws Exception {
-
-        String content = objectMapper.writeValueAsString(new InsertWishListDto((long)5));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_wishlist")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content))
-                .andExpect(status().isOk());//andExpect로 data 확인 필요
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_wishlist")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(new InsertWishListDto((long)5))))
+//                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 
     @DisplayName("DeleteWishList")
     @Test
     void deleteWishList() throws Exception {
-//        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
-        List<Long> lists = new ArrayList<>();
-        String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(0))
-                .content(content))
-                .andExpect(status().isOk());//andExpect로 data 확인 필요
+////        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
+//        List<Long> lists = new ArrayList<>();
+//        String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .param("page", String.valueOf(0))
+//                .content(content))
+//                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 
     @DisplayName("OrderListTest")
@@ -101,5 +97,19 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$[1].checkout_price").value(15920))
                 .andExpect(jsonPath("$[1].deliver_condition").value("배송중"))
                 .andExpect(jsonPath("$[1].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1587357028431s0.jpg"));
+    }
+
+    @DisplayName("QnaTest")
+    @Test
+    void qnaTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_qna"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.inquiry_tag[0]").value("배송지연/불만"))
+                .andExpect(jsonPath("$.inquiry_tag[5]").value("주문결제문의"))
+                .andExpect(jsonPath("$.inquiry_tag[8]").value("교환문의"))
+                .andExpect(jsonPath("$.order_id[0]").value("1945327660572"))
+                .andExpect(jsonPath("$.order_id[1]").value("3484593475423"))
+                .andExpect(jsonPath("$.email").value("noah@fastcampus.com"))
+                .andExpect(jsonPath("$.phone").value("010-4321-5678"));
     }
 }

@@ -1,8 +1,5 @@
 package com.kurlabo.backend.database;
 
-import com.hazelcast.com.eclipsesource.json.JsonObject;
-import com.kurlabo.backend.converter.StringRevisor;
-import com.kurlabo.backend.dto.main.MainPageProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -16,8 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,13 +21,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class InsertDBTest {
@@ -79,14 +69,6 @@ public class InsertDBTest {
 
     @Test
     void test(){
-        List<String> list1 = new ArrayList<String>(Arrays.asList("aaa", "bbb"));
-        List<String> list2 = new ArrayList<String>(Arrays.asList("ccc", "ddd"));
-
-        list1.addAll(list2);
-
-        for(String strList: list1){
-            System.out.println("productList >>>>>>>>>>>>>>>>>>>>>> " + strList);
-        }
 
     }
 
@@ -387,25 +369,25 @@ public class InsertDBTest {
     @Test
     @Rollback
     void insertReview() throws Exception {
-        Member mem = new Member();
-        mem.setId(1L);
-
-        Product pro =  new Product();
-        pro.setId(319L);
-
-        Review review = new Review(
-                null,
-                "후기제목",
-                "후기내용",
-                "작성자",
-                LocalDate.now(),
-                3L,
-                10L,
-                pro,
-                mem
-        );
-
-        reviewRepository.save(review);
+//        Member mem = new Member();
+//        mem.setId(1L);
+//
+//        Product pro =  new Product();
+//        pro.setId(319L);
+//
+//        Review review = new Review(
+//                null,
+//                "후기제목",
+//                "후기내용",
+//                "작성자",
+//                LocalDate.now(),
+//                3L,
+//                10L,
+//                pro,
+//                mem
+//        );
+//
+//        reviewRepository.save(review);
         //verify(reviewRepository, times(1)).save(any(Review.class));
     }
 

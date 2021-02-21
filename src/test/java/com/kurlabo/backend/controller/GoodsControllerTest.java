@@ -20,9 +20,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional
 @SpringBootTest
-@AutoConfigureMockMvc
 public class GoodsControllerTest {
 
     private MockMvc mockMvc;
@@ -67,7 +65,7 @@ public class GoodsControllerTest {
     @DisplayName("InsertCart")
     @Test
     void insertAndUpdateCart() throws Exception {
-        String content = objectMapper.writeValueAsString(new InsertCartDto((long)109, 3));
+        String content = objectMapper.writeValueAsString(new InsertCartDto((long)94, 3));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -89,7 +87,7 @@ public class GoodsControllerTest {
     @DisplayName("UpdateCartCnt")
     @Test
     void updateCartCnt() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/99")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/94")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(
                         new UpdateCartCntRequestDto(1)

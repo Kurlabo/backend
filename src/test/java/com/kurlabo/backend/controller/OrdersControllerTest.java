@@ -50,10 +50,10 @@ class OrdersControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/order/orderSheet").contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(new OrderSheetRequestDto((long)2))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderer_name").value("양동경"))
+                .andExpect(jsonPath("$.orderer_name").value("임정우"))
                 .andExpect(jsonPath("$.orderer_phone").value("01043215678"))
-                .andExpect(jsonPath("$.orderer_email").value("dkyang@fastcampus.com"))
-                .andExpect(jsonPath("$.orderer_address").value("경기도 고양시 고양동 고양이파트 351번지"));
+                .andExpect(jsonPath("$.orderer_email").value("noah@fastcampus.com"))
+                .andExpect(jsonPath("$.orderer_address").value("서울시 강동구 고덕동 삼성아파트 111동 111호"));
     }
 
     @DisplayName("Checkout")

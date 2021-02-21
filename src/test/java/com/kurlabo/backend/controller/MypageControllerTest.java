@@ -152,16 +152,16 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.phone").value("010-4321-5678"));
     }
 
-    @DisplayName("writtenReviewsTest")
-    @Test
-    void writtenReviewsTest() throws Exception {
-        List<Long> lists = new ArrayList<>();
-        String content = objectMapper.writeValueAsString(new ReviewListDto());
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/written-reviews")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(0))
-                .content(content))
-                .andExpect(status().isOk());//andExpect로 data 확인 필요
-    }
+//    @DisplayName("writtenReviewsTest")
+//    @Test
+//    void writtenReviewsTest() throws Exception {
+//        List<Long> lists = new ArrayList<>();
+//        String content = objectMapper.writeValueAsString(new ReviewListDto());
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/written-reviews")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .param("page", String.valueOf(0))
+//                .content(content))
+//                .andExpect(status().isOk());
+//    }
 }

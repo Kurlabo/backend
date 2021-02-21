@@ -66,4 +66,10 @@ public class GoodsController {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         return ResponseEntity.ok(cartService.updateCnt(mem, product_id, dto));
     }
+
+    // 상품 리스트
+    @GetMapping("/goods_list")
+    public ResponseEntity<?> goodsList(@PathVariable int category){
+        return ResponseEntity.ok(goodsService.getGoodsList(category));
+    }
 }

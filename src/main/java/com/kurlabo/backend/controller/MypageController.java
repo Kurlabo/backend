@@ -3,7 +3,7 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
-import com.kurlabo.backend.dto.testdto.*;
+import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.FavoriteService;
@@ -16,13 +16,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -61,14 +58,13 @@ public class MypageController {
 
 
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderList(){
+    public ResponseEntity<?> orderList(@PageableDefault(size = 5) Pageable pageable) throws JsonProcessingException {
         Member mem = memberService.findById((long)1);
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
 
     @GetMapping("/mypage_orderview")
-    public ResponseEntity<?> orderView(@RequestParam(required = true) Long ordno) throws JsonProcessingException {
+    public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
         return ResponseEntity.ok(orderService.getOrderView(ordno));
     }
 

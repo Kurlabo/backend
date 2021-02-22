@@ -10,7 +10,6 @@ import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,8 @@ public class GoodsController {
     public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
                                                  @PathVariable(name = "id") Long id) {
         // 리뷰 개수 7개 이상 보내주기
-        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
+//        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
+        return ResponseEntity.ok(goodsService.goodDetail(pageable, id));
     }
 
     @PostMapping("/{pid}/{rid}")
@@ -75,8 +75,8 @@ public class GoodsController {
     }
 
     // 상품 리스트
-    @GetMapping("/goods_list/{category}")
-    public ResponseEntity<?> goodsList(@PathVariable int category, @PageableDefault(size = 6) Pageable pageable){
+    @GetMapping("/goods_list")
+    public ResponseEntity<?> goodsList(@RequestParam int category, @PageableDefault(size = 6) Pageable pageable){
         return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }
 }

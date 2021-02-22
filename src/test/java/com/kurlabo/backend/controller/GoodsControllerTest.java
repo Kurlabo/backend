@@ -117,7 +117,7 @@ public class GoodsControllerTest {
     @DisplayName("GoodsList")
     @Test
     void goodsList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list/1001")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=1001")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("page", String.valueOf(1)))
                 .andExpect(status().isOk());

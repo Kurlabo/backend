@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.testdto.*;
@@ -7,6 +8,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.FavoriteService;
 import com.kurlabo.backend.service.MemberService;
+import com.kurlabo.backend.service.OrderService;
 import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ public class MypageController {
     private final FavoriteService favoriteService;
     private final MemberService memberService;
     private final ReviewService reviewService;
+    private final OrderService orderService;
 
     //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
@@ -58,76 +61,15 @@ public class MypageController {
 
 
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderListTest(){
-        List<OrderListTestDto> dummyDtoList = new ArrayList<>();
+    public ResponseEntity<?> orderList(){
+        Member mem = memberService.findById((long)1);
 
-        OrderListTestDto orderListTestDto1 = new OrderListTestDto(
-                "2020.07.13(18시 32분)",
-                "[코시] 호주산 펫밀크 1L",
-                Long.parseLong("1594632706623"),
-                6300,
-                "배송완료",
-                "https://img-cf.kurly.com/shop/data/goods/1562303711815s0.jpg"
-        );
-        OrderListTestDto orderListTestDto2 = new OrderListTestDto(
-                "2021.01.16(20시 05분)",
-                "[선물세트] 서울약사신협 석류즙 30포",
-                Long.parseLong("3842536821567"),
-                15920,
-                "배송중",
-                "https://img-cf.kurly.com/shop/data/goods/1587357028431s0.jpg"
-        );
-
-        dummyDtoList.add(orderListTestDto1);
-        dummyDtoList.add(orderListTestDto2);
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(dummyDtoList);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/mypage_orderview")
-    public ResponseEntity<?> orderDetailTest(@RequestParam Long ordno){
-        OrderDetailDto dummyDto = new OrderDetailDto();
-        List<OrderedProductsTestDto> orderedProductsTestDtoList = new ArrayList<>();
-
-        OrderedProductsTestDto orderedProductsTestDto1 = new OrderedProductsTestDto(
-                "[코시] 호주산 펫밀크 1L",
-                (6300*5),
-                5,
-                "배송완료"
-        );
-        OrderedProductsTestDto orderedProductsTestDto2 = new OrderedProductsTestDto(
-                "절단 셀러리 500g",
-                (2990*10),
-                10,
-                "배송완료"
-        );
-
-        orderedProductsTestDtoList.add(orderedProductsTestDto1);
-        orderedProductsTestDtoList.add(orderedProductsTestDto2);
-
-        dummyDto.setOrder_id(ordno);
-        dummyDto.setOrderedProductsTestDtoList(orderedProductsTestDtoList);
-        dummyDto.setCheckout_total_price(orderedProductsTestDto1.getCheckout_price() + orderedProductsTestDto2.getCheckout_price());
-        dummyDto.setCheckout_method("신용카드");
-        dummyDto.setOrderer_name("박상언");
-        dummyDto.setSender_name("박상언");
-        dummyDto.setCheckout_date("2021-02-06 02:55:00");
-        dummyDto.setReciever_name("임정우");
-        dummyDto.setReciever_phone("010-4321-5678");
-        dummyDto.setReciever_address("(05123) 서울시 성동구 성동로 32 패스트캠퍼스 8층 C강의장");
-        dummyDto.setReciever_recieve_place("문 앞");
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(dummyDto);
+    public ResponseEntity<?> orderView(@RequestParam(required = true) Long ordno) throws JsonProcessingException {
+        return ResponseEntity.ok(orderService.getOrderView(ordno));
     }
 
     @GetMapping("/mypage_qna")

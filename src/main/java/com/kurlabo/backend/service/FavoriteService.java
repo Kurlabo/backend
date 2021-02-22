@@ -56,6 +56,9 @@ public class FavoriteService {
         List<Favorite> deleteLists = new ArrayList<>();
         for(int i = 0; i < product_id.size(); i++){
             Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, product_id.get(i));
+            if(deleteFavorite == null){// 만약 들어온 product_id가 Favorite에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
+                return null;
+            }
             deleteLists.add(deleteFavorite);
         }
         // member나 product_id가 맞지 않아 null값이 list에 저장되어 delete 불가 상태에서 오류가 발생하여 예외처리 해야 함.

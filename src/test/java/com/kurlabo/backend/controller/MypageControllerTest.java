@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,6 +79,30 @@ class MypageControllerTest {
 //                .param("page", String.valueOf(0))
 //                .content(content))
 //                .andExpect(status().isOk());//andExpect로 data 확인 필요
+    }
+
+    @DisplayName("OrderView")
+    @Test
+    void orderView() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=15002321")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderProduct[0].product_id").value((long)1))
+                .andExpect(jsonPath("$.orderProduct[0].name").value("[KF365] 감자 1kg"))
+                .andExpect(jsonPath("$.orderProduct[0].checkout_price").value(5000))
+                .andExpect(jsonPath("$.orderProduct[0].cnt").value(2))
+                .andExpect(jsonPath("$.delivery_condition").value("배송중"))
+                .andExpect(jsonPath("$.checkout_total_price").value(11000))
+                .andExpect(jsonPath("$.checkout_method").value("신용카드"))
+                .andExpect(jsonPath("$.orderer_name").value("임정우"))
+                .andExpect(jsonPath("$.sender_name").value("임정우"))
+                .andExpect(jsonPath("$.checkout_date").value("2020-03-15"))
+                .andExpect(jsonPath("$.reciever_name").value("최유선"))
+                .andExpect(jsonPath("$.reciever_phone").value("01032329191"))
+                .andExpect(jsonPath("$.reciever_address").value("서울시 관악구 관악동 과낙아파트"))
+                .andExpect(jsonPath("$.reciever_place").value("집 앞"))
+                .andExpect(jsonPath("$.reciever_visit_method").value("기타장소 계단 밑"))
+                .andExpect(jsonPath("$.arrived_alarm").value("오전 7시"));
     }
 
     @DisplayName("OrderListTest")

@@ -87,6 +87,8 @@ public class OrderService {
         return returnStr;
     }
 
+//    public getOrderList
+
     public OrderViewResponseDto getOrderView(Long order_id) throws JsonProcessingException {
         Orders order = orderRepository.findById(order_id).orElseThrow(ResourceNotFoundException::new);
 

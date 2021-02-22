@@ -75,8 +75,8 @@ public class GoodsController {
     }
 
     // 상품 리스트
-    @GetMapping("/goods_list/{category}")
-    public ResponseEntity<?> goodsList(@PathVariable int category, @PageableDefault(size = 6) Pageable pageable){
+    @GetMapping("/goods_list")
+    public ResponseEntity<?> goodsList(@RequestParam int category, @PageableDefault(size = 6) Pageable pageable){
         return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }
 }

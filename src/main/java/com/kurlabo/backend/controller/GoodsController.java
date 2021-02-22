@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
@@ -60,9 +61,9 @@ public class GoodsController {
     // @AuthenticationPrincipal Member member,
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
-    public ResponseEntity<?> deleteCart(@RequestBody Long product_id) {
+    public ResponseEntity<?> deleteCart(@RequestBody DeleteCartRequestDto dto) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.deleteCart(mem, product_id));
+        return ResponseEntity.ok(cartService.deleteCart(mem, dto.getProduct_id()));
     }
 
     // @AuthenticationPrincipal Member member,

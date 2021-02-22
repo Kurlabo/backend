@@ -66,12 +66,12 @@ public class CartService {
         if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
             cart.setCnt(cart.getCnt() + cnt);
             cartRepository.save(cart);
-            return "Increase cart cnt succeed";
+            return "addCnt";
 
         } else {            // 카트에 없는 상품이면 바로 저장해 줌
             cart = new Cart(null, product_id, cnt, member);
             cartRepository.save(cart);
-            return "Insert cart succeed";
+            return "add";
         }
     }
 

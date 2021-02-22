@@ -1,5 +1,9 @@
 package com.kurlabo.backend.database;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.order.OrderProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -58,6 +62,8 @@ public class InsertDBTest {
     private ReviewRepository reviewRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -68,8 +74,14 @@ public class InsertDBTest {
     }
 
     @Test
-    void test(){
-
+    void test() throws JsonProcessingException {
+        Orders order = orderRepository.findById((long)15002320).orElseThrow(ResourceNotFoundException::new);
+        List<OrderProductDto> dto = objectMapper.readValue(order.getProduct_id_cnt_list(), new TypeReference<List<OrderProductDto>>() {});
+        System.out.println("order.getProduct_id_cnt_list >>>>>>>>>>>>>>>>>> " + order.getProduct_id_cnt_list());
+        System.out.println("dto >>>>>>>>>>>>>>>>>>" + dto);
+        for (OrderProductDto lists: dto){
+            System.out.println("for문 >>>>>>>>>>> " + lists);
+        }
     }
 
     @Test

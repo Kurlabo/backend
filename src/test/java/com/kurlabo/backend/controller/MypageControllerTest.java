@@ -81,6 +81,15 @@ class MypageControllerTest {
 //                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 
+    @DisplayName("OrderList")
+    @Test
+    void orderListTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0)))
+                .andExpect(status().isOk());
+    }
+
     @DisplayName("OrderView")
     @Test
     void orderView() throws Exception {
@@ -103,25 +112,6 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.reciever_place").value("집 앞"))
                 .andExpect(jsonPath("$.reciever_visit_method").value("기타장소 계단 밑"))
                 .andExpect(jsonPath("$.arrived_alarm").value("오전 7시"));
-    }
-
-    @DisplayName("OrderListTest")
-    @Test
-    void orderListTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].checkout_date").value("2020.07.13(18시 32분)"))
-                .andExpect(jsonPath("$[0].product_name").value("[코시] 호주산 펫밀크 1L"))
-                .andExpect(jsonPath("$[0].order_id").value(Long.parseLong("1594632706623")))
-                .andExpect(jsonPath("$[0].checkout_price").value(6300))
-                .andExpect(jsonPath("$[0].deliver_condition").value("배송완료"))
-                .andExpect(jsonPath("$[0].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1562303711815s0.jpg"))
-                .andExpect(jsonPath("$[1].checkout_date").value("2021.01.16(20시 05분)"))
-                .andExpect(jsonPath("$[1].product_name").value("[선물세트] 서울약사신협 석류즙 30포"))
-                .andExpect(jsonPath("$[1].order_id").value(Long.parseLong("3842536821567")))
-                .andExpect(jsonPath("$[1].checkout_price").value(15920))
-                .andExpect(jsonPath("$[1].deliver_condition").value("배송중"))
-                .andExpect(jsonPath("$[1].list_image_url").value("https://img-cf.kurly.com/shop/data/goods/1587357028431s0.jpg"));
     }
 
     @DisplayName("QnaTest")

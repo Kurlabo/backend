@@ -70,15 +70,15 @@ class MypageControllerTest {
     @DisplayName("DeleteWishList")
     @Test
     void deleteWishList() throws Exception {
-////        List<Long> lists = new ArrayList<>(Arrays.asList((long)32, (long)33));
+        List<Long> lists = new ArrayList<>(Arrays.asList((long)40));
 //        List<Long> lists = new ArrayList<>();
-//        String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .param("page", String.valueOf(0))
-//                .content(content))
-//                .andExpect(status().isOk());//andExpect로 data 확인 필요
+        String content = objectMapper.writeValueAsString(new DeleteWishListDto(lists));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/mypage_wishlist")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0))
+                .content(content))
+                .andExpect(status().isOk());//andExpect로 data 확인 필요
     }
 
     @DisplayName("OrderList")

@@ -1,6 +1,7 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,7 +98,7 @@ public class GoodsControllerTest {
     void deleteCart() throws Exception {
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString((long)99)))
+//                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto((long)94))))
 //                .andExpect(status().isOk())
 //                .andDo(print());
     }
@@ -105,19 +106,18 @@ public class GoodsControllerTest {
     @DisplayName("UpdateCartCnt")
     @Test
     void updateCartCnt() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/94")
+//        mockMvc.perform(MockMvcRequestBuilders.patch("/api/goods/goods_cart/25")
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .content(objectMapper.writeValueAsString(
 //                        new UpdateCartCntRequestDto(1)
 //                )))
-//                .andExpect(status().isOk())
-//                .andDo(print());
+//                .andExpect(status().isOk());
     }
 
     @DisplayName("GoodsList")
     @Test
     void goodsList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list/1001")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=1001")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("page", String.valueOf(1)))
                 .andExpect(status().isOk());

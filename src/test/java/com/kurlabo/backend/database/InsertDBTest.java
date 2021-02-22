@@ -1,5 +1,9 @@
 package com.kurlabo.backend.database;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.order.OrderProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -13,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -58,6 +64,8 @@ public class InsertDBTest {
     private ReviewRepository reviewRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -68,7 +76,29 @@ public class InsertDBTest {
     }
 
     @Test
-    void test(){
+    void test() throws JsonProcessingException {
+
+        List<Orders> orderList = orderRepository.findByMember(memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new));
+
+        List<OrderProductDto> orderProducts = objectMapper.readValue(
+                orderList.get(3).getProduct_id_cnt_list(),
+                new TypeReference<List<OrderProductDto>>() {}
+        );
+
+        Product mainProduct = productRepository.findById(orderProducts.get(0).getProduct_id()).orElseThrow(ResourceNotFoundException::new);
+
+        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + mainProduct.getName());
+        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + (orderProducts.size() - 1));
+        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + mainProduct.getList_image_url());
+//        for(OrderProductDto list: orderProducts){
+//            System.out.println("orderproductdto >>>>>>>>>>>>>>>>>>>>>>>>> " + list);
+//        }
+//        for(Orders list: orderList){
+//            List<OrderProductDto> orderProducts = objectMapper.readValue(
+//                    list.getProduct_id_cnt_list(),
+//                    new TypeReference<List<OrderProductDto>>() {}
+//            );
+//        }
 
     }
 

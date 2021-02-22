@@ -1,11 +1,13 @@
 package com.kurlabo.backend.model;
 
+import com.kurlabo.backend.dto.order.OrderProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Data

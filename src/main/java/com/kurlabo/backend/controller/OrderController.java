@@ -1,7 +1,7 @@
 package com.kurlabo.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
-import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;
@@ -29,7 +29,7 @@ public class OrderController {
 
     // 결제하기
     @PostMapping("/checkout")
-    public ResponseEntity<?> setCheckout(@RequestBody @Valid CheckoutRequestDto dto){
+    public ResponseEntity<?> setCheckout(@RequestBody @Valid CheckoutRequestDto dto) throws JsonProcessingException {
         String returnStr = "결제에 실패하셨습니다.";
         returnStr = orderService.setCheckout(dto);
         return ResponseEntity.ok(returnStr);

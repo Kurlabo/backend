@@ -48,7 +48,7 @@ class MypageControllerTest {
     void getAllFavoriteList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_wishlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(0)))
+                .param("page", String.valueOf(2)))
                 .andExpect(status().isOk());
 //                .andExpect((jsonPath("$[0].product_id").value((long)5)))
 //                .andExpect((jsonPath("$[1].product_id").value((long)9)))

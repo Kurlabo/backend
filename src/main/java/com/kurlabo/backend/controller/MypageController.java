@@ -55,14 +55,14 @@ public class MypageController {
         return ResponseEntity.ok(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
     }
 
-
-
+    // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
     public ResponseEntity<?> orderList(@PageableDefault(size = 5) Pageable pageable) throws JsonProcessingException {
         Member mem = memberService.findById((long)1);
         return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
 
+    // 주문 상세 페이지
     @GetMapping("/mypage_orderview")
     public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
         return ResponseEntity.ok(orderService.getOrderView(ordno));

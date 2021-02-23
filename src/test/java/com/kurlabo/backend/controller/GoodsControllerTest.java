@@ -37,10 +37,10 @@ public class GoodsControllerTest {
 
     @Test
     void getProduct() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/172"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.product_id").value((long)1));
+                .andExpect(jsonPath("$.product_id").value((long)172));
     }
 
 //    @DisplayName("상품후기 리뷰 리스트")
@@ -66,9 +66,9 @@ public class GoodsControllerTest {
     @DisplayName("GetCartList")
     @Test
     void getCartList() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
-//                .andExpect(status().isOk())
-//                .andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
+                .andExpect(status().isOk())
+                .andDo(print());
 //                .andExpect(jsonPath("$.cartDataDto[4].product_id").value((long)69))
 //                .andExpect(jsonPath("$.cartDataDto[4].name").value("[바다원] 올리브유 김자반 볶음 50g"))
 //                .andExpect(jsonPath("$.cartDataDto[4].original_price").value(1990))

@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderViewResponseDto {
-    private List<OrderProductDto> orderProduct;
+    private List<OrderProductDto> orderProducts;
     private String delivery_condition;
     private int checkout_total_price;
     private String checkout_method;

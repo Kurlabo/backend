@@ -33,6 +33,7 @@ public class GoodsService {
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
         List<RelatedProductDto> list = new ArrayList<>();
+        List<Integer> intList = new ArrayList<>();
         Random random = new Random();
 
         switch (product.getCategory()/10) {
@@ -89,9 +90,25 @@ public class GoodsService {
                 break;
         }
 
-        for (int i = 0; i < 20; i++) {
+        int max = related_product.size() - 1;
+
+        if (max > 20){
+            max = 20;
+        }
+
+        for (int i = 0; i < max; i++) {
             int n = random.nextInt(related_product.size());
+            while (intList.contains(n)){
+                n = random.nextInt(related_product.size());
+            }
+            intList.add(n);
+
             Product getRelate = related_product.get(n);
+
+            if(getRelate.getId().equals(id)){
+                i--;
+                continue;
+            }
 
             list.add(new RelatedProductDto(
                     getRelate.getId(),

@@ -117,9 +117,9 @@ public class GoodsControllerTest {
     @DisplayName("GoodsList")
     @Test
     void goodsList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=1001")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(1)))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=300")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+//                .param("page", String.valueOf(1)))
                 .andExpect(status().isOk());
 //                .andExpect((jsonPath("$[3].product_id").value((long)12)))     // 자식 카테고리 Test
 //                .andExpect((jsonPath("$[3].original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1490946589409l0.jpg")))

@@ -9,6 +9,8 @@ import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDto;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -149,7 +151,7 @@ public class GoodsService {
         return productDto;
     }
 
-    public List<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
+    public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
         List<GoodsListResponseDto> responseDtos = new ArrayList<>();
         List<Product> productList = new ArrayList<>();
 
@@ -157,16 +159,16 @@ public class GoodsService {
 //            productList = productRepository.findByCategory(category);
 
 //             임시적으로 같은 상품 데이터 3개 뿌려주고 나중에 리팩토링 해야 함.
-            productList = productPageableRepository.findByCategoryPageable(category, Pageable.unpaged());
-            productList.addAll(productPageableRepository.findByCategoryDescPageable(category, Pageable.unpaged()));
+            productList = productRepository.findByCategory(category);
+            productList.addAll(productRepository.findByCategoryDesc(category));
         } else if(category == 200){                     // 신상품
-            productList = setRandomProducts(pageable);
+            productList = setRandomProducts();
         } else if(category == 300){                     // 베스트
-            productList = setRandomProducts(pageable);
+            productList = setRandomProducts();
         } else if(category == 400){                     // 알뜰쇼핑
-            productList = productPageableRepository.findByDiscount_percentPageable(pageable);
+            productList = productRepository.findByDiscount_percent();
         } else {                                        // 부모카테고리
-            productList = getProducts(category, productList, pageable);
+            productList = getProducts(category, productList);
         }
 
         for(Product list: productList){
@@ -182,34 +184,36 @@ public class GoodsService {
             ));
         }
 
-        return responseDtos;
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), responseDtos.size());
+        return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
     }
 
-    private List<Product> getProducts(int category, List<Product> productList, Pageable pageable) {
+    private List<Product> getProducts(int category, List<Product> productList) {
         switch (category){
-            case 1000: productList = productPageableRepository.findByCategoryVegePageable(pageable);            break;
-            case 1001: productList = productPageableRepository.findByCategoryFruitsPageable(pageable);          break;
-            case 1002: productList = productPageableRepository.findByCategorySeafoodPageable(pageable);         break;
-            case 1003: productList = productPageableRepository.findByCategoryMeatPageable(pageable);            break;
-            case 1004: productList = productPageableRepository.findByCategoryMaindishPageable(pageable);        break;
-            case 1005: productList = productPageableRepository.findByCategoryFastFoodPageable(pageable);        break;
-            case 1006: productList = productPageableRepository.findByCategoryNoodleoilPageable(pageable);       break;
-            case 1007: productList = productPageableRepository.findByCategoryDringPageable(pageable);           break;
-            case 1008: productList = productPageableRepository.findByCategorySnacksPageable(pageable);          break;
-            case 1009: productList = productPageableRepository.findByCategoryBakeryPageable(pageable);          break;
-            case 1010: productList = productPageableRepository.findByCategoryHealthFoodPageable(pageable);      break;
-            case 1011: productList = productPageableRepository.findByCategoryLivingPageable(pageable);          break;
-            case 1012: productList = productPageableRepository.findByCategoryBeautyPageable(pageable);          break;
-            case 1013: productList = productPageableRepository.findByCategoryKitchenPageable(pageable);         break;
-            case 1014: productList = productPageableRepository.findByCategoryHomeAppliancePageable(pageable);   break;
-            case 1015: productList = productPageableRepository.findByCategoryBabyKizPageable(pageable);         break;
-            case 1016: productList = productPageableRepository.findByCategoryPetPageable(pageable);             break;
+            case 1000: productList = productRepository.findByCategoryVege();            break;
+            case 1001: productList = productRepository.findByCategoryFruits();          break;
+            case 1002: productList = productRepository.findByCategorySeafood();         break;
+            case 1003: productList = productRepository.findByCategoryMeat();            break;
+            case 1004: productList = productRepository.findByCategoryMaindish();        break;
+            case 1005: productList = productRepository.findByCategoryFastFood();        break;
+            case 1006: productList = productRepository.findByCategoryNoodleoil();       break;
+            case 1007: productList = productRepository.findByCategoryDring();           break;
+            case 1008: productList = productRepository.findByCategorySnacks();          break;
+            case 1009: productList = productRepository.findByCategoryBakery();          break;
+            case 1010: productList = productRepository.findByCategoryHealthFood();      break;
+            case 1011: productList = productRepository.findByCategoryLiving();          break;
+            case 1012: productList = productRepository.findByCategoryBeauty();          break;
+            case 1013: productList = productRepository.findByCategoryKitchen();         break;
+            case 1014: productList = productRepository.findByCategoryHomeAppliance();   break;
+            case 1015: productList = productRepository.findByCategoryBabyKiz();         break;
+            case 1016: productList = productRepository.findByCategoryPet();             break;
         }
         return productList;
     }
 
-    private List<Product> setRandomProducts(Pageable pageable){      // 일단 데이터 양이 많지 않으니 만들어 놓지만 절대 쓰면 안됨.
-        List<Product> lists = productPageableRepository.findAllPageable(pageable);
+    private List<Product> setRandomProducts(){      // 일단 데이터 양이 많지 않으니 만들어 놓지만 절대 쓰면 안됨.
+        List<Product> lists = productRepository.findAll();
         Collections.shuffle(lists);
         return lists;
     }

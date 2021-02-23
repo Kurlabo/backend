@@ -14,6 +14,8 @@ import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.OrderRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,8 +90,8 @@ public class OrderService {
         return returnStr;
     }
 
-    public List<OrderListResponseDto> getOrderList (Member member, Pageable pageable) throws JsonProcessingException {
-        List<Orders> orderList = orderRepository.findByMember(member, pageable);
+    public Page<OrderListResponseDto> getOrderList (Member member, Pageable pageable) throws JsonProcessingException {
+        List<Orders> orderList = orderRepository.findByMember(member);
         List<OrderListResponseDto> responseList = new ArrayList<>();
 
         for(Orders list: orderList){
@@ -115,7 +117,9 @@ public class OrderService {
             ));
         }
 
-        return responseList;
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), responseList.size());
+        return new PageImpl<>(responseList.subList(start, end), pageable, responseList.size());
     }
 
     public OrderViewResponseDto getOrderView(Long order_id) throws JsonProcessingException {

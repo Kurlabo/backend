@@ -59,24 +59,24 @@ class OrdersControllerTest {
     @DisplayName("Checkout")
     @Test
     void setCheckout() throws Exception {
-//        LocalDate localDate = LocalDate.of(2020,03,15);
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/order/checkout").contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(
-//                        objectMapper.writeValueAsString(
-//                                new CheckoutRequestDto(
-//                                        (long)1,
-//                                        "최유선",
-//                                        "01032329191",
-//                                        "서울시 관악구 관악동 과낙아파트",
-//                                        "집 앞",
-//                                        "기타장소 계단 밑",
-//                                        "오전 7시",
-//                                        localDate,
-//                                        "신용카드",
-//                                        new ArrayList<>(Arrays.asList(new OrderListDto((long)1, 2), new OrderListDto((long)2,1))),
-//                                        23100
-//                                ))))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("결제에 성공하셨습니다."));
+        LocalDate localDate = LocalDate.of(2021,01,11);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/order/checkout").contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                new CheckoutRequestDto(
+                                        (long)1,
+                                        "조재연",
+                                        "01092928383",
+                                        "서울시 우리구 우리동 우리아파트",
+                                        "집 앞",
+                                        "기타장소 계단 밑",
+                                        "오전 7시",
+                                        localDate,
+                                        "신용카드",
+                                        new ArrayList<>(Arrays.asList(new OrderListDto((long)139, 3), new OrderListDto((long)211,3))),
+                                        23100
+                                ))))
+                .andExpect(status().isOk())
+                .andExpect(content().string("결제에 성공하셨습니다."));
     }
 }

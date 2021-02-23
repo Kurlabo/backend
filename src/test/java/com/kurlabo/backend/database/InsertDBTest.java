@@ -78,28 +78,6 @@ public class InsertDBTest {
     @Test
     void test() throws JsonProcessingException {
 
-        List<Orders> orderList = orderRepository.findByMember(memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new));
-
-        List<OrderProductDto> orderProducts = objectMapper.readValue(
-                orderList.get(3).getProduct_id_cnt_list(),
-                new TypeReference<List<OrderProductDto>>() {}
-        );
-
-        Product mainProduct = productRepository.findById(orderProducts.get(0).getProduct_id()).orElseThrow(ResourceNotFoundException::new);
-
-        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + mainProduct.getName());
-        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + (orderProducts.size() - 1));
-        System.out.println("mainproduct.name >>>>>>>>>>>>>>>>>>>> " + mainProduct.getList_image_url());
-//        for(OrderProductDto list: orderProducts){
-//            System.out.println("orderproductdto >>>>>>>>>>>>>>>>>>>>>>>>> " + list);
-//        }
-//        for(Orders list: orderList){
-//            List<OrderProductDto> orderProducts = objectMapper.readValue(
-//                    list.getProduct_id_cnt_list(),
-//                    new TypeReference<List<OrderProductDto>>() {}
-//            );
-//        }
-
     }
 
     @Test

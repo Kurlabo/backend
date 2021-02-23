@@ -1,20 +1,17 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.config.security.CurrentUser;
 import com.kurlabo.backend.config.security.JwtTokenProvider;
 import com.kurlabo.backend.exception.CUserNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipal;
 
-//@CrossOrigin
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/member")

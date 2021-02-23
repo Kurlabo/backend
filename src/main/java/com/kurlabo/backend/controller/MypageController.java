@@ -50,19 +50,19 @@ public class MypageController {
     // @AuthenticationPrincipal Member member,
     // 늘 사는 것 비우기
     @DeleteMapping("/mypage_wishlist")
-    public ResponseEntity<?> deleteWishList (@RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<?> deleteWishList (@RequestBody @Valid DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         return ResponseEntity.ok(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
     }
 
-
-
+    // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderList(@PageableDefault(size = 5) Pageable pageable) throws JsonProcessingException {
+    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) throws JsonProcessingException {
         Member mem = memberService.findById((long)1);
         return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
 
+    // 주문 상세 페이지
     @GetMapping("/mypage_orderview")
     public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
         return ResponseEntity.ok(orderService.getOrderView(ordno));

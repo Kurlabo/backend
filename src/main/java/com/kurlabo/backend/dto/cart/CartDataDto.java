@@ -17,4 +17,5 @@ public class CartDataDto {
     private int max_ea;
     private String list_image_url;
     private int cnt;
+    private int reduced_price;
 }

@@ -44,7 +44,8 @@ public class CartService {
                     1,
                     99,
                     product.getList_image_url(),
-                    list.getCnt()
+                    list.getCnt(),
+                    (product.getOriginal_price()-product.getDiscounted_price())
             );
             dtoLists.add(dto);
         }
@@ -108,7 +109,8 @@ public class CartService {
                     1,
                     99,
                     product.getList_image_url(),
-                    cart.getCnt()
+                    cart.getCnt(),
+                    (product.getOriginal_price()-product.getDiscounted_price())
             );
         } else {
             return null;

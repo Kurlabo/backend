@@ -16,6 +16,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -96,11 +100,14 @@ public class GoodsControllerTest {
     @DisplayName("DeleteCart")
     @Test
     void deleteCart() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto((long)94))))
-//                .andExpect(status().isOk())
-//                .andDo(print());
+        List<Long> lists = new ArrayList<>(Arrays.asList((long)52,(long)109));
+//        List<Long> lists = new ArrayList<>();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto(lists))))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @DisplayName("UpdateCartCnt")

@@ -75,16 +75,21 @@ public class CartService {
     }
 
     @Transactional
-    public DeleteCartResponseDto deleteCart(Member member, Long product_id) {
-        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
+    public DeleteCartResponseDto deleteCart(Member member, List<Long> product_id) {
+        List<Cart> deleteLists = new ArrayList<>();
+        List<Long> longLists = new ArrayList<>();
 
-        if(cart != null){
-            cartRepository.delete(cart);
-            return new DeleteCartResponseDto(product_id);
-        } else {
-            // Exception 만들어야함
-            return null;
+        for (int i = 0; i < product_id.size(); i++){
+            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, product_id.get(i));
+            if(deleteCart == null){     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
+                return null;
+            }
+            deleteLists.add(deleteCart);
+            longLists.add(product_id.get(i));
         }
+        cartRepository.deleteAll(deleteLists);
+
+        return new DeleteCartResponseDto(longLists);
     }
 
     @Transactional

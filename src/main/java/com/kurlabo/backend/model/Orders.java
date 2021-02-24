@@ -24,7 +24,7 @@ public class Orders {
     private String reciever_post;
     private String reciever_place;
     private String reciever_visit_method;
-    private LocalDate checkout_date;
+    private LocalDate checkoutDate;
     private String checkout;
     private String delivery_condition;
     private String arrived_alarm;

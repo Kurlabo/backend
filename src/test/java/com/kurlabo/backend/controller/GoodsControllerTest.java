@@ -1,8 +1,6 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.cart.InsertCartDto;
-import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,10 +34,11 @@ public class GoodsControllerTest {
 
     @Test
     void getProduct() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/321")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", String.valueOf(0)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.product_id").value((long)1));
+                .andExpect(jsonPath("$.product_id").value((long)321));
     }
 
 //    @DisplayName("상품후기 리뷰 리스트")

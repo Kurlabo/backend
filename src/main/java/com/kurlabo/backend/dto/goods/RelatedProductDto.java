@@ -14,7 +14,7 @@ public class RelatedProductDto {
 
     private String name;
 
-    private String list_image_url;
+    private String original_image_url;
 
     private int original_price;
 

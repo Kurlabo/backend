@@ -1,14 +1,11 @@
 package com.kurlabo.backend.model;
 
-import com.kurlabo.backend.dto.order.OrderProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
-
 
 @Data
 @Entity
@@ -26,7 +23,7 @@ public class Orders {
     private String reciever_post;
     private String reciever_place;
     private String reciever_visit_method;
-    private LocalDate checkout_date;
+    private LocalDate checkoutDate;
     private String checkout;
     private String delivery_condition;
     private String arrived_alarm;
@@ -35,5 +32,4 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
 }

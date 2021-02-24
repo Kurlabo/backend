@@ -1,8 +1,10 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.goods.GoodsListResponseDto;
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Product;
+import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDto;
@@ -29,7 +31,23 @@ public class GoodsService {
         Product product = productRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        // Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+
+        List<ReviewDto> reviewList = new ArrayList<>();
+        for(Review review: reviews){
+            ReviewDto list = new ReviewDto(
+                    review.getReview_id(),
+                    review.getMember().getId(),
+                    review.getProduct().getId(),
+                    review.getTitle(),
+                    review.getContent(),
+                    review.getMember().getName(),
+                    review.getRegdate(),
+                    review.getHelp(),
+                    review.getCnt()
+            );
+            reviewList.add(list);
+        }
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
         List<RelatedProductDto> list = new ArrayList<>();
@@ -112,11 +130,23 @@ public class GoodsService {
 
             list.add(new RelatedProductDto(
                     getRelate.getId(),
-                    getRelate.getList_image_url(),
                     getRelate.getName(),
+                    getRelate.getOriginal_image_url(),
                     getRelate.getOriginal_price(),
                     getRelate.getDiscounted_price()
             ));
+        }
+
+        String getGuides = product.getGuides().replace('|','"');
+        getGuides = getGuides.replace('\'',' ')
+                                .replace("[", "")
+                                .replace("]", "");
+
+        String[] array = getGuides.split(",");
+        List<String> getGuide = new ArrayList<>();
+
+        for(int i = 0; i < array.length; i++) {
+            getGuide.add(array[i]);
         }
 
         ProductDto productDto = new ProductDto();
@@ -137,13 +167,16 @@ public class GoodsService {
         productDto.setOriginal_image_url(product.getOriginal_image_url());
         productDto.setMain_image_url(product.getMain_image_url());
         productDto.setList_image_url(product.getList_image_url());
-        productDto.setDetail_image_url(product.getDetail_image_url());
+        // productDto.setDetail_image_url(product.getDetail_image_url());
         productDto.setSticker_image_url(product.getSticker_image_url());
+        productDto.setDetail_img_url(product.getDetail_img_url());
         productDto.setDetail_title(product.getDetail_title());
         productDto.setDetail_context(product.getDetail_context());
         productDto.setProduct_img_url(product.getProduct_img_url());
+        productDto.setGuides(getGuide);
+        productDto.setPacking_type_text(product.getPacking_type_text());
 
-        //productDto.setReviews(reviews);
+        productDto.setReviews(reviewList);
         productDto.setRelated_product(list);
 
         return productDto;
@@ -216,11 +249,11 @@ public class GoodsService {
         return lists;
     }
 
-    public Long reviewHelpCount(Long review_id) {
-        return Long.valueOf(reviewRepository.updateHelpCnt(review_id));
+    public void reviewHelpCount(Review review) {
+        review.increaseHelp();
     }
 
-    public Long reviewUpdateCnt(Long review_id) {
-        return Long.valueOf(reviewRepository.updateViewCnt(review_id));
+    public void reviewUpdateCnt(Review review) {
+        review.increaseCount();
     }
 }

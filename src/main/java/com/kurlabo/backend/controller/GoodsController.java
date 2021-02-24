@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
 import com.kurlabo.backend.service.MemberService;
@@ -27,16 +28,15 @@ public class GoodsController {
     private final GoodsService goodsService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 5) Pageable pageable,
+    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 7) Pageable pageable,
                                                  @PathVariable(name = "id") Long id) {
-        // 리뷰 개수 7개 이상 보내주기
-//        return new ResponseEntity(goodsService.goodDetail(pageable, id), HttpStatus.OK);
+
         return ResponseEntity.ok(goodsService.goodDetail(pageable, id));
     }
 
     @PostMapping("/{pid}/{rid}")
-    public Long reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid) {
-        return goodsService.reviewHelpCount(rid);
+    public void reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid, Review review) {
+        goodsService.reviewHelpCount(review);
     }
 
 

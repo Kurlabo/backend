@@ -6,31 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReviewListDto {
-
-    private Long order_id;
-
+public class ReviewProductDto {
     private Long product_id;
 
-    private String product_name;
+    // private String main_image_url;
 
-    private String title;
+    private String name;
 
-    private String content;
-
-    private Long help;
-
-    private LocalDate regdate;
-
-    private String delivery_condition;
+    private int checkout_price;
 
     private int cnt;
-
-    private String main_img_url;
 }
+

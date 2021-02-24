@@ -107,7 +107,7 @@ public class OrderService {
             String addList_image_url = mainProduct.getList_image_url();
 
             responseList.add(new OrderListResponseDto(
-                    list.getCheckout_date(),
+                    list.getCheckoutDate(),
                     addProduct_name,
                     addElse_product_cnt,
                     addList_image_url,
@@ -137,7 +137,7 @@ public class OrderService {
                 order.getCheckout(),
                 order.getOrderer(),
                 order.getSender(),
-                order.getCheckout_date(),
+                order.getCheckoutDate(),
                 order.getReciever(),
                 order.getReciever_phone(),
                 order.getReciever_post(),

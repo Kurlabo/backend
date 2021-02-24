@@ -1,10 +1,12 @@
 package com.kurlabo.backend.config.security;
 
+import com.kurlabo.backend.model.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
@@ -24,7 +28,8 @@ public class JwtTokenProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
 
-    private long tokenValidMilisecond = 1000L * 60 * 60;
+    // >> tokenValidMillis?
+    private long tokenValidMilisecond = 86400;
 
     private final UserDetailsService userDetailsService;
 
@@ -33,10 +38,33 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createAccessToken(String userPk, String role) {
-        Claims claims = Jwts.claims().setSubject(userPk);
+
+    /*
+    creates access token from userPK and role based on request FROM controller.
+    THIS implies that the userPK is indeed a PK of RDBMS that preserves a user.
+    MEANING... we assume that the ID is indeed a PK in such case.
+
+    the role is fixed to 'USER' such that we as a coders would NOT have to think of which role that it takes.
+     */
+    public String createAccessToken(String userId, String role) {
+
+    /**
+     * Returns the JWT (subject) value or {@code null} if not present.
+     */
+
+        Claims claims = Jwts.claims().setSubject(userId);
+
+    /**
+     * Associates the specified value with the specified key in this map
+     * (optional operation).
+     * true.)
+     */
+
         claims.put("roles", role);
-        Date date = new Date();
+
+        // readable
+        Date date = Date.from(Instant.now());
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(date)
@@ -45,12 +73,16 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String createAccessToken(Member member) {
+        return createAccessToken(member.getUid(), member.getRole());
+    }
+
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.parseUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUserPk(String token) {
+    public String parseUserId(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -59,10 +91,15 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String jwtToken) {
+        log.info("secretKey set as {}!", secretKey);
         try {
+            log.debug("resolving token {}", jwtToken);
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+
+            log.debug("claims found as ... {}", claims);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+            log.error("failed to validate token {} >> {}", jwtToken, e.getMessage());
             return false;
         }
     }

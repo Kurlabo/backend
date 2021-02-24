@@ -1,7 +1,10 @@
 package com.kurlabo.backend.exception;
 
-public class DataNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+
+public class DataNotFoundException extends BaseException {
     public DataNotFoundException(String message) {
-        super(message);
+
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

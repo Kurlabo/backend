@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws-jdbc'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
@@ -52,9 +53,9 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    compile group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
-    runtime group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
-    runtime group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+//    compile group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+//    runtime group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+//    runtime group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 }
 
 dependencyManagement {

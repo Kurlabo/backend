@@ -22,6 +22,8 @@ public class CartService {
     private final ProductRepository productRepository;
     private final DeliverAddressService deliverAddressService;
 
+    public static SelectedProductInfoDto selectedProductInfoDto;
+
     public GetCartResponseDto getCartList(Member member){
         List<CartDataDto> dtoLists = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByMember(member);
@@ -120,4 +122,13 @@ public class CartService {
             // Exception 만들어야함
         }
     }
+
+    public String setOrderSheet(SelectedProductInfoDto dto){
+        if(dto == null){
+            return "failed";
+        }
+        selectedProductInfoDto = dto;
+        return "success";
+    }
+
 }

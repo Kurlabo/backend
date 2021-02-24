@@ -30,7 +30,7 @@ public class MemberDto {
 
     private String oldPassword;
 
-    @Pattern(regexp="^[a-z]*$, ^[가-힣]*$", message = "이름을 입력해주세요")
+//    @Pattern(regexp="^[a-z]*$, ^[가-힣]*$", message = "이름을 입력해주세요")
     private String name;
 
     @Email(message = "이메일 형식이 아닙니")
@@ -45,4 +45,6 @@ public class MemberDto {
     private String grade;
 
     private LocalDate date_of_birth;
+
+    private Boolean isDeleted;
 }

@@ -77,7 +77,6 @@ public class InsertDBTest {
 
     @Test
     void test() throws JsonProcessingException {
-
     }
 
 //    @Test

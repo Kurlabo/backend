@@ -1,5 +1,6 @@
 package com.kurlabo.backend.dto.goods;
 
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.model.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,9 +33,11 @@ public class ProductDto {
 
     private String brand_title;
 
-    private String expiration_date;// 유통기한
+    private String expiration_date; // 유통기한
 
     private String delivery_time_type_text;
+
+    private String packing_type_text; //포장타입
 
     private int original_price;
 
@@ -50,7 +53,7 @@ public class ProductDto {
 
     private String list_image_url;
 
-    private String detail_image_url; // 상품설명 대표 이미지
+    private String detail_img_url; // 상품설명 대표 이미지
 
     private String sticker_image_url;
 
@@ -60,7 +63,9 @@ public class ProductDto {
 
     private String product_img_url;// 상품이미지 대표 이미지
 
-    private Page<Review> reviews;
+    private List<String> guides;
+
+    private List<ReviewDto> reviews;
 
     private List<RelatedProductDto> related_product;
 

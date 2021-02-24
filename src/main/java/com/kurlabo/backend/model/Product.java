@@ -36,6 +36,7 @@ public class Product {
     private String contactant;  // 알레르기 정보
     private String brand_title; // 브랜드 이름
     private String expiration_date;// 유통기한
+    private String guides;
     private String delivery_time_type_text;//배송구분
     private String packing_type_text;//포장타입
     private int original_price;//원가격

@@ -34,5 +34,21 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void increaseCount() {
+        if (cnt == null) {
+            cnt = 0L;
+        }
+
+        this.cnt++;
+    }
+
+    public void increaseHelp() {
+        if (help == null) {
+            help = 0L;
+        }
+
+        this.help++;
+    }
 }
 

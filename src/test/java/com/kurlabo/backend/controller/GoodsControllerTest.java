@@ -1,9 +1,6 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
-import com.kurlabo.backend.dto.cart.InsertCartDto;
-import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

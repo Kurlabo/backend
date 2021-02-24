@@ -32,5 +32,4 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
 }

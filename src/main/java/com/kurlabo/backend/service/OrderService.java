@@ -41,14 +41,12 @@ public class OrderService {
                 da = list;
         }
 
-        OrderSheetResponseDto orderSheetResponseDto = new OrderSheetResponseDto(
+        return new OrderSheetResponseDto(
                 member.getName(),
                 member.getPhone(),
                 member.getEmail(),
                 da.getDeliver_address()
         );
-
-        return orderSheetResponseDto;
     }
 
     @Transactional

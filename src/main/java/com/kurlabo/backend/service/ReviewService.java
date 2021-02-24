@@ -1,6 +1,5 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
@@ -11,13 +10,10 @@ import com.kurlabo.backend.repository.OrderRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;

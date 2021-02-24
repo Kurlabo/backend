@@ -1,7 +1,7 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.converter.StringRevisor;
 import com.kurlabo.backend.dto.cart.CartDataDto;
+import com.kurlabo.backend.dto.cart.DeleteCartResponseDto;
 import com.kurlabo.backend.dto.cart.GetCartResponseDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
@@ -9,7 +9,6 @@ import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.CartRepository;
-import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,36 +65,48 @@ public class CartService {
         if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
             cart.setCnt(cart.getCnt() + cnt);
             cartRepository.save(cart);
-            return "Increase cart cnt succeed";
+            return "addCnt";
 
         } else {            // 카트에 없는 상품이면 바로 저장해 줌
             cart = new Cart(null, product_id, cnt, member);
             cartRepository.save(cart);
-            return "Insert cart succeed";
+            return "add";
         }
     }
 
     @Transactional
-    public GetCartResponseDto deleteCart(Member member, Long product_id) {
+    public DeleteCartResponseDto deleteCart(Member member, Long product_id) {
         Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
+
         if(cart != null){
             cartRepository.delete(cart);
+            return new DeleteCartResponseDto(product_id);
         } else {
             // Exception 만들어야함
+            return null;
         }
-        return getCartList(member);
     }
 
     @Transactional
-    public String updateCnt(Member memer, Long product_id, UpdateCartCntRequestDto dto) {
+    public CartDataDto updateCnt(Member memer, Long product_id, UpdateCartCntRequestDto dto) {
         Cart cart = cartRepository.findByMemberAndProduct_id(memer, product_id);
+        Product product = productRepository.findById(product_id).orElseThrow(ResourceNotFoundException::new);
         if(cart != null){
             cart.setCnt(cart.getCnt() + dto.getVariation());
             cartRepository.save(cart);
-            return "Update cart cnt succeed";
+            return new CartDataDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getOriginal_price(),
+                    product.getDiscounted_price(),
+                    product.getPacking_type_text(),
+                    1,
+                    99,
+                    product.getList_image_url(),
+                    cart.getCnt()
+            );
         } else {
-            System.out.println("테스트용 >>>> 카트 검색 결과 없음");
-            return "No Resources";
+            return null;
             // Exception 만들어야함
         }
     }

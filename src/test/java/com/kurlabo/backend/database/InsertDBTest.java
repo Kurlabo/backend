@@ -1,5 +1,9 @@
 package com.kurlabo.backend.database;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.order.OrderProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -13,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -58,6 +64,8 @@ public class InsertDBTest {
     private ReviewRepository reviewRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -68,7 +76,7 @@ public class InsertDBTest {
     }
 
     @Test
-    void test(){
+    void test() throws JsonProcessingException {
 
     }
 

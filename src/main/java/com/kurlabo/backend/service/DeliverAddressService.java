@@ -22,6 +22,9 @@ public class DeliverAddressService {
             if(list.getIs_main() == 1)
                 da = list;
         }
+        if(da == null){
+            da.setDeliver_address("등록된 주소가 없습니다");
+        }
         return da;
     }
 }

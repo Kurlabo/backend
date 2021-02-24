@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InsertCartDto {
+public class InsertCartRequestDto {
     @NotNull
-    private Long product_id;
-    @NotNull
-    private int cnt;
+    private List<InsertCartDto> InsertCartList;
 }

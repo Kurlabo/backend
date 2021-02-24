@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
+import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +89,12 @@ public class GoodsControllerTest {
     @DisplayName("InsertCart")
     @Test
     void insertAndUpdateCart() throws Exception {
-//        String content = objectMapper.writeValueAsString(new InsertCartDto((long)94, 3));
+//        List<InsertCartDto> lists = new ArrayList<>(Arrays.asList(
+////                new InsertCartDto((long)101, 3),
+////                new InsertCartDto((long)250, 1),
+//                new InsertCartDto((long)201, 1)
+//        ));
+//        String content = objectMapper.writeValueAsString(new InsertCartRequestDto(lists));
 //
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart")
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)

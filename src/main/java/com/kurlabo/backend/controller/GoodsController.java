@@ -2,6 +2,7 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartDto;
+import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Member;
@@ -53,9 +54,9 @@ public class GoodsController {
     //@AuthenticationPrincipal Member member,
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
-    public ResponseEntity<?> insertAndUpdateCart(@RequestBody @Valid InsertCartDto dto){    // Security에서 member 가져와야함
+    public ResponseEntity<?> insertAndUpdateCart(@RequestBody @Valid InsertCartRequestDto dto){    // Security에서 member 가져와야함
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.insertCart(mem, dto.getProduct_id(), dto.getCnt()));
+        return ResponseEntity.ok(cartService.insertCart(mem, dto));
     }
 
     // @AuthenticationPrincipal Member member,

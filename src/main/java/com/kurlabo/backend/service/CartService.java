@@ -1,9 +1,6 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.cart.CartDataDto;
-import com.kurlabo.backend.dto.cart.DeleteCartResponseDto;
-import com.kurlabo.backend.dto.cart.GetCartResponseDto;
-import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
+import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
@@ -57,22 +54,28 @@ public class CartService {
     }
 
     @Transactional
-    public String insertCart(Member member, Long product_id, int cnt){
+    public String insertCart(Member member, InsertCartRequestDto dtos){
 //        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
 //
 //        }
-        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
+        String returnStr = "failed";
 
-        if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
-            cart.setCnt(cart.getCnt() + cnt);
-            cartRepository.save(cart);
-            return "addCnt";
+        for (InsertCartDto lists: dtos.getInsertCartList()){
+            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id());
 
-        } else {            // 카트에 없는 상품이면 바로 저장해 줌
-            cart = new Cart(null, product_id, cnt, member);
-            cartRepository.save(cart);
-            return "add";
+            if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
+                cart.setCnt(cart.getCnt() + lists.getCnt());
+                cartRepository.save(cart);
+                returnStr = "addCnt";
+
+            } else {            // 카트에 없는 상품이면 바로 저장해 줌
+                cart = new Cart(null, lists.getProduct_id(), lists.getCnt(), member);
+                cartRepository.save(cart);
+                returnStr = "add";
+            }
         }
+
+        return returnStr;
     }
 
     @Transactional
@@ -80,13 +83,13 @@ public class CartService {
         List<Cart> deleteLists = new ArrayList<>();
         List<Long> longLists = new ArrayList<>();
 
-        for (int i = 0; i < product_id.size(); i++){
-            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, product_id.get(i));
-            if(deleteCart == null){     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
+        for (Long productIdList : product_id) {
+            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList);
+            if (deleteCart == null) {     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
                 return null;
             }
             deleteLists.add(deleteCart);
-            longLists.add(product_id.get(i));
+            longLists.add(productIdList);
         }
         cartRepository.deleteAll(deleteLists);
 

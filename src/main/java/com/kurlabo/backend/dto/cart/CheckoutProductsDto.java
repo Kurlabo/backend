@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InsertCartDto {
-    @NotNull
+public class CheckoutProductsDto {
     private Long product_id;
-    @NotNull
-    private int cnt;
+    private String product_name;
+    private int product_price;
+    private int product_cnt;
+    private String product_image_url;
 }

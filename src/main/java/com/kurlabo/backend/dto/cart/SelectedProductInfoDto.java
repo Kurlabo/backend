@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCartRequestDto {
-    private List<Long> product_id;
+public class SelectedProductInfoDto {
+    private List<CheckoutProductsDto> checkout_Products;
+    private int total_discounted_price;
 }

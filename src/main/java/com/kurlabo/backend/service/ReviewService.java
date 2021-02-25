@@ -4,6 +4,7 @@ package com.kurlabo.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.dto.review.ReviewProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
@@ -32,14 +33,18 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     // 리뷰 작성 조건 체크
-    public Review conditionsChk(Review review) {
-        // 사용자 정보 없음
-        Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
+    public ReviewDto conditionsChk(Long pId, ReviewDto reviewDto) {
+        Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
 
+        // 사용자 정보 없음
+//        Member member = memberRepository.findById(reviewDto.getMember_id()).orElseThrow(
+//                ResourceNotFoundException::new
+//        );
+
         // 상품 정보가 없음
-        productRepository.findById(review.getProduct().getId()).orElseThrow(
+        productRepository.findById(pId).orElseThrow(
                 ResourceNotFoundException::new
         );
 
@@ -50,10 +55,10 @@ public class ReviewService {
         if (orderList.isEmpty()) {
             return null;
         } else {
-            create(review);
+            create(reviewDto);
         }
 
-        return review;
+        return reviewDto;
     }
 
     // 주문번호, 상품명, 배송완료날짜(02월07일 배송완료), 구매수량, 상품이미지(list_img?)
@@ -121,12 +126,15 @@ public class ReviewService {
     }
 
     // 리뷰작성
-    public void create(Review review) {
-        Member member = memberRepository.findById(review.getMember().getId()).orElseThrow(
+    public void create(ReviewDto review) {
+        Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
+//        Member member = memberRepository.findById(review.getMember_id()).orElseThrow(
+//                ResourceNotFoundException::new
+//        );
 
-        Product product = productRepository.findById(review.getProduct().getId()).orElseThrow(
+        Product product = productRepository.findById(review.getProduct_id()).orElseThrow(
                 ResourceNotFoundException::new
         );
 

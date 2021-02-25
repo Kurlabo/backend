@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCartRequestDto {
-    private List<Long> product_id;
+public class InsertCartRequestDto {
+    @NotNull
+    private List<InsertCartDto> InsertCartList;
 }

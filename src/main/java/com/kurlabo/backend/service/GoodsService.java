@@ -139,8 +139,8 @@ public class GoodsService {
 
         String getGuides = product.getGuides().replace('|','"');
         getGuides = getGuides.replace('\'',' ')
-                                .replace("[", "")
-                                .replace("]", "");
+                .replace("[", "")
+                .replace("]", "");
 
         String[] array = getGuides.split(",");
         List<String> getGuide = new ArrayList<>();

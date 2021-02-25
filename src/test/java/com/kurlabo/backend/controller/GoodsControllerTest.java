@@ -103,8 +103,8 @@ public class GoodsControllerTest {
     @DisplayName("DeleteCart")
     @Test
     void deleteCart() throws Exception {
-//        List<Long> lists = new ArrayList<>(Arrays.asList((long)201,(long)250));
-        List<Long> lists = new ArrayList<>();
+        List<Long> lists = new ArrayList<>(Arrays.asList((long)52,(long)109));
+//        List<Long> lists = new ArrayList<>();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -141,4 +141,3 @@ public class GoodsControllerTest {
 //                .andExpect((jsonPath("$[3].short_description").value("신선하고 깔끔하게 쓰는 양파(1개/100g내외)")));
     }
 }
-

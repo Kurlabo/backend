@@ -1,4 +1,0 @@
-#jwt:
-#  header: Authorization
-#  secret: 4oCYa3VybGFiby1iYWNrZW5kLWNsb25lcHJvamVjdC1zcHJpbmctYm9vdC1qd3Qtc2VjcmV0LWt1cmxhYm8tYmFja2VuZC1jbG9uZXByb2plY3Qtc3ByaW5nLWJvb3Qtand0LXNlY3JldOKAmQo=
-#  token-validity-in-seconds: 86400

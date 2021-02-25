@@ -61,46 +61,6 @@ public class MypageController {
         Member mem = memberService.findById((long)1);
         return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
-//    @GetMapping("/mypage_orderview")
-//    public ResponseEntity<?> orderDetailTest(@RequestParam Long ordno){
-//        OrderDetailDto dummyDto = new OrderDetailDto();
-//        List<OrderedProductsTestDto> orderedProductsTestDtoList = new ArrayList<>();
-//
-//        OrderedProductsTestDto orderedProductsTestDto1 = new OrderedProductsTestDto(
-//                "[코시] 호주산 펫밀크 1L",
-//                (6300*5),
-//                5,
-//                "배송완료"
-//        );
-//        OrderedProductsTestDto orderedProductsTestDto2 = new OrderedProductsTestDto(
-//                "절단 셀러리 500g",
-//                (2990*10),
-//                10,
-//                "배송완료"
-//        );
-//
-//        orderedProductsTestDtoList.add(orderedProductsTestDto1);
-//        orderedProductsTestDtoList.add(orderedProductsTestDto2);
-//
-//        dummyDto.setOrder_id(ordno);
-//        dummyDto.setOrderedProductsTestDtoList(orderedProductsTestDtoList);
-//        dummyDto.setCheckout_total_price(orderedProductsTestDto1.getCheckout_price() + orderedProductsTestDto2.getCheckout_price());
-//        dummyDto.setCheckout_method("신용카드");
-//        dummyDto.setOrderer_name("박상언");
-//        dummyDto.setSender_name("박상언");
-//        dummyDto.setCheckout_date("2021-02-06 02:55:00");
-//        dummyDto.setReciever_name("임정우");
-//        dummyDto.setReciever_phone("010-4321-5678");
-//        dummyDto.setReciever_address("(05123) 서울시 성동구 성동로 32 패스트캠퍼스 8층 C강의장");
-//        dummyDto.setReciever_recieve_place("문 앞");
-//
-//        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-//        hh.set("Access-Control-Allow-Origin", "*");
-//
-//        return ResponseEntity.ok()
-//                .headers(hh)
-//                .body(dummyDto);
-//    }
 
     // 주문 상세 페이지
     @GetMapping("/mypage_orderview")

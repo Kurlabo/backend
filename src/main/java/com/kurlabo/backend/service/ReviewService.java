@@ -102,14 +102,14 @@ public class ReviewService {
             } else {
                 for (ReviewProductDto x : orderReview) {
                     //if (x.getProduct_id().equals(product.getId())) {
-                        ReviewListDto reviewListDto = new ReviewListDto();
-                        // reviewListDto.setOrder_id(orders.get(0).);
-                        reviewListDto.setProduct_id(product.getId());
-                        reviewListDto.setProduct_name(product.getName());
-                        // reviewListDto.setDelivery_condition(x.get);
-                        reviewListDto.setCnt(x.getCnt());
-                        reviewListDto.setMain_img_url(product.getMain_image_url());
-                        list.add(reviewListDto);
+                    ReviewListDto reviewListDto = new ReviewListDto();
+                    // reviewListDto.setOrder_id(orders.get(0).);
+                    reviewListDto.setProduct_id(product.getId());
+                    reviewListDto.setProduct_name(product.getName());
+                    // reviewListDto.setDelivery_condition(x.get);
+                    reviewListDto.setCnt(x.getCnt());
+                    reviewListDto.setMain_img_url(product.getMain_image_url());
+                    list.add(reviewListDto);
                     //}
                 }
             }

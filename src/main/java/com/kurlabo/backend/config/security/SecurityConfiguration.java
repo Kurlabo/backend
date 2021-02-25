@@ -44,17 +44,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests()
-                        .antMatchers("/api/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                        .anyRequest().authenticated()
+
+                .authorizeRequests()
+                .antMatchers("/api/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
+                .anyRequest().authenticated()
+
                 .and()
-                    .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
-                    .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)
-                            , UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)
+                        , UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

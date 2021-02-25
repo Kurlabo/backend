@@ -23,4 +23,3 @@ public class ReviewProductDto {
 
     private int cnt;
 }
-

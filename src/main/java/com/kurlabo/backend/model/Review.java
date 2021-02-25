@@ -51,4 +51,3 @@ public class Review {
         this.help++;
     }
 }
-

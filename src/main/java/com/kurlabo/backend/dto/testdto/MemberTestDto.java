@@ -25,7 +25,9 @@ public class MemberTestDto {
 
     private String phone;
 
+    private String address;
+
     private String gender;
 
-    private String date_of_birth;
+    private String dateOfBirth;
 }

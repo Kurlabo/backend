@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,8 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class Member {
-
-    public static final String DEFAULT_GRADE = "일반";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -34,13 +31,11 @@ public class Member {
 
     private String gender;
 
-    private LocalDate date_of_birth;
+    private String date_of_birth;
 
     private String grade;
 
     private int total_cost;
 
     private String role;
-
-    private boolean isDeleted;
 }

@@ -36,9 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### macOS template
-# General
-.DS_Store
-.AppleDouble
-.LSOverride

@@ -71,7 +71,7 @@ public class MypageController {
     @GetMapping("/mypage_qna")
     public ResponseEntity<?> qnaTest(){
         String[] dummyStr = {
-                "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
+            "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
         };
         Long[] dummyLong = {Long.parseLong("1945327660572"), Long.parseLong("3484593475423")};
 

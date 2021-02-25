@@ -34,4 +34,5 @@ public class MemberService implements UserDetailsService {
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
+
 }

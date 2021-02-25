@@ -32,6 +32,7 @@ public class MemberController {
                 .grade(signUpReq.getGrade())
                 .build();
 
+
         Member savedMember = memberRepository.save(member);
         String token = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()), "USER");
 
@@ -168,5 +169,4 @@ public class MemberController {
                 .headers(hh)
                 .body(message);
     }*/
-
 }

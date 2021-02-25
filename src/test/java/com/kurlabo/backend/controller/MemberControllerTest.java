@@ -1,9 +1,9 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.testdto.FindIdTestDto;
-import com.kurlabo.backend.dto.testdto.FindPwdTestDto;
-import com.kurlabo.backend.dto.testdto.MemberTestDto;
+import com.kurlabo.backend.config.security.JwtTokenProvider;
+import com.kurlabo.backend.dto.MemberDto;
+import com.kurlabo.backend.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,16 +13,24 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@Transactional
+@SpringBootTest(properties = "spring.config.location="
+        + "classpath:application.properties,"
+        + "classpath:jwts.yml")
 class MemberControllerTest {
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    MemberService memberService;
 
     private MockMvc mockMvc;
 
@@ -36,6 +44,90 @@ class MemberControllerTest {
                 .alwaysDo(print())
                 .build();
     }
+
+    @DisplayName("회원가입 테스트")
+    @Test
+    public void signupTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                MemberDto.builder()
+                                        .uid("Tester13")
+                                        .password("test")
+                                        .name("테스터")
+                                        .email("test111@fastcampus.com")
+                                        .phone("010-1212-2222")
+                                        .gender("남자")
+                                        .grade("일반")
+                                        .date_of_birth(null)
+                                        .build()
+                        )
+                ))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("회원조회 테스트")
+    @Test
+    public void getMemberTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo/1")
+                .header("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dGVzdCIsImF1dGgiOiJNRU1CRVIiLCJtZW1iZXJJZCI6MTgsImV4cCI6MTYxNDA1MTgzMX0.BHYI3_x4k8H35tTpQ_hK3Uoqwwr8qAWMziLRgUkfC6xZfzddgS_CClBLYtIVvriGo1_eue1VwiVEm68Osq9z8w")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                MemberDto.builder()
+                                        .uid("lnoah")
+                                        .password("fastcampus123")
+                                        .name("임정우")
+                                        .email("lnoah@fastcampus.com")
+                                        .phone("010-4321-5678")
+                                        .gender("남자")
+                                        .date_of_birth(null)
+                                        .build()
+                        )
+                ))
+                .andExpect(status().isOk());
+
+    }
+
+//    @DisplayName("회원수정 테스트")
+//    @Test
+//    public void updateMemberTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/myinfo/20")
+//                .header("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dGVzdDEiLCJhdXRoIjoiTUVNQkVSIiwibWVtYmVySWQiOjIwLCJleHAiOjE2MTQwNTQ3MzZ9.9sN8hWdBtCJVA9imwEGl6SKGNFljEJTxyxzMAZjBzUy3UVlrl90KxxsU6p9sDRxc9LpVRe9J5LK7DL7SrPjavQ")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                MemberDto.builder()
+//                                        .name("샛별배")
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(status().isOk());
+//    }
+
+//    @DisplayName("회원수정 테스트")
+//    @Test
+//    public void updateMemberTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/myinfo")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                MemberDto.builder()
+//                                        .email("test01@fastcampus.com")
+//                                        .password("test")
+//                                        .name("Tester")
+//                                        .phone("010-1111-2222")
+//                                        .gender("남자")
+//                                        .date_of_birth(null)
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(status().isOk());
+//    }
+
+
+
 
 //    @DisplayName("MyinfoTest")
 //    @Test

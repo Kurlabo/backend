@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetailDto {
+public class OrderDetailTestDto {
     private Long order_id;
     private List<OrderedProductsTestDto> orderedProductsTestDtoList;
     private int checkout_total_price;

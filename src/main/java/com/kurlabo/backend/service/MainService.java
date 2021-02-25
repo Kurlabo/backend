@@ -63,7 +63,7 @@ public class MainService {
         List<MainPageProductDto> list = new ArrayList<>();
         List<Long> longList = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 16; i++){
             Long n = (long)random.nextInt(321) + 1;
             while (longList.contains(n)){
                 n = (long)random.nextInt(321) + 1;
@@ -90,7 +90,7 @@ public class MainService {
         List<Product> productsList = productRepository.findByDiscount_percent();
         List<Integer> intlist = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 16; i++){
             int n = random.nextInt(productsList.size());
             while (intlist.contains(n)){
                 n = random.nextInt(productsList.size());
@@ -118,7 +118,7 @@ public class MainService {
         List<Integer> intList = new ArrayList<>();
         productsList = getProducts(mainCategory, productsList, productRepository);
 
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 16; i++){
             int n = random.nextInt(productsList.size());
             while (intList.contains(n)){
                 n = random.nextInt(productsList.size());
@@ -154,7 +154,7 @@ public class MainService {
         List<Integer> intlist = new ArrayList<>();
         List<MainPageProductDto> list = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 16; i++){
             int n = random.nextInt(productList.size());
             while (intlist.contains(n)){
                 n = random.nextInt(productList.size());

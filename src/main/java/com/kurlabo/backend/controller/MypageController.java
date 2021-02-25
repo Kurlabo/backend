@@ -3,9 +3,9 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.DeliverAddressService;
 import com.kurlabo.backend.service.FavoriteService;
 import com.kurlabo.backend.service.MemberService;
@@ -97,11 +97,10 @@ public class MypageController {
 //                .body(reviewService.reviewList(pageable, review));
 //    }
 
-    //mypage_review.php?write_goodsno=53329
     @PostMapping("/mypage_review/{pId}")
-    public ResponseEntity<Void> create (@PathVariable Long pId, Review review) {
+    public ResponseEntity<Void> create (@PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         // 후기 작성
-        reviewService.conditionsChk(review);
+        reviewService.conditionsChk(pId, reviewDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

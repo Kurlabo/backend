@@ -1,5 +1,6 @@
 package com.kurlabo.backend.config.security;
 
+import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService;
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+        auth.userDetailsService(memberService)
                 .passwordEncoder(passwordEncoder);
     }
 
@@ -45,9 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
-
-                        .antMatchers("/**/*").permitAll()
-
+                        .antMatchers("/api/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                         .anyRequest().authenticated()
                 .and()

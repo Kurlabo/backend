@@ -1,8 +1,9 @@
 package com.kurlabo.backend.database;
 
-import com.hazelcast.com.eclipsesource.json.JsonObject;
-import com.kurlabo.backend.converter.StringRevisor;
-import com.kurlabo.backend.dto.main.MainPageProductDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.order.OrderProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.model.db.Main_src;
@@ -25,14 +26,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class InsertDBTest {
@@ -68,6 +64,8 @@ public class InsertDBTest {
     private ReviewRepository reviewRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -78,7 +76,7 @@ public class InsertDBTest {
     }
 
     @Test
-    void test(){
+    void test() throws JsonProcessingException {
 
     }
 
@@ -225,27 +223,27 @@ public class InsertDBTest {
     @Test
     @Rollback(value = false)
     void InsertSlideImgDb(){
-        String[] slideImgs ={
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612751700.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094368.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612347518.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612699410.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094440.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094559.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094297.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1602809211.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1596164134.jpg",
-                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1583112495.jpg"
-        };
-
-        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
-                () -> new ResourceNotFoundException()
-        );
-
-        for(int i = 0; i < slideImgs.length; i++){
-            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
-            slideImgRepository.save(slideImg);
-        }
+//        String[] slideImgs ={
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612751700.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094368.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612347518.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612699410.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094440.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094559.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1612094297.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1602809211.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1596164134.jpg",
+//                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1583112495.jpg"
+//        };
+//
+//        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
+//                () -> new ResourceNotFoundException()
+//        );
+//
+//        for(int i = 0; i < slideImgs.length; i++){
+//            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
+//            slideImgRepository.save(slideImg);
+//        }
     }
 
     // Insert Main page / Insta Images, Landing URLs
@@ -366,10 +364,10 @@ public class InsertDBTest {
 //        }
 //
 //
-        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
-                () -> new ResourceNotFoundException()
-        );
-        System.out.println("product >>> " + testProduct);
+//        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
+//                () -> new ResourceNotFoundException()
+//        );
+//        System.out.println("product >>> " + testProduct);
 
 //        JsonObject str = testProduct.getData();
 //        StringRevisor sr = new StringRevisor();
@@ -379,25 +377,25 @@ public class InsertDBTest {
     @Test
     @Rollback
     void insertReview() throws Exception {
-        Member mem = new Member();
-        mem.setId(1L);
-
-        Product pro =  new Product();
-        pro.setId(319L);
-
-        Review review = new Review(
-                null,
-                "후기제목",
-                "후기내용",
-                "작성자",
-                LocalDate.now(),
-                3L,
-                10L,
-                pro,
-                mem
-        );
-
-        reviewRepository.save(review);
+//        Member mem = new Member();
+//        mem.setId(1L);
+//
+//        Product pro =  new Product();
+//        pro.setId(319L);
+//
+//        Review review = new Review(
+//                null,
+//                "후기제목",
+//                "후기내용",
+//                "작성자",
+//                LocalDate.now(),
+//                3L,
+//                10L,
+//                pro,
+//                mem
+//        );
+//
+//        reviewRepository.save(review);
         //verify(reviewRepository, times(1)).save(any(Review.class));
     }
 

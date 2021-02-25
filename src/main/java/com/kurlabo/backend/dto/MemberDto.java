@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class MemberDto {
+
     private Long memberId;
 
     @Size(min = 6, max = 16, message = "6자 이상의 영문 혹은 영문과 숫자를 조")
@@ -33,7 +34,7 @@ public class MemberDto {
 //    @Pattern(regexp="^[a-z]*$, ^[가-힣]*$", message = "이름을 입력해주세요")
     private String name;
 
-    @Email(message = "이메일 형식이 아닙니")
+    @Email(message = "이메일 형식이 아닙니다")
     private String email;
 
     @Size(min = 11, max = 11, message = "연락처는 11자리 숫자만 입력해주세요")

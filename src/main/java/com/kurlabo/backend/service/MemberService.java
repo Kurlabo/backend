@@ -1,5 +1,8 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.command.MemberDetailsCommand;
+import com.kurlabo.backend.command.MemberRegistrationCommand;
+import com.kurlabo.backend.command.MemberUpdateCommand;
 import com.kurlabo.backend.config.security.JwtTokenProvider;
 import com.kurlabo.backend.dto.member.*;
 import com.kurlabo.backend.exception.MemberAlreadyExistsException;
@@ -8,8 +11,10 @@ import com.kurlabo.backend.exception.UserNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,7 @@ import java.util.Optional;
 
 import static com.kurlabo.backend.service.MemberSecurityService.DEFAULT_USER_ROLE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -36,19 +42,13 @@ public class MemberService {
         return memberRepository.findByUid(uid).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public String signUp(SignupRequestDto dto) {
-
-        if(dto.toMember(jwtTokenProvider.validateToken()))
-
-        if (memberRepository.existsByUid(dto.getUid())) {
-            throw new MemberAlreadyExistsException("member with uid {" + dto.getUid() + "} already exists");
+    public String signUp(MemberRegistrationCommand command) {
+        if (memberRepository.existsByUid(command.getUid())) {
+            throw new MemberAlreadyExistsException("이미 존재하는 아이디입니다: " + command.getUid());
         }
 
-        // set default grade and role for constant values.
-        dto.setDefaultRoleAndGrade();
-
         // creates new member from DTO
-        Member member = dto.toMember(passwordEncoder);
+        Member member = command.toMember(passwordEncoder);
 
         // persist then returns the persisted one
         member = memberRepository.save(member);
@@ -57,25 +57,25 @@ public class MemberService {
         return jwtTokenProvider.createAccessToken(member);
     }
 
-    public Member updateUser(UpdateMemberRequestDto updateMemberRequestDto, String uid) {
+//    public ResponseEntity<?> getMemberDetails(MemberDetailsCommand command) {
+//
+//        jwtTokenProvider
+//        command.getMemberDetails();
+//        return
+//    }
+
+
+    public Member updateUser(MemberUpdateCommand command, String uid) {
 
         Member member = memberRepository
                 .findByUid(uid)
-                .orElseThrow(() -> new UserNotFoundException("User with uid {" + uid + "} not found"));
+                .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다: " + uid));
 
-        if (updateMemberRequestDto.getEmail() != null) {
-            member.setEmail(updateMemberRequestDto.getEmail());
-        } else if (updateMemberRequestDto.getName() != null) {
-            member.setName(updateMemberRequestDto.getName());
-        } else if (updateMemberRequestDto.getPhone() != null) {
-            member.setPhone(updateMemberRequestDto.getPhone());
-        } else if (updateMemberRequestDto.getGender() != null) {
-            member.setGender(updateMemberRequestDto.getGender());
-        } else if (updateMemberRequestDto.getDate_of_birth() != null) {
-            member.setDate_of_birth((updateMemberRequestDto.getDate_of_birth()));
-        } else if (updateMemberRequestDto.getPassword() != null) {
-            member.setPassword(encodeUserPassword(updateMemberRequestDto.getPassword()));
+        if (command.getPassword() != null && !command.getPassword().isEmpty()) {
+            command.setPassword(encodeUserPassword(command.getPassword()));
         }
+
+        command.updateMember(member);
 
         return memberRepository.save(member);
     }
@@ -85,6 +85,8 @@ public class MemberService {
     }
 
     public ResponseEntity<?> login(LoginRequestDto loginRequestDto) {
+
+        log.debug("{}", loginRequestDto);
 
         Optional<Member> optMember = this.memberRepository.findByUid(loginRequestDto.getUid());
 
@@ -103,15 +105,20 @@ public class MemberService {
         }
 
         String accessToken = jwtTokenProvider
-                .createAccessToken(String.valueOf(member.getId()), DEFAULT_USER_ROLE);
+                .createAccessToken(member.getUid(), DEFAULT_USER_ROLE);
 
         Map<String, Object> responseBody = new HashMap<>();
+
         responseBody.put("accessToken", accessToken);
         responseBody.put("message", "로그인 성공");
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responseBody);
+    }
+
+    public boolean checkMemberExistsByUID(String uid) {
+        return memberRepository.existsByUid(uid);
     }
 
     //////todo after update function.
@@ -148,7 +155,7 @@ public class MemberService {
 
 
     public String getAccessToken(Member updatedMember, String role) {
-        return jwtTokenProvider.createAccessToken(String.valueOf(updatedMember.getId()), role);
+        return jwtTokenProvider.createAccessToken(String.valueOf(updatedMember.getUid()), role);
     }
 
     public String getAccessToken(Member updatedMember) {
@@ -162,9 +169,8 @@ public class MemberService {
                 .build();
     }
 
-//    public  Member getMember(GetMemberRequestDto getMemberRequestDto) {
-//
-//
-//    }
+
+
+
 }
 

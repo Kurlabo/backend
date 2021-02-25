@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginDto {
-
     @NotNull
     @Size(min = 6, max = 16)
     private String uid;

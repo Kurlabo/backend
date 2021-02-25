@@ -21,7 +21,6 @@ public class MemberSecurityService implements UserDetailsService {
 
     public static final String DEFAULT_USER_ROLE = "USER";
 
-
     private final MemberRepository memberRepository;
 
     private Collection<? extends GrantedAuthority> authorities(String role) {
@@ -31,6 +30,6 @@ public class MemberSecurityService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Member member = memberRepository.findByUid(userId).orElseThrow(UserNotFoundException::new);
-        return new User(member.getEmail(), member.getPassword(), authorities(member.getRole()));
+        return new User(member.getUid(), member.getPassword(), authorities(member.getRole()));
     }
 }

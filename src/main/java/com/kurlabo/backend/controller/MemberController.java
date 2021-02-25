@@ -1,15 +1,24 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.member.*;
+import com.kurlabo.backend.command.MemberDetailsCommand;
+import com.kurlabo.backend.command.MemberRegistrationCommand;
+import com.kurlabo.backend.command.MemberUpdateCommand;
+import com.kurlabo.backend.dto.member.GetMemberRequestDto;
+import com.kurlabo.backend.dto.member.GetMemberResponseDto;
+import com.kurlabo.backend.dto.member.LoginRequestDto;
+import com.kurlabo.backend.dto.member.UpdateMemberResponseDto;
+import com.kurlabo.backend.exception.CommandValidationFailedException;
 import com.kurlabo.backend.exception.UserNotFoundException;
 import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.service.MemberService;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,88 +27,65 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/api/member")
+@RequestMapping(value = "/api/member")
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository; // ?
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<?> signup(@Valid @RequestBody MemberRegistrationCommand command,
+                                    Errors errors) {
 
-        String token = memberService.signUp(signupRequestDto);
+        if (errors.hasFieldErrors()) {
+            throw new CommandValidationFailedException(errors);
+        }
+
+        String token = memberService.signUp(command);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(token);
     }
 
-    /////////////////////
 //    @GetMapping(value = "/myinfo")
-//    public ResponseEntity<?> getMember (@Valid @RequestBody GetMemberRequestDto getMemberRequestDto) {
+//    public GetMemberResponseDto getMember (MemberDetailsCommand command, Authentication authentication) {
 //
-//        String token = memberService.getMember(getMemberRequestDto);
+//        log.debug("authenticatioin >> {}", authentication);
 //
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(token);
-//    }
-
-//    @GetMapping(value = "/myinfo")
-//    public UserInfo getMember(@Valid @RequestBody GetMemberRequestDto getMemberRequestDto,
-//                              Authentication authentication) {
 //        String uid = authentication.getName();
-//        Member member = memberRepository
-//                .findByUid(uid).orElseThrow(() -> new UserNotFoundException("회원이 존재하지 않습니다."));
 //
-//        return UserInfo.builder()
-//                .name(member.getName())
-//                .email(member.getEmail())
-//                .phone(member.getPhone())
-//                .gender(member.getGender())
-//                .date_of_birth(member.getDate_of_birth())
+//        Member getMember = memberService.getMemberDetails(command, uid);
+//        String token = memberService.getAccessToken(getMember);
+//
+//
+//        return GetMemberResponseDto.builder()
+//                .accessToken(token)
 //                .build();
 //    }
-//
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    @Builder
-//    public static class UserInfo {
-//        private String name;
-//        private String email;
-//        private String phone;
-//        private String gender;
-//        private LocalDate date_of_birth;
-//    }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @PutMapping(value = "/myinfo")
-    public UpdateMemberResponseDto updateMember(@Valid @RequestBody UpdateMemberRequestDto updateMemberRequestDto,
+    public UpdateMemberResponseDto updateMember(@Valid @RequestBody MemberUpdateCommand command,
                                                 Authentication authentication) {
 
         log.debug("authentication >> {}", authentication);
 
         String uid = authentication.getName();
 
-        if (memberRepository.existsByUid(uid)) {
-            throw new UserNotFoundException("존재하지 않는 회원입니다 {" + uid + "}");
+        if (!memberService.checkMemberExistsByUID(uid)) {
+            throw new UserNotFoundException("존재하지 않는 회원입니다: " + uid);
         }
 
-        Member updatedMember = memberService.updateUser(updateMemberRequestDto, uid);
+        Member updatedMember = memberService.updateUser(command, uid);
         String token = memberService.getAccessToken(updatedMember);
 
         return UpdateMemberResponseDto.builder()
                 .accessToken(token)
                 .build();
     }
-
-
-    /////////////////////////////////////////////////////// Ryo fukui
 // todo for developing
 //
-//    @DeleteMapping(value = "/myinfo/{member_id}")
+//    @DeleteMapping(value = "/myinfo")
 //    public ResponseEntity<Boolean> deleteMember (DeleteMemberRequestDto deleteMemberRequestDto, Authentication authentication) {
 //
 //        String uid = authentication.getName();
@@ -110,14 +96,12 @@ public class MemberController {
 //
 //
 //        Member deletedMember = memberService.deleteUser(deleteMemberRequestDto);
-//        String token = memberService.getAccessToken(deletedMember);
 //
 //        return DeleteMemberResponseDto.builder()
 //                .accessToken(token)
 //                .build();
 //
 //    }
-
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,9 +114,15 @@ public class MemberController {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //    @GetMapping("/logout")
-//    public ResponseEntity<?> logout(@RequestBody LogoutRequestDto logoutRequestDto) {
+//    public ResponseEntity<?> logout(LogoutRequestDto logoutRequestDto) {
 //        return memberService.logout(logoutRequestDto);
 //    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        binder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
 }
 
 

@@ -29,7 +29,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     // >> tokenValidMillis?
-    private long tokenValidMilisecond = 86400;
+    private long tokenValidMilisecond = 86400000;
 
     private final UserDetailsService userDetailsService;
 
@@ -48,17 +48,7 @@ public class JwtTokenProvider {
      */
     public String createAccessToken(String userId, String role) {
 
-    /**
-     * Returns the JWT (subject) value or {@code null} if not present.
-     */
-
         Claims claims = Jwts.claims().setSubject(userId);
-
-    /**
-     * Associates the specified value with the specified key in this map
-     * (optional operation).
-     * true.)
-     */
 
         claims.put("roles", role);
 

@@ -1,10 +1,11 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.model.Deliver_Address;
-import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class DeliverAddressService {
         for(Deliver_Address list : lists){
             if(list.getIs_main() == 1)
                 da = list;
+        }
+        if(da == null){
+            da.setDeliver_address("등록된 주소가 없습니다");
         }
         return da;
     }

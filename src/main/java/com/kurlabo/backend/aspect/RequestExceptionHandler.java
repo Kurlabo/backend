@@ -37,6 +37,10 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> makeResponse(String exceptionMessage, HttpStatus httpStatus) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("message", exceptionMessage);
+        if (httpStatus == null) {
+            // todo: which one?
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
         return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .location(getRequestURI())

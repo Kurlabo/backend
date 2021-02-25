@@ -1,25 +1,26 @@
 package com.kurlabo.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
-import com.kurlabo.backend.dto.testdto.*;
-import com.kurlabo.backend.model.Favorite;
+import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Review;
+import com.kurlabo.backend.service.DeliverAddressService;
 import com.kurlabo.backend.service.FavoriteService;
 import com.kurlabo.backend.service.MemberService;
+import com.kurlabo.backend.service.OrderService;
+import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -29,6 +30,8 @@ public class MypageController {
 
     private final FavoriteService favoriteService;
     private final MemberService memberService;
+    private final ReviewService reviewService;
+    private final OrderService orderService;
 
     //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
@@ -48,45 +51,17 @@ public class MypageController {
     // @AuthenticationPrincipal Member member,
     // 늘 사는 것 비우기
     @DeleteMapping("/mypage_wishlist")
-    public ResponseEntity<?> deleteWishList (@RequestBody @NotNull DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<?> deleteWishList (@RequestBody @Valid DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         return ResponseEntity.ok(favoriteService.deleteFavorite(mem, dto.getProduct_id(), pageable));
     }
 
-
-
+    // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderListTest(){
-        List<OrderListTestDto> dummyDtoList = new ArrayList<>();
-
-        OrderListTestDto orderListTestDto1 = new OrderListTestDto(
-                "2020.07.13(18시 32분)",
-                "[코시] 호주산 펫밀크 1L",
-                Long.parseLong("1594632706623"),
-                6300,
-                "배송완료",
-                "https://img-cf.kurly.com/shop/data/goods/1562303711815s0.jpg"
-        );
-        OrderListTestDto orderListTestDto2 = new OrderListTestDto(
-                "2021.01.16(20시 05분)",
-                "[선물세트] 서울약사신협 석류즙 30포",
-                Long.parseLong("3842536821567"),
-                15920,
-                "배송중",
-                "https://img-cf.kurly.com/shop/data/goods/1587357028431s0.jpg"
-        );
-
-        dummyDtoList.add(orderListTestDto1);
-        dummyDtoList.add(orderListTestDto2);
-
-        HttpHeaders hh = new HttpHeaders();                 // 나중에 필터로 리팩토링 해야함
-        hh.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.ok()
-                .headers(hh)
-                .body(dummyDtoList);
+    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) throws JsonProcessingException {
+        Member mem = memberService.findById((long)1);
+        return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
-
 //    @GetMapping("/mypage_orderview")
 //    public ResponseEntity<?> orderDetailTest(@RequestParam Long ordno){
 //        OrderDetailDto dummyDto = new OrderDetailDto();
@@ -128,6 +103,12 @@ public class MypageController {
 //                .body(dummyDto);
 //    }
 
+    // 주문 상세 페이지
+    @GetMapping("/mypage_orderview")
+    public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
+        return ResponseEntity.ok(orderService.getOrderView(ordno));
+    }
+
     @GetMapping("/mypage_qna")
     public ResponseEntity<?> qnaTest(){
         String[] dummyStr = {
@@ -141,5 +122,28 @@ public class MypageController {
         return ResponseEntity.ok()
                 .headers(hh)
                 .body(new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678"));
+    }
+
+//    @GetMapping("/written-reviews")
+//    public ResponseEntity<?> writtenReviews(@PageableDefault Pageable pageable, Review review){
+//        // 작성완료 후기 리스트
+//        return ResponseEntity.ok()
+//                .body(reviewService.reviewList(pageable, review));
+//    }
+//
+//    @GetMapping("/writable-reviews")
+//    public ResponseEntity<?> writableReviews(@PageableDefault Pageable pageable, Review review){
+//        // 작성가능 후기 리스트
+//        return ResponseEntity.ok()
+//                .body(reviewService.reviewList(pageable, review));
+//    }
+
+    //mypage_review.php?write_goodsno=53329
+    @PostMapping("/mypage_review/{pId}")
+    public ResponseEntity<Void> create (@PathVariable Long pId, Review review) {
+        // 후기 작성
+        reviewService.conditionsChk(review);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

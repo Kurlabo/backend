@@ -141,4 +141,3 @@ public class GoodsControllerTest {
 //                .andExpect((jsonPath("$[3].short_description").value("신선하고 깔끔하게 쓰는 양파(1개/100g내외)")));
     }
 }
-

@@ -44,10 +44,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
                 .authorizeRequests()
-                .antMatchers("/api/member/signin", "/api/member/signup").permitAll()
+                .antMatchers("/api/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
                 .anyRequest().authenticated()
+
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()

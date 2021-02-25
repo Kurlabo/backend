@@ -5,6 +5,7 @@ import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
+import com.kurlabo.backend.repository.ProductPageableRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDto;
@@ -25,6 +26,7 @@ import java.util.Random;
 public class GoodsService {
 
     private final ProductRepository productRepository;
+    private final ProductPageableRepository productPageableRepository;
     private final ReviewRepository reviewRepository;
 
     public ProductDto goodDetail(Pageable pageable, Long id) {

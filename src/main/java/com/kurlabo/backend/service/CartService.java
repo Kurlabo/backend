@@ -1,6 +1,9 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.cart.*;
+import com.kurlabo.backend.dto.cart.CartDataDto;
+import com.kurlabo.backend.dto.cart.DeleteCartResponseDto;
+import com.kurlabo.backend.dto.cart.GetCartResponseDto;
+import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
@@ -22,8 +25,6 @@ public class CartService {
     private final ProductRepository productRepository;
     private final DeliverAddressService deliverAddressService;
 
-    public static SelectedProductInfoDto selectedProductInfoDto;
-
     public GetCartResponseDto getCartList(Member member){
         List<CartDataDto> dtoLists = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByMember(member);
@@ -43,8 +44,7 @@ public class CartService {
                     1,
                     99,
                     product.getList_image_url(),
-                    list.getCnt(),
-                    (product.getOriginal_price()-product.getDiscounted_price())
+                    list.getCnt()
             );
             dtoLists.add(dto);
         }
@@ -56,46 +56,35 @@ public class CartService {
     }
 
     @Transactional
-    public String insertCart(Member member, InsertCartRequestDto dtos){
+    public String insertCart(Member member, Long product_id, int cnt){
 //        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
 //
 //        }
-        String returnStr = "failed";
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
 
-        for (InsertCartDto lists: dtos.getInsertCartList()){
-            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id());
+        if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
+            cart.setCnt(cart.getCnt() + cnt);
+            cartRepository.save(cart);
+            return "addCnt";
 
-            if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
-                cart.setCnt(cart.getCnt() + lists.getCnt());
-                cartRepository.save(cart);
-                returnStr = "addCnt";
-
-            } else {            // 카트에 없는 상품이면 바로 저장해 줌
-                cart = new Cart(null, lists.getProduct_id(), lists.getCnt(), member);
-                cartRepository.save(cart);
-                returnStr = "add";
-            }
+        } else {            // 카트에 없는 상품이면 바로 저장해 줌
+            cart = new Cart(null, product_id, cnt, member);
+            cartRepository.save(cart);
+            return "add";
         }
-
-        return returnStr;
     }
 
     @Transactional
-    public DeleteCartResponseDto deleteCart(Member member, List<Long> product_id) {
-        List<Cart> deleteLists = new ArrayList<>();
-        List<Long> longLists = new ArrayList<>();
+    public DeleteCartResponseDto deleteCart(Member member, Long product_id) {
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
 
-        for (Long productIdList : product_id) {
-            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList);
-            if (deleteCart == null) {     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
-                return null;
-            }
-            deleteLists.add(deleteCart);
-            longLists.add(productIdList);
+        if(cart != null){
+            cartRepository.delete(cart);
+            return new DeleteCartResponseDto(product_id);
+        } else {
+            // Exception 만들어야함
+            return null;
         }
-        cartRepository.deleteAll(deleteLists);
-
-        return new DeleteCartResponseDto(longLists);
     }
 
     @Transactional
@@ -114,21 +103,11 @@ public class CartService {
                     1,
                     99,
                     product.getList_image_url(),
-                    cart.getCnt(),
-                    (product.getOriginal_price()-product.getDiscounted_price())
+                    cart.getCnt()
             );
         } else {
             return null;
             // Exception 만들어야함
         }
     }
-
-    public String setOrderSheet(SelectedProductInfoDto dto){
-        if(dto == null){
-            return "failed";
-        }
-        selectedProductInfoDto = dto;
-        return "success";
-    }
-
 }

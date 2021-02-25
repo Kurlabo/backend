@@ -1,7 +1,6 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +12,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -86,12 +81,7 @@ public class GoodsControllerTest {
     @DisplayName("InsertCart")
     @Test
     void insertAndUpdateCart() throws Exception {
-//        List<InsertCartDto> lists = new ArrayList<>(Arrays.asList(
-////                new InsertCartDto((long)101, 3),
-////                new InsertCartDto((long)250, 1),
-//                new InsertCartDto((long)201, 1)
-//        ));
-//        String content = objectMapper.writeValueAsString(new InsertCartRequestDto(lists));
+//        String content = objectMapper.writeValueAsString(new InsertCartDto((long)94, 3));
 //
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart")
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -103,14 +93,11 @@ public class GoodsControllerTest {
     @DisplayName("DeleteCart")
     @Test
     void deleteCart() throws Exception {
-        List<Long> lists = new ArrayList<>(Arrays.asList((long)52,(long)109));
-//        List<Long> lists = new ArrayList<>();
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto(lists))))
-                .andExpect(status().isOk())
-                .andDo(print());
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto((long)94))))
+//                .andExpect(status().isOk())
+//                .andDo(print());
     }
 
     @DisplayName("UpdateCartCnt")

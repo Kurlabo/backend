@@ -41,12 +41,14 @@ public class OrderService {
                 da = list;
         }
 
-        return new OrderSheetResponseDto(
+        OrderSheetResponseDto orderSheetResponseDto = new OrderSheetResponseDto(
                 member.getName(),
                 member.getPhone(),
                 member.getEmail(),
                 da.getDeliver_address()
         );
+
+        return orderSheetResponseDto;
     }
 
     @Transactional
@@ -59,10 +61,8 @@ public class OrderService {
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
             orderProductDtos.add(new OrderProductDto(
                     list.getProduct_id(),
-                    product.getList_image_url(),
                     product.getName(),
                     product.getDiscounted_price() * list.getCnt(),
-                    ((product.getOriginal_price()-product.getDiscounted_price()) * list.getCnt()),
                     list.getCnt()
             ));
         }

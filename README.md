@@ -1,4 +1,4 @@
-Team Kurlabo - backend [![Build Status](https://travis-ci.org/Kurlabo/backend.svg?branch=main)](https://travis-ci.org/Kurlabo/backend)
+Team Kurlabo - backend 
 ---
 
 
@@ -8,27 +8,22 @@ Team Kurlabo - backend [![Build Status](https://travis-ci.org/Kurlabo/backend.sv
 
 기술 스텍
 ---
-###Frontend
-- HTML/CSS
-- Javascript
-- TypeScript
-- React
-- Redux
-- 업데이트예
-
 ###Backend
 - Java
 - Spring
+- JPA Hibernate
+- H2 Database
 - MySQL
 - REST API
-- Travis CI / CD
-- AWS 정
-- 업데이트예정
+- Github Actions
+- AWS (EC2, S3, Code Deploy)
+
 
 ###협업도구
 - Slack
 - Github
 - Postman
+- Git Flow
 
 (추가예정)
 --- 

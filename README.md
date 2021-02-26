@@ -8,7 +8,7 @@ Team Kurlabo - backend
 
 기술 스텍
 ---
-###Backend
+Backend
 - Java
 - Spring
 - JPA Hibernate
@@ -19,12 +19,12 @@ Team Kurlabo - backend
 - AWS (EC2, S3, Code Deploy)
 
 
-###협업도구
+협업도구
 - Slack
 - Github
 - Postman
 - Git Flow
 
-(추가예정)
+Why did we choose Market Kurly for clone Coding?
 --- 
-
+- 웹 앱의 기본인 CRUD 기능은 물론 다채로운 기능을 가진 쇼핑몰을 Clone하여 kurlabo 프로젝트에 적용하는 것이 가장 큰 목표다. Market Kurly 사이트의 기존 기능과 더불어 개선점을 찾고 원활한 서버통신을 통해 프론트엔드와의 협업과 커뮤니케이션 능력을 배양하고자 시작하였다.

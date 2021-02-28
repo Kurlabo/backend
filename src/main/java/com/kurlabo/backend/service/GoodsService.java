@@ -31,7 +31,7 @@ public class GoodsService {
         Product product = productRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+        List<Review> reviews = reviewRepository.findAllByProduct(product);
 
         List<ReviewDto> reviewList = new ArrayList<>();
         for(Review review: reviews){
@@ -48,6 +48,8 @@ public class GoodsService {
             );
             reviewList.add(list);
         }
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviews.size());
 
         List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
         List<RelatedProductDto> list = new ArrayList<>();
@@ -176,7 +178,7 @@ public class GoodsService {
         productDto.setGuides(getGuide);
         productDto.setPacking_type_text(product.getPacking_type_text());
 
-        productDto.setReviews(reviewList);
+        productDto.setReviews(new PageImpl<>(reviewList.subList(start, end), pageable, reviews.size()));
         productDto.setRelated_product(list);
 
         return productDto;

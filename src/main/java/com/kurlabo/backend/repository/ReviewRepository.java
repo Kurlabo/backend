@@ -29,7 +29,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long > {
 //    @Query("update Review r set r.cnt = r.cnt + 1 where r.review_id = :review_id")
 //    int updateViewCnt(@Param("review_id") Long review_id);
 
-    List<Review> findAllByProduct(Product product);
+    Page<Review> findAllByProduct(Product product, Pageable pageable);
 
     List<Review> findByMember(Member member, Pageable pageable);
 

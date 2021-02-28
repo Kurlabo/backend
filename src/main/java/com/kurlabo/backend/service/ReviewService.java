@@ -126,7 +126,7 @@ public class ReviewService {
     }
 
     // 리뷰작성
-    public boolean create(ReviewDto review) {
+    public void create(ReviewDto review) {
         Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
@@ -141,19 +141,13 @@ public class ReviewService {
         Review newReview = new Review();
         newReview.setTitle(review.getTitle());
         newReview.setContent(review.getContent());
-        newReview.setWriter(member.getName());
+        newReview.setWriter(review.getWriter());
         newReview.setRegdate(LocalDate.now());
         newReview.setHelp(0L);
         newReview.setCnt(0L);
         newReview.setMember(member);
         newReview.setProduct(product);
 
-        Review result = reviewRepository.save(newReview);
-
-        if (result == null) {
-            return false;
-        } else {
-            return true;
-        }
+        reviewRepository.save(newReview);
     }
 }

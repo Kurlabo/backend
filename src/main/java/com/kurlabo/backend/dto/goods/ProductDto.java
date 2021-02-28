@@ -16,9 +16,6 @@ import java.util.List;
 @Builder
 public class ProductDto {
     private Long product_id;
-
-    // private String data;
-
     private String name;
 
     private String short_description;
@@ -65,7 +62,7 @@ public class ProductDto {
 
     private List<String> guides;
 
-    private List<ReviewDto> reviews;
+    private Page<ReviewDto> reviews;
 
     private List<RelatedProductDto> related_product;
 

@@ -64,7 +64,7 @@ public class MypageController {
 
     // 주문 상세 페이지
     @GetMapping("/mypage_orderview")
-    public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
+    public ResponseEntity<?> orderView(@RequestParam Long ordno) {
         return ResponseEntity.ok(orderService.getOrderView(ordno));
     }
 

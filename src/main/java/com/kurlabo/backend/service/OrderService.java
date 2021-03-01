@@ -119,13 +119,21 @@ public class OrderService {
         return new PageImpl<>(responseList.subList(start, end), pageable, responseList.size());
     }
 
-    public OrderViewResponseDto getOrderView(Long order_id) throws JsonProcessingException {
+    public OrderViewResponseDto getOrderView(Long order_id) {
         Orders order = orderRepository.findById(order_id).orElseThrow(ResourceNotFoundException::new);
+        List<OrderProductDto> orderProducts = new ArrayList<>();
+        List<Order_Sheet_Products> ospList = orderSheetProductsRepository.findAllByOrders(order);
 
-        List<OrderProductDto> orderProducts = objectMapper.readValue(
-                order.getProduct_id_cnt_list(),
-                new TypeReference<List<OrderProductDto>>() {}
-        );
+        for(Order_Sheet_Products list: ospList){
+            orderProducts.add(new OrderProductDto(
+                    list.getProduct_id(),
+                    list.getList_image_url(),
+                    list.getProduct_name(),
+                    list.getProduct_price(),
+                    list.getDiscounted_price(),
+                    list.getProduct_cnt()
+            ));
+        }
 
         return new OrderViewResponseDto(
                 orderProducts,

@@ -57,7 +57,7 @@ public class MypageController {
 
     // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) throws JsonProcessingException {
+    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) {
         Member mem = memberService.findById((long)1);
         return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }

@@ -1,6 +1,8 @@
 package com.kurlabo.backend.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.repository.db.InsertDBRepository;
@@ -72,7 +74,8 @@ public class InsertDBTest {
 
     @Test
     void test() {
-        List<Orders> list = orderRepository.findAllByStatus("결제준비");
+        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
+        List<Orders> list = orderRepository.findByMemberAndStatus(mem, "결제완료");
         System.out.println(list);
     }
 

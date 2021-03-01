@@ -95,31 +95,23 @@ public class OrderService {
         return returnStr;
     }
 
-    public Page<OrderListResponseDto> getOrderList (Member member, Pageable pageable) throws JsonProcessingException {
-        List<Orders> orderList = orderRepository.findByMember(member);
+    public Page<OrderListResponseDto> getOrderList (Member member, Pageable pageable) {
+        List<Orders> orderList = orderRepository.findByMemberAndStatus(member, "결제완료");
         List<OrderListResponseDto> responseList = new ArrayList<>();
 
         for(Orders list: orderList){
-            List<OrderProductDto> orderProducts = objectMapper.readValue(
-                    list.getProduct_id_cnt_list(),
-                    new TypeReference<List<OrderProductDto>>() {}
-            );
+            List<Order_Sheet_Products> ospList = orderSheetProductsRepository.findAllByOrders(list);
+            Order_Sheet_Products osp = ospList.get(0);
 
-            Product mainProduct = productRepository.findById(orderProducts.get(0).getProduct_id()).orElseThrow(ResourceNotFoundException::new);
-
-            String addProduct_name = mainProduct.getName();
-            int addElse_product_cnt = orderProducts.size() - 1;
-            String addList_image_url = mainProduct.getList_image_url();
-
-//            responseList.add(new OrderListResponseDto(
-//                    list.getCheckoutDate(),
-//                    addProduct_name,
-//                    addElse_product_cnt,
-//                    addList_image_url,
-//                    list.getId(),
-//                    list.getTotal_cost(),
-//                    list.getDelivery_condition()
-//            ));
+            responseList.add(new OrderListResponseDto(
+                    list.getCheckoutDate(),
+                    osp.getProduct_name(),
+                    ospList.size() - 1,
+                    osp.getList_image_url(),
+                    list.getId(),
+                    list.getTotal_price() - list.getTotal_discount_price(),
+                    list.getDelivery_condition()
+            ));
         }
 
         int start = (int)pageable.getOffset();

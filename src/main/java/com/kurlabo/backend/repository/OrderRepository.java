@@ -14,6 +14,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByMember(Member member);
 
+    List<Orders> findByMemberAndStatus(Member member, String str);
+
     List<Orders> findAllByStatus(String str);
 
     @Query("select o from Orders o where o.member = :member and o.checkoutDate >= :chkDate and o.checkoutDate < :now" )

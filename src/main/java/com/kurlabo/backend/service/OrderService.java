@@ -1,12 +1,13 @@
 package com.kurlabo.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
 import com.kurlabo.backend.dto.order.*;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.*;
+import com.kurlabo.backend.model.Deliver_Address;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Order_Sheet_Products;
+import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,13 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final MemberRepository memberRepository;
     private final DeliverAddressRepository deliverAddressRepository;
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final CartService cartService;
-    private final ObjectMapper objectMapper;
 
     public OrderSheetResponseDto getOrderSheet(Member member){
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);

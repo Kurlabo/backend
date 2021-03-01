@@ -1,12 +1,10 @@
 package com.kurlabo.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Review;
-import com.kurlabo.backend.service.DeliverAddressService;
 import com.kurlabo.backend.service.FavoriteService;
 import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;

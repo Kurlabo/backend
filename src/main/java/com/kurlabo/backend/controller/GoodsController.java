@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 
 
 @CrossOrigin(origins = "*")
@@ -76,9 +75,10 @@ public class GoodsController {
 
     // 장바구니 주문하기 버튼
     @PostMapping("/goods_cart/orderSheet")
-    public ResponseEntity<?> setOrderSheet(SelectedProductInfoDto dto){
-
-        return ResponseEntity.ok(cartService.setOrderSheet(dto));
+    public ResponseEntity<?> setOrderSheet(@RequestBody SelectedProductInfoDto dto){
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
+        System.out.println("controller dto >>>>>>>>>>>>>> " + dto);
+        return ResponseEntity.ok(cartService.setOrdersSheet(mem, dto));
     }
 
     // 상품 리스트

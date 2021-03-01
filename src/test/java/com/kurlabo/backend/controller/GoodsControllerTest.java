@@ -1,7 +1,12 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
+import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Product;
+import com.kurlabo.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +33,8 @@ public class GoodsControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ProductRepository productRepository;
 
     @BeforeEach
     void before(WebApplicationContext was) {
@@ -139,5 +146,50 @@ public class GoodsControllerTest {
 //                .andExpect((jsonPath("$[3].discounted_price").value(1250)))
 //                .andExpect((jsonPath("$[3].discount_percent").value(0)))
 //                .andExpect((jsonPath("$[3].short_description").value("신선하고 깔끔하게 쓰는 양파(1개/100g내외)")));
+    }
+
+    @DisplayName("SetOrderSheet")
+    @Test
+    void setOrderSheet() throws Exception {
+        List<CheckoutProductsDto> list = new ArrayList<>();
+        Product product1 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
+        list.add(new CheckoutProductsDto(
+                product1.getId(),
+                product1.getName(),
+                product1.getOriginal_price()*2,
+                product1.getDiscounted_price()*2,
+                2,
+                product1.getList_image_url()
+        ));
+        Product product2 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
+        list.add(new CheckoutProductsDto(
+                product2.getId(),
+                product2.getName(),
+                product2.getOriginal_price()*3,
+                product2.getDiscounted_price()*3,
+                3,
+                product2.getList_image_url()
+        ));
+        Product product3 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
+        list.add(new CheckoutProductsDto(
+                product3.getId(),
+                product3.getName(),
+                product3.getOriginal_price()*1,
+                product3.getDiscounted_price()*1,
+                1,
+                product3.getList_image_url()
+        ));
+        SelectedProductInfoDto dto = new SelectedProductInfoDto(
+                list,
+                3000,
+                100
+        );
+        System.out.println("dto >>>>>>>>>>>>>>>>> " + dto);
+        String str = objectMapper.writeValueAsString(dto);
+        System.out.println("str >>>>>>>>>>>>> " + str);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/orderSheet")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(str))
+                .andExpect(status().isOk());
     }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -28,8 +29,17 @@ public class Orders {
     private String delivery_condition;
     private String arrived_alarm;
     private String product_id_cnt_list;
-    private int total_cost;
+    private int total_price;
+    private int total_discount_price;
+    private String status;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+//    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Order_Sheet_Products> order_sheet_products;
+
+//    public void addOrderSheetProducts(Order_Sheet_Products osp){
+//        order_sheet_products.add(osp);
+//        osp.setOrders(this);
+//    }
 }

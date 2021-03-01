@@ -126,7 +126,6 @@ public class CartService {
 
     public List<Orders> getOrderReadyList(){
         List<Orders> list = orderRepository.findAllByStatus("결제준비");
-        System.out.println("결제준비Order 가져옴");
         return list;
     }
 
@@ -140,7 +139,6 @@ public class CartService {
         }
 
         orderRepository.saveAll(readyOrders);
-        System.out.println("결제준비->결제취소 완료");
     }
 
     // Orders에 새로운 주문서 생성
@@ -167,7 +165,6 @@ public class CartService {
                 "결제준비",
                 member
         ));
-        System.out.println("주문서생성");
     }
 
     @Transactional
@@ -176,7 +173,6 @@ public class CartService {
         order.setTotal_discount_price(discount_price);
 
         orderRepository.save(order);
-        System.out.println("주문서 전체금액, 할인금액 저장 완료");
     }
 
     @Transactional
@@ -195,7 +191,6 @@ public class CartService {
             ));
         }
         orderSheetProductsRepository.saveAll(orderSheetProductsList);
-        System.out.println("Order_Sheet_Products 저장 완료");
     }
 
     @Transactional
@@ -203,7 +198,6 @@ public class CartService {
         if(dto == null){
             return "failed";
         }
-        System.out.println("dto Service >>>>>>>>>>>> " + dto);
 
         // 1. 새로은 주문서 작성
         createNewOrder(member);
@@ -214,8 +208,6 @@ public class CartService {
             return "FAILED";
         }
         Orders readyOrder = readyList.get(readyList.size() - 1);
-
-
 
         // 3. 요청받은 장바구니의 상품 개수만큼 dto를 for문으로 돌려 orderSheetProductsList에 저장함
         setOrderSheetProducts(readyOrder, dto);

@@ -124,9 +124,9 @@ public class CartService {
         }
     }
 
-    public List<Orders> getOrderReadyList(){
+    public Orders getOrderReady(){
         List<Orders> list = orderRepository.findAllByStatus("결제준비");
-        return list;
+        return list.get(list.size() - 1);
     }
 
     // 미리 결제준비였던 데이터들 결제 취소로 만듬.
@@ -203,11 +203,10 @@ public class CartService {
         createNewOrder(member);
 
         // 2. 주문서중에 "결제준비"인 주문서를 가져옴
-        List<Orders> readyList = getOrderReadyList();
-        if(readyList.size() <= 0){
+        Orders readyOrder = getOrderReady();
+        if(getOrderReady() == null){
             return "FAILED";
         }
-        Orders readyOrder = readyList.get(readyList.size() - 1);
 
         // 3. 요청받은 장바구니의 상품 개수만큼 dto를 for문으로 돌려 orderSheetProductsList에 저장함
         setOrderSheetProducts(readyOrder, dto);

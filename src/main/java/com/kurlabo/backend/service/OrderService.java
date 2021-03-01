@@ -3,6 +3,7 @@ package com.kurlabo.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
 import com.kurlabo.backend.dto.order.*;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
@@ -26,6 +27,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
+    private final CartService cartService;
     private final ObjectMapper objectMapper;
 
     public OrderSheetResponseDto getOrderSheet(Member member){
@@ -36,11 +38,31 @@ public class OrderService {
                 da = list;
         }
 
+        Orders readyOrder = cartService.getOrderReady();
+
+        List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(readyOrder);
+
+        List<CheckoutProductsDto> productsDtoList = new ArrayList<>();
+
+        for(Order_Sheet_Products list: productsList){
+            productsDtoList.add(new CheckoutProductsDto(
+                    list.getProduct_id(),
+                    list.getProduct_name(),
+                    list.getProduct_price(),
+                    list.getDiscounted_price(),
+                    list.getProduct_cnt(),
+                    list.getList_image_url()
+            ));
+        }
+
         return new OrderSheetResponseDto(
                 member.getName(),
                 member.getPhone(),
                 member.getEmail(),
-                da.getDeliver_address()
+                da.getDeliver_address(),
+                productsDtoList,
+                readyOrder.getTotal_price(),
+                readyOrder.getTotal_discount_price()
         );
     }
 

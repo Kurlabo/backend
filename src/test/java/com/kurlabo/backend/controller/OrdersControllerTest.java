@@ -46,14 +46,10 @@ class OrdersControllerTest {
 
     @DisplayName("OrderSheet")
     @Test
-    void setOrderSheet() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/order/orderSheet").contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString(new OrderSheetRequestDto((long)2))))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.orderer_name").value("임정우"))
-//                .andExpect(jsonPath("$.orderer_phone").value("01043215678"))
-//                .andExpect(jsonPath("$.orderer_email").value("noah@fastcampus.com"))
-//                .andExpect(jsonPath("$.orderer_address").value("서울시 강동구 고덕동 삼성아파트 111동 111호"));
+    void getOrderSheet() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/order/orderSheet")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("Checkout")

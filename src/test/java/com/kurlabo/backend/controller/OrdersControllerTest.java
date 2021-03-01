@@ -55,24 +55,21 @@ class OrdersControllerTest {
     @DisplayName("Checkout")
     @Test
     void setCheckout() throws Exception {
-//        LocalDate localDate = LocalDate.of(2021,02,15);
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/order/checkout").contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .content(
 //                        objectMapper.writeValueAsString(
 //                                new CheckoutRequestDto(
-//                                        (long)1,
 //                                        "임정우",
 //                                        "01066004431",
 //                                        "서울시 강동구 암사동 암사아파트",
 //                                        "현관 앞",
 //                                        "공동 현관 비밀번호(1030#1111#)",
 //                                        "오전 7시",
-//                                        localDate,
 //                                        "신용카드",
-//                                        new ArrayList<>(Arrays.asList(new OrderListDto((long)1, 5), new OrderListDto((long)8,3))),
-//                                        198900
+//                                        198900,
+//                                        1100
 //                                ))))
 //                .andExpect(status().isOk())
-//                .andExpect(content().string("결제에 성공하셨습니다."));
+//                .andExpect(content().string("CHECKOUT SUCCESS"));
     }
 }

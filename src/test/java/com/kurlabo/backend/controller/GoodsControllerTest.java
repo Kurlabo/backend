@@ -151,45 +151,54 @@ public class GoodsControllerTest {
     @DisplayName("SetOrderSheet")
     @Test
     void setOrderSheet() throws Exception {
-        List<CheckoutProductsDto> list = new ArrayList<>();
-        Product product1 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
-        list.add(new CheckoutProductsDto(
-                product1.getId(),
-                product1.getName(),
-                product1.getOriginal_price()*2,
-                product1.getDiscounted_price()*2,
-                2,
-                product1.getList_image_url()
-        ));
-        Product product2 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
-        list.add(new CheckoutProductsDto(
-                product2.getId(),
-                product2.getName(),
-                product2.getOriginal_price()*3,
-                product2.getDiscounted_price()*3,
-                3,
-                product2.getList_image_url()
-        ));
-        Product product3 = productRepository.findById((long)31).orElseThrow(ResourceNotFoundException::new);
-        list.add(new CheckoutProductsDto(
-                product3.getId(),
-                product3.getName(),
-                product3.getOriginal_price()*1,
-                product3.getDiscounted_price()*1,
-                1,
-                product3.getList_image_url()
-        ));
-        SelectedProductInfoDto dto = new SelectedProductInfoDto(
-                list,
-                3000,
-                100
-        );
-        System.out.println("dto >>>>>>>>>>>>>>>>> " + dto);
-        String str = objectMapper.writeValueAsString(dto);
-        System.out.println("str >>>>>>>>>>>>> " + str);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/orderSheet")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(str))
-                .andExpect(status().isOk());
+//        List<CheckoutProductsDto> list = new ArrayList<>();
+//        Product product1 = productRepository.findById((long)82).orElseThrow(ResourceNotFoundException::new);
+//        int cnt = 1;
+//        list.add(new CheckoutProductsDto(
+//                product1.getId(),
+//                product1.getName(),
+//                product1.getOriginal_price()*cnt,
+//                (product1.getOriginal_price() - product1.getDiscounted_price())*cnt,
+//                cnt,
+//                product1.getList_image_url()
+//        ));
+//        Product product2 = productRepository.findById((long)3).orElseThrow(ResourceNotFoundException::new);
+//        cnt = 3;
+//        list.add(new CheckoutProductsDto(
+//                product2.getId(),
+//                product2.getName(),
+//                product2.getOriginal_price()*cnt,
+//                (product2.getOriginal_price() - product2.getDiscounted_price())*cnt,
+//                cnt,
+//                product2.getList_image_url()
+//        ));
+//        Product product3 = productRepository.findById((long)100).orElseThrow(ResourceNotFoundException::new);
+//        cnt = 1;
+//        list.add(new CheckoutProductsDto(
+//                product3.getId(),
+//                product3.getName(),
+//                product3.getOriginal_price()*cnt,
+//                (product3.getOriginal_price() - product3.getDiscounted_price())*cnt,
+//                cnt,
+//                product3.getList_image_url()
+//        ));
+//        int totalp = 0;
+//        int disp = 0;
+//        for(CheckoutProductsDto cpd: list){
+//            totalp += cpd.getProduct_price();
+//            disp += cpd.getProduct_discount_price();
+//        }
+//        SelectedProductInfoDto dto = new SelectedProductInfoDto(
+//                list,
+//                totalp,
+//                disp
+//        );
+//        System.out.println("dto >>>>>>>>>>>>>>>>> " + dto);
+//        String str = objectMapper.writeValueAsString(dto);
+//        System.out.println("str >>>>>>>>>>>>> " + str);
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/orderSheet")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(str))
+//                .andExpect(status().isOk());
     }
 }

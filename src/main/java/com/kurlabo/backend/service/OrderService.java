@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,54 +68,31 @@ public class OrderService {
     }
 
     @Transactional
-    public String setCheckout(CheckoutRequestDto dto) throws JsonProcessingException {
-        List<OrderProductDto> orderProductDtos = new ArrayList<>();
-        Member mem = memberRepository.findById(dto.getMember_id()).orElseThrow(ResourceNotFoundException::new);
-        String returnStr = "결제에 성공하셨습니다.";
+    public String setCheckout(Member member, CheckoutRequestDto dto) {
+        String returnStr = "CHECKOUT SUCCESS";
 
-        for(OrderListDto list: dto.getProduct_id_list()){
-            Product product = productRepository.findById(list.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
-            orderProductDtos.add(new OrderProductDto(
-                    list.getProduct_id(),
-                    product.getList_image_url(),
-                    product.getName(),
-                    product.getDiscounted_price() * list.getCnt(),
-                    ((product.getOriginal_price()-product.getDiscounted_price()) * list.getCnt()),
-                    list.getCnt()
-            ));
-        }
+        Orders readyOrder = cartService.getOrderReady();
 
-//        Orders orders = new Orders(
-//                null,
-//                mem.getName(),
-//                mem.getName(),
-//                dto.getReciever(),
-//                dto.getReciever_phone(),
-//                dto.getReciever_post(),
-//                dto.getReciever_place(),
-//                dto.getReciever_visit_method(),
-//                dto.getCheckout_date(),
-//                dto.getCheckout(),
-//                "배송중",
-//                dto.getArrived_alarm(),
-//                objectMapper.writeValueAsString(orderProductDtos),
-//                dto.getTotal_cost(),
-//                0,
-//                mem
-//        );
+        readyOrder.setSender(member.getName());
+        readyOrder.setOrderer(member.getName());
+        readyOrder.setReciever(dto.getReciever());
+        readyOrder.setReciever_phone(dto.getReciever_phone());
+        readyOrder.setReciever_post(dto.getReciever_post());
+        readyOrder.setReciever_place(dto.getReciever_place());
+        readyOrder.setReciever_visit_method(dto.getReciever_visit_method());
+        readyOrder.setCheckoutDate(LocalDate.now());
+        readyOrder.setCheckout(dto.getCheckout());
+        readyOrder.setDelivery_condition("배송 준비");
+        readyOrder.setArrived_alarm(dto.getArrived_alarm());
+        readyOrder.setProduct_id_cnt_list("");
+        readyOrder.setTotal_price(dto.getTotal_price());
+        readyOrder.setTotal_discount_price(dto.getTotal_discount_price());
+        readyOrder.setStatus("결제완료");
+        readyOrder.setMember(member);
 
-//        orderRepository.save(orders);
+        orderRepository.save(readyOrder);
 
         return returnStr;
-    }
-
-    @Transactional
-    public void setOrderSheet(){
-        List<Order_Sheet_Products> orderSheetProductsList = new ArrayList<>();
-
-
-
-        orderSheetProductsRepository.saveAll(orderSheetProductsList);
     }
 
     public Page<OrderListResponseDto> getOrderList (Member member, Pageable pageable) throws JsonProcessingException {

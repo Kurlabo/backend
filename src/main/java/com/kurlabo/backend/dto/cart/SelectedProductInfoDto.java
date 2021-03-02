@@ -11,5 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class SelectedProductInfoDto {
     private List<CheckoutProductsDto> checkout_Products;
+    private int total_price;
     private int total_discounted_price;
 }

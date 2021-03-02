@@ -11,6 +11,7 @@ public class CheckoutProductsDto {
     private Long product_id;
     private String product_name;
     private int product_price;
+    private int product_discount_price;
     private int product_cnt;
-    private String product_image_url;
+    private String list_image_url;
 }

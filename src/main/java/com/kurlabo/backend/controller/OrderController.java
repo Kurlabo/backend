@@ -21,17 +21,18 @@ public class OrderController {
     private final MemberService memberService;
 
     // 주문서
-    @PostMapping("/orderSheet")
-    public ResponseEntity<?> setOrderSheet(){
+    @GetMapping("/orderSheet")
+    public ResponseEntity<?> getOrderSheet(){
         Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         return ResponseEntity.ok(orderService.getOrderSheet(mem));
     }
 
     // 결제하기
     @PostMapping("/checkout")
-    public ResponseEntity<?> setCheckout(@RequestBody @Valid CheckoutRequestDto dto) throws JsonProcessingException {
+    public ResponseEntity<?> setCheckout(@RequestBody @Valid CheckoutRequestDto dto) {
+        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
         String returnStr = "결제에 실패하셨습니다.";
-        returnStr = orderService.setCheckout(dto);
+        returnStr = orderService.setCheckout(mem, dto);
         return ResponseEntity.ok(returnStr);
     }
 }

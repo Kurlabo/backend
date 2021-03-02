@@ -6,16 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CheckoutRequestDto {
-    @NotNull
-    private Long member_id;
     @NotNull
     private String reciever;
     @NotNull
@@ -29,11 +25,9 @@ public class CheckoutRequestDto {
     @NotNull
     private String arrived_alarm;
     @NotNull
-    private LocalDate checkout_date;
-    @NotNull
     private String checkout;
     @NotNull
-    private List<OrderListDto> product_id_list;
+    private int total_price;
     @NotNull
-    private int total_cost;
+    private int total_discount_price;
 }

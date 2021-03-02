@@ -2,7 +2,13 @@ package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
+import com.kurlabo.backend.dto.review.ReviewDto;
+import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Product;
+import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +35,8 @@ class MypageControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -122,5 +131,35 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.order_id[1]").value("3484593475423"))
                 .andExpect(jsonPath("$.email").value("noah@fastcampus.com"))
                 .andExpect(jsonPath("$.phone").value("010-4321-5678"));
+    }
+
+
+    @DisplayName("createReviewTest")
+    @Test
+    void createReviewTest() throws Exception {
+        Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+
+        ReviewDto review = new ReviewDto();
+        review.setContent("리뷰작성테스트2");
+        review.setTitle("리뷰작성테스트2");
+        review.setRegdate(LocalDate.now());
+        review.setWriter(m.getName());
+        review.setMember_id(m.getId());
+        review.setProduct_id(p.getId());
+
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_review/1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(review)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+//                .andExpect((jsonPath("$[0].product_id").value((long)5)))
+//                .andExpect((jsonPath("$[1].product_id").value((long)9)))
+//                .andExpect((jsonPath("$[2].product_id").value((long)13)))
+//                .andExpect((jsonPath("$[3].product_id").value((long)139)))
+//                .andExpect((jsonPath("$[4].product_id").value((long)111)));
+
     }
 }

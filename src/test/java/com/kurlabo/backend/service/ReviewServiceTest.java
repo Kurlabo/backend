@@ -2,6 +2,7 @@ package com.kurlabo.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.goods.ProductDto;
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
@@ -50,15 +51,15 @@ public class ReviewServiceTest {
         Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
         Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
-        Review review = new Review();
-        review.setContent("리뷰작성테스트");
-        review.setTitle("리뷰작성테스트");
+        ReviewDto review = new ReviewDto();
+        review.setContent("리뷰작성테스트1");
+        review.setTitle("리뷰작성테스트1");
         review.setRegdate(LocalDate.now());
         review.setWriter(m.getName());
-        review.setMember(m);
-        review.setProduct(p);
+        review.setMember_id(m.getId());
+        review.setProduct_id(p.getId());
 
-        Review re = reviewService.conditionsChk(review);
+        reviewService.conditionsChk(p.getId(), review);
 
         // assertThat (re.getReview_id().equals(24L));
     }

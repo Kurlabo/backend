@@ -1,12 +1,10 @@
 package com.kurlabo.backend.dto.goods;
 
 import com.kurlabo.backend.dto.review.ReviewDto;
-import com.kurlabo.backend.model.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package com.kurlabo.backend.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +30,17 @@ public class Orders {
     private String delivery_condition;
     private String arrived_alarm;
     private String product_id_cnt_list;
-    private int total_cost;
+    private int total_price;
+    private int total_discount_price;
+    private String status;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+//    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Order_Sheet_Products> order_sheet_products;
+
+//    public void addOrderSheetProducts(Order_Sheet_Products osp){
+//        order_sheet_products.add(osp);
+//        osp.setOrders(this);
+//    }
 }

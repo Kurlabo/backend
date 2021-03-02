@@ -91,7 +91,7 @@ class MypageControllerTest {
     void orderListTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(0)))
+                .param("page", String.valueOf(1)))
                 .andExpect(status().isOk());
     }
 

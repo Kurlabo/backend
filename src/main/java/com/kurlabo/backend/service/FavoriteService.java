@@ -59,9 +59,9 @@ public class FavoriteService {
     @Transactional
     public Page<FavoriteProductDto> deleteFavorite(Member member, List<Long> product_id, Pageable pageable){
         List<Favorite> deleteLists = new ArrayList<>();
-        for(int i = 0; i < product_id.size(); i++){
-            Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, product_id.get(i));
-            if(deleteFavorite == null){// 만약 들어온 product_id가 Favorite에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
+        for (Long idList : product_id) {
+            Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList);
+            if (deleteFavorite == null) {// 만약 들어온 product_id가 Favorite에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
                 return null;
             }
             deleteLists.add(deleteFavorite);

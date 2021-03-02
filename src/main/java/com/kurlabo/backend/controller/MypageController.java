@@ -1,12 +1,10 @@
 package com.kurlabo.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.service.DeliverAddressService;
 import com.kurlabo.backend.service.FavoriteService;
 import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;
@@ -57,14 +55,14 @@ public class MypageController {
 
     // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
-    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) throws JsonProcessingException {
+    public ResponseEntity<?> orderList(@PageableDefault(size = 3) Pageable pageable) {
         Member mem = memberService.findById((long)1);
         return ResponseEntity.ok(orderService.getOrderList(mem, pageable));
     }
 
     // 주문 상세 페이지
     @GetMapping("/mypage_orderview")
-    public ResponseEntity<?> orderView(@RequestParam Long ordno) throws JsonProcessingException {
+    public ResponseEntity<?> orderView(@RequestParam Long ordno) {
         return ResponseEntity.ok(orderService.getOrderView(ordno));
     }
 

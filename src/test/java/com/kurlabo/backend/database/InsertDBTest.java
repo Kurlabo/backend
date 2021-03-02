@@ -1,32 +1,25 @@
 package com.kurlabo.backend.database;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.order.OrderProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.model.db.Main_src;
-import com.kurlabo.backend.model.db.Slide_img;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.repository.db.InsertDBRepository;
 import com.kurlabo.backend.repository.db.InstaSrcRepository;
 import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
+import com.kurlabo.backend.service.CartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -65,6 +58,10 @@ public class InsertDBTest {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
+    private OrderSheetProductsRepository orderSheetProductsRepository;
+    @Autowired
+    private CartService cartService;
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -76,7 +73,10 @@ public class InsertDBTest {
     }
 
     @Test
-    void test() throws JsonProcessingException {
+    void test() {
+        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
+        List<Orders> list = orderRepository.findByMemberAndStatus(mem, "결제완료");
+        System.out.println(list);
     }
 
 //    @Test

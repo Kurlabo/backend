@@ -1,5 +1,6 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import com.kurlabo.backend.exception.CUserNotFoundException;
@@ -58,11 +59,19 @@ public class MemberService {
         return "EXISTED UID";
     }
 
+    public String checkEmail(CheckEmailDto dto) {
+        if(!memberRepository.findByEmail(dto.getCheckEmail()).isPresent()){
+            return "NOT EXISTED EMAIL";
+        }
+        return "EXISTED EMAIL";
+    }
+
     private Collection<? extends GrantedAuthority> authorities(String role) {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role));
     }
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
+
 
 }

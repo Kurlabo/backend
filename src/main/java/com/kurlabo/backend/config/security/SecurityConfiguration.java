@@ -20,21 +20,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
-    private final HandlerExceptionResolver handlerExceptionResolver;
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberService)
-                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -48,15 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/exception/**").permitAll()
-                .anyRequest().authenticated()
-
-                .and()
-                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)
-                        , UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated();
     }
 
     @Override

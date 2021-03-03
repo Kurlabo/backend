@@ -74,9 +74,6 @@ public class InsertDBTest {
 
     @Test
     void test() {
-        Member mem = memberRepository.findById((long)1).orElseThrow(ResourceNotFoundException::new);
-        List<Orders> list = orderRepository.findByMemberAndStatus(mem, "결제완료");
-        System.out.println(list);
     }
 
 //    @Test

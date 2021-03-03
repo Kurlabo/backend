@@ -1,6 +1,7 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -51,6 +53,17 @@ class MemberControllerTest {
                                 LocalDate.of(1991,03,01)
                         ))))
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("CheckUid")
+    @Test
+    void checkUid() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup/checkuid").contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(new CheckUidDto("lnoah")
+                        )))
+                .andExpect(status().isOk())
+                .andExpect(content().string("EXISTED UID"));
     }
 
 }

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum MemberRole {
-    Member("ROLE_MEMBER");
+    MEMBER("ROLE_MEMBER");
 
     private final String roleName;
 

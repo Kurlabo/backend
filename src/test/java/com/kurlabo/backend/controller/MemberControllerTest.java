@@ -44,14 +44,15 @@ class MemberControllerTest {
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup").contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .content(
 //                        objectMapper.writeValueAsString(new MemberDto(
-//                                "limnoah0301",
-//                                "limnoah0301@gmail.com",
-//                                "noahnoah11",
-//                                "noahnoah11",
+//                                "lim0301",
+//                                "jamesrodriguez0301@gmail.com",
+//                                "james910301",
+//                                "james910301",
 //                                "임정우",
 //                                "01066075331",
 //                                "남자",
-//                                LocalDate.of(1991,03,01)
+//                                LocalDate.of(1991,03,01),
+//                                "서울시 강동구 암사동 룰루랄라아파트 103동 103호"
 //                        ))))
 //                .andExpect(status().isOk());
     }

@@ -1,5 +1,6 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import com.kurlabo.backend.exception.CUserNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
@@ -48,6 +49,13 @@ public class MemberService {
         memberRepository.save(member);
 
         return "SIGNUP SUCCESS";
+    }
+
+    public String checkUid(CheckUidDto dto){
+        if(memberRepository.findByUid(dto.getCheckUid()) == null){
+            return "NOT EXISTED UID";
+        }
+        return "EXISTED UID";
     }
 
     private Collection<? extends GrantedAuthority> authorities(String role) {

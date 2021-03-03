@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import com.kurlabo.backend.exception.CUserNotFoundException;
 import com.kurlabo.backend.model.Member;
@@ -23,6 +24,11 @@ public class MemberController {
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto dto) {
         return ResponseEntity.ok(memberService.signUp(dto));
+    }
+
+    @PostMapping(value = "/signup/checkuid")
+    public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto dto) {
+        return ResponseEntity.ok(memberService.checkUid(dto));
     }
 
     @GetMapping

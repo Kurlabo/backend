@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CheckUidDto {
     @NotBlank
     @NotNull

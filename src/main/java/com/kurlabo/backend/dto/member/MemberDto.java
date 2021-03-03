@@ -35,4 +35,5 @@ public class MemberDto {
     private String gender;
     @Past(message = "생년월일을 다시 입력해주세요.")
     private LocalDate date_of_birth;
+    private String address;
 }

@@ -3,18 +3,14 @@ package com.kurlabo.backend.service;
 import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
-import com.kurlabo.backend.exception.CUserNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +24,20 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DeliverAddressService deliverAddressService;
 
     @Transactional
     public String signUp(MemberDto dto){
 
-        System.out.println("dto >>>>>>>>>>>>>>>>> "  + dto);
+        Member member = signUpMember(dto);
 
+        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress());
+
+        return "SIGNUP SUCCESS";
+    }
+
+    @Transactional
+    public Member signUpMember(MemberDto dto){
         Member member = Member.builder()
                 .uid(dto.getUid())
                 .password(passwordEncoder.encode(dto.getPassword()))
@@ -44,12 +48,10 @@ public class MemberService {
                 .date_of_birth(dto.getDate_of_birth())
                 .grade("일반")
                 .total_cost(0)
-                .role(MemberRole.Member)
+                .role(MemberRole.MEMBER)
                 .build();
 
-        memberRepository.save(member);
-
-        return "SIGNUP SUCCESS";
+        return memberRepository.save(member);
     }
 
     public String checkUid(CheckUidDto dto){

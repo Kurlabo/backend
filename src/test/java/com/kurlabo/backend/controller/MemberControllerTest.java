@@ -1,6 +1,7 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,4 +67,14 @@ class MemberControllerTest {
                 .andExpect(content().string("EXISTED UID"));
     }
 
+    @DisplayName("CheckEmail")
+    @Test
+    void checkEmail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup/checkemail").contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(new CheckEmailDto("noah123123@fastcampus.com")
+                        )))
+                .andExpect(status().isOk())
+                .andExpect(content().string("NOT EXISTED EMAIL"));
+    }
 }

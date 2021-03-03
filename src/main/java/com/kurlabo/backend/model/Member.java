@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -18,23 +19,33 @@ public class Member {
     @Column(name="member_id")
     private Long id;
 
+    @Column(nullable = false)
     private String uid;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String phone;
 
+    @Column(nullable = false)
     private String gender;
 
-    private String date_of_birth;
+    private LocalDate date_of_birth;
 
+    @Column(nullable = false)
     private String grade;
+
 
     private int total_cost;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MemberRole role;
 }

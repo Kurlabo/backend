@@ -187,7 +187,8 @@ public class CartService {
                     list.getProduct_discount_price(),
                     list.getProduct_cnt(),
                     list.getList_image_url(),
-                    readyOrder
+                    readyOrder,
+                    list.getReview_status()
             ));
         }
         orderSheetProductsRepository.saveAll(orderSheetProductsList);

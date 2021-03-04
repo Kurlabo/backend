@@ -14,4 +14,5 @@ public class CheckoutProductsDto {
     private int product_discount_price;
     private int product_cnt;
     private String list_image_url;
+    private int review_status;
 }

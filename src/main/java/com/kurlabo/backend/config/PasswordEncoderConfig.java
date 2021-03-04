@@ -1,4 +1,4 @@
-package com.kurlabo.backend.config.security;
+package com.kurlabo.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

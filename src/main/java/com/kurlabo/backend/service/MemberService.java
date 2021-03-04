@@ -55,7 +55,7 @@ public class MemberService {
     }
 
     public String checkUid(CheckUidDto dto){
-        if(memberRepository.findByUid(dto.getCheckUid()) == null){
+        if(!memberRepository.findByUid(dto.getCheckUid()).isPresent()){
             return "NOT EXISTED UID";
         }
         return "EXISTED UID";

@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.dto.member.CheckUidDto;
+import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.MemberDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,15 +45,15 @@ class MemberControllerTest {
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup").contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .content(
 //                        objectMapper.writeValueAsString(new MemberDto(
-//                                "lim0301",
-//                                "jamesrodriguez0301@gmail.com",
-//                                "james910301",
-//                                "james910301",
-//                                "임정우",
-//                                "01066075331",
-//                                "남자",
+//                                "nemnemnemnem",
+//                                "tosiaki210304@gmail.com",
+//                                "numnumnum2323",
+//                                "numnumnum2323",
+//                                "최유선",
+//                                "01001938275",
+//                                "여자",
 //                                LocalDate.of(1991,03,01),
-//                                "서울시 강동구 암사동 룰루랄라아파트 103동 103호"
+//                                "서울시 은평구 은평동 은평아파트 122동 1212호"
 //                        ))))
 //                .andExpect(status().isOk());
     }
@@ -62,7 +63,7 @@ class MemberControllerTest {
     void checkUid() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup/checkuid").contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(
-                        objectMapper.writeValueAsString(new CheckUidDto("lnoah")
+                        objectMapper.writeValueAsString(new CheckUidDto("nemnemnemnem")
                         )))
                 .andExpect(status().isOk())
                 .andExpect(content().string("EXISTED UID"));
@@ -77,5 +78,21 @@ class MemberControllerTest {
                         )))
                 .andExpect(status().isOk())
                 .andExpect(content().string("NOT EXISTED EMAIL"));
+    }
+
+    @DisplayName("login")
+    @Test
+    void loginTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/login")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                LoginDto.builder()
+                                        .uid("nemnemnemnem")
+                                        .password("numnumnum2323")
+                                        .build()
+                        )
+                ))
+                .andExpect(status().isOk());
     }
 }

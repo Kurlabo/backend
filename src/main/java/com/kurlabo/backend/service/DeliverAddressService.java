@@ -14,6 +14,23 @@ public class DeliverAddressService {
 
     private final DeliverAddressRepository deliverAddressRepository;
 
+    public Deliver_Address setDeliverAddress(Member member, String address){
+        if(member == null){
+            return null;
+        }
+
+        Deliver_Address da = new Deliver_Address(
+                null,
+                address,
+                1,
+                "",
+                "",
+                member
+        );
+
+        return deliverAddressRepository.save(da);
+    }
+
     public Deliver_Address selectMainDeliverAddress(Member member){
         List<Deliver_Address> lists = deliverAddressRepository.findByMember(member);
         Deliver_Address da = null;

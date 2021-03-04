@@ -1,11 +1,10 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.member.CheckEmailDto;
-import com.kurlabo.backend.dto.member.CheckUidDto;
-import com.kurlabo.backend.dto.member.MemberDto;
+import com.kurlabo.backend.dto.member.*;
 import com.kurlabo.backend.exception.CUserNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.service.LoginService;
 import com.kurlabo.backend.service.MemberService;
 import lombok.*;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,9 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping(value="/api/member")
 public class MemberController {
-    private final MemberRepository memberRepository;
+
     private final MemberService memberService;
+    private final LoginService loginService;
 
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto dto) {
@@ -37,24 +37,9 @@ public class MemberController {
         return ResponseEntity.ok(memberService.checkEmail(dto));
     }
 
-    @GetMapping
-    public UserInfo me(Authentication authentication) {
-        String email = authentication.getName();
-        Member member = memberRepository.findByEmail(email).orElseThrow(CUserNotFoundException::new);
-
-        UserInfo userInfo = UserInfo.builder()
-                .name(member.getName())
-                .build();
-
-        return userInfo;
+    @PostMapping("/login")
+    public ResponseEntity<?> login (@Valid @RequestBody LoginDto loginDto) {
+        String token = loginService.login(loginDto);
+        return ResponseEntity.ok(new TokenDto(token));
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class UserInfo {
-        private String name;
-    }
-
 }

@@ -1,0 +1,46 @@
+#spring.h2.console.enabled=true
+#
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+#
+## JPA Setting
+#spring.jpa.hibernate.ddl-auto=update
+#spring.jpa.generate-ddl=false
+#spring.jpa.show-sql=true
+#spring.jpa.database=mysql
+#spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+#spring.jpa.properties.hibernate.format_sql=true
+#spring.session.store-type=jdbc
+#
+### DataSource Setting
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#spring.datasource.url=jdbc:mysql://3.35.221.9:3306/kurlaboDB?characterEncoding=utf-8&useUnicode=yes&serverTimezone=UTC
+#spring.datasource.username=admin
+#spring.datasource.password=admin
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.35.221.9:3306/kurlaboDB?characterEncoding=utf-8&useUnicode=yes&serverTimezone=UTC
+    username: admin
+    password: admin
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+    show-sql: true
+  session:
+    store-type: jdbc
+
+jwt:
+  header: Authorization
+  secret: 4oCYa3VybGFiby1iYWNrZW5kLWNsb25lcHJvamVjdC1zcHJpbmctYm9vdC1qd3Qtc2VjcmV0LWt1cmxhYm8tYmFja2VuZC1jbG9uZXByb2plY3Qtc3ByaW5nLWJvb3Qtand0LXNlY3JldOKAmQo=
+  token-validity-in-seconds: 3600

@@ -6,7 +6,6 @@ import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,14 +90,14 @@ class MypageControllerTest {
     void orderListTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(1)))
+                .param("page", String.valueOf(0)))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("OrderView")
     @Test
     void orderView() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=15002338")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$.orderProduct[0].product_id").value((long)1))
@@ -141,25 +140,35 @@ class MypageControllerTest {
         Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
         ReviewDto review = new ReviewDto();
-        review.setContent("리뷰작성테스트2");
-        review.setTitle("리뷰작성테스트2");
+        review.setContent("냠냠굿3");
+        review.setTitle("냠냠굿3");
         review.setRegdate(LocalDate.now());
         review.setWriter(m.getName());
         review.setMember_id(m.getId());
         review.setProduct_id(p.getId());
-
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_review/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(review)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-//                .andExpect((jsonPath("$[0].product_id").value((long)5)))
-//                .andExpect((jsonPath("$[1].product_id").value((long)9)))
-//                .andExpect((jsonPath("$[2].product_id").value((long)13)))
-//                .andExpect((jsonPath("$[3].product_id").value((long)139)))
-//                .andExpect((jsonPath("$[4].product_id").value((long)111)));
+    }
 
+    @DisplayName("작성가능 후기 테스트")
+    @Test
+    void writableReviewsTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/writable-reviews")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("작성완료 후기 테스트")
+    @Test
+    void writtenReviewsTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/written-reviews")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

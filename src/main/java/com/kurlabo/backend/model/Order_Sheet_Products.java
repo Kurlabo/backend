@@ -24,4 +24,10 @@ public class Order_Sheet_Products {
     @ManyToOne
     @JoinColumn(name = "orders_id")
     private Orders orders;
+
+    private int review_status;
+
+    public void review_status() {
+        this.review_status = 1;
+    }
 }

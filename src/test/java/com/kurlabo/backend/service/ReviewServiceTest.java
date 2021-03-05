@@ -1,7 +1,6 @@
 package com.kurlabo.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
@@ -20,12 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import sun.rmi.runtime.Log;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -52,37 +49,37 @@ public class ReviewServiceTest {
         Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
         ReviewDto review = new ReviewDto();
-        review.setContent("리뷰작성테스트1");
-        review.setTitle("리뷰작성테스트1");
+        review.setContent("냠냠굿1");
+        review.setTitle("냠냠굿");
         review.setRegdate(LocalDate.now());
         review.setWriter(m.getName());
         review.setMember_id(m.getId());
         review.setProduct_id(p.getId());
 
-        reviewService.conditionsChk(p.getId(), review);
+        reviewService.create(p.getId(), review);
 
         // assertThat (re.getReview_id().equals(24L));
     }
 
-//    @Test
-//    @DisplayName("리뷰 리스트 테스트")
-//    void reviewListTest() throws JsonProcessingException {
-//        Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-//        Product p = productRepository.findById(2L).orElseThrow(ResourceNotFoundException::new);
-//        Review r = reviewRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-//        List<Orders> o = orderRepository.findByMember(m);
-//        Pageable pageable = PageRequest.of(0, 10);
-//
-//        Review review = new Review();
-//        review.setContent("리뷰작성테스트");
-//        review.setTitle("리뷰작성테스트");
-//        review.setRegdate(LocalDate.now());
-//        review.setWriter(m.getName());
-//        review.setMember(m);
-//        review.setProduct(p);
-//
-//        reviewService.reviewList(m, r);
-//
-//        // assertThat (re.getReview_id().equals(24L));
-//    }
+    @Test
+    @DisplayName("리뷰 리스트 테스트")
+    void reviewListTest() throws JsonProcessingException {
+        Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Product p = productRepository.findById(2L).orElseThrow(ResourceNotFoundException::new);
+        Review r = reviewRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        List<Orders> o = orderRepository.findByMember(m);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Review review = new Review();
+        review.setContent("리뷰작성테스트");
+        review.setTitle("리뷰작성테스트");
+        review.setRegdate(LocalDate.now());
+        review.setWriter(m.getName());
+        review.setMember(m);
+        review.setProduct(p);
+
+        reviewService.reviewList(1);
+
+        // assertThat (re.getReview_id().equals(24L));
+    }
 }

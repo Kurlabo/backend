@@ -1,27 +1,18 @@
 package com.kurlabo.backend.service;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.review.ReviewListDto;
-import com.kurlabo.backend.dto.review.ReviewProductDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.repository.MemberRepository;
-import com.kurlabo.backend.repository.OrderRepository;
-import com.kurlabo.backend.repository.ProductRepository;
-import com.kurlabo.backend.repository.ReviewRepository;
+import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
@@ -30,10 +21,11 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
 
     // 리뷰 작성 조건 체크
-    public ReviewDto conditionsChk(Long pId, ReviewDto reviewDto) {
+    public boolean conditionsChk(Long pId) {
         Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
@@ -44,89 +36,74 @@ public class ReviewService {
 //        );
 
         // 상품 정보가 없음
-        productRepository.findById(pId).orElseThrow(
+        Product product = productRepository.findById(pId).orElseThrow(
                 ResourceNotFoundException::new
         );
 
-        LocalDate fromDate = LocalDate.now(); // 현재시간 yyyy-MM-dd
-        LocalDate chkDate = LocalDate.now().minusMonths(1L);
+        LocalDate fromDate = LocalDate.now();
+        LocalDate chkDate = fromDate.minusMonths(1L);
         List<Orders> orderList = orderRepository.findByMemberAndCheckoutDate(member, chkDate, fromDate);
+        List<Review> reviews = reviewRepository.findByMemberAndProduct(member, product);
 
         if (orderList.isEmpty()) {
-            return null;
-        } else {
-            create(reviewDto);
+            return false;
         }
 
-        return reviewDto;
+        if (!reviews.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
-    // 주문번호, 상품명, 배송완료날짜(02월07일 배송완료), 구매수량, 상품이미지(list_img?)
-    // 제품명, 후기제목, 후기내용, 도움이 돼요, 작성날짜
-    public List<ReviewListDto> reviewList(Member member, Review review) throws JsonProcessingException {
+    public List<ReviewListDto> reviewList(int stat) {
         // 사용자 검색
-        memberRepository.findById(member.getId()).orElseThrow(ResourceNotFoundException::new);
+        // memberRepository.findById(member.getId()).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Review> reviewChk = new ArrayList<>();
+
         List<ReviewListDto> list = new ArrayList<>();
-        List<ReviewProductDto> orderReview = new ArrayList<>();
-        List<Orders> orderList = orderRepository.findByMember(member); // 멤버의 주문 내역
-        List<Orders> orders = new ArrayList<>();
-        List<Long> orderProduct = new ArrayList<>();
+        List<Orders> orderList = orderRepository.findByMember(member);
 
-        // 주문번호에서 특정 멤버가 주문한 상품의 정보만 뽑음
         for (Orders order : orderList) {
-            orderReview = objectMapper.readValue(
-                    order.getProduct_id_cnt_list(),
-                    new TypeReference<List<ReviewProductDto>>() {}
-            );
+            List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(order);
 
+            for (Order_Sheet_Products product : productsList) {
+                Product products = productRepository.findById(product.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
+                List<Review> reviewChk = reviewRepository.findByMemberAndProduct(member, products);
 
-            // 상품 정보에서 상품 아이디만 따로 저장해
-            for (ReviewProductDto oPList : orderReview ) {
-                orderProduct.add(oPList.getProduct_id());
-            } // end for
-        } // end for
-
-        // 상품아이디랑 멤버아이디로 리뷰 작성했는지 검사해
-        for (Long oPId : orderProduct) {
-            Product product = productRepository.findById(oPId).orElseThrow(ResourceNotFoundException::new);
-            reviewChk = reviewRepository.findByMemberAndProductId(member, product);
-            if(!reviewChk.isEmpty()) {
-                for (Review r : reviewChk) {
+                if (stat == 0 && product.getReview_status() == 0) { // 작성가능 리뷰
                     ReviewListDto reviewListDto = new ReviewListDto();
-                    reviewListDto.setProduct_id(r.getProduct().getId());
-                    reviewListDto.setProduct_name(r.getProduct().getName());
-                    reviewListDto.setTitle(r.getTitle());
-                    reviewListDto.setContent(r.getContent());
-                    reviewListDto.setHelp(r.getHelp());
-                    reviewListDto.setRegdate(r.getRegdate());
-                    list.add(reviewListDto);
-                } // end for
-            } else {
-                for (ReviewProductDto x : orderReview) {
-                    //if (x.getProduct_id().equals(product.getId())) {
-                    ReviewListDto reviewListDto = new ReviewListDto();
-                    // reviewListDto.setOrder_id(orders.get(0).);
+                    reviewListDto.setWritten(conditionsChk(products.getId()));
+                    reviewListDto.setOrder_id(product.getOrders().getId());
                     reviewListDto.setProduct_id(product.getId());
-                    reviewListDto.setProduct_name(product.getName());
-                    // reviewListDto.setDelivery_condition(x.get);
-                    reviewListDto.setCnt(x.getCnt());
-                    reviewListDto.setMain_img_url(product.getMain_image_url());
+                    reviewListDto.setProduct_name(product.getProduct_name());
+                    reviewListDto.setDelivery_condition(product.getOrders().getDelivery_condition());
+                    reviewListDto.setCnt(product.getProduct_cnt());
+                    reviewListDto.setList_img_url(product.getList_image_url());
                     list.add(reviewListDto);
-                    //}
+                } else if (stat == 1 && product.getReview_status() == 1) { // 작성완료 리뷰
+                    for (Review r : reviewChk) {
+                        ReviewListDto reviewListDto = new ReviewListDto();
+                        reviewListDto.setReview_id(r.getReview_id());
+                        reviewListDto.setProduct_id(r.getProduct().getId());
+                        reviewListDto.setProduct_name(r.getProduct().getName());
+                        reviewListDto.setTitle(r.getTitle());
+                        reviewListDto.setContent(r.getContent());
+                        reviewListDto.setHelp(r.getHelp());
+                        reviewListDto.setRegdate(r.getRegdate());
+                        list.add(reviewListDto);
+                    } // end for
                 }
-            }
+            } // end for
+
         } // end for
 
-        System.out.println("list--- " + list );
-
-        return null;
+        return list;
     }
 
     // 리뷰작성
-    public void create(ReviewDto review) {
+    public boolean create(Long pId, ReviewDto review) {
         Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
@@ -134,20 +111,27 @@ public class ReviewService {
 //                ResourceNotFoundException::new
 //        );
 
-        Product product = productRepository.findById(review.getProduct_id()).orElseThrow(
+        Product product = productRepository.findById(pId).orElseThrow(
                 ResourceNotFoundException::new
         );
 
-        Review newReview = new Review();
-        newReview.setTitle(review.getTitle());
-        newReview.setContent(review.getContent());
-        newReview.setWriter(review.getWriter());
-        newReview.setRegdate(LocalDate.now());
-        newReview.setHelp(0L);
-        newReview.setCnt(0L);
-        newReview.setMember(member);
-        newReview.setProduct(product);
+        if (conditionsChk(review.getProduct_id())) {
+            Review newReview = new Review();
+            newReview.setTitle(review.getTitle());
+            newReview.setContent(review.getContent());
+            newReview.setWriter(review.getWriter());
+            newReview.setRegdate(LocalDate.now());
+            newReview.setHelp(0L);
+            newReview.setCnt(0L);
+            newReview.setMember(member);
+            newReview.setProduct(product);
 
-        reviewRepository.save(newReview);
+            reviewRepository.save(newReview);
+            Order_Sheet_Products order_sheet_products = new Order_Sheet_Products();
+            order_sheet_products.review_status();
+        } else {
+            return false;
+        }
+        return true;
     }
 }

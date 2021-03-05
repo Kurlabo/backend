@@ -126,7 +126,7 @@ public class CartService {
 
     public Orders getOrderReady(){
         List<Orders> list = orderRepository.findAllByStatus("결제준비");
-        return list.get(list.size() - 1);
+        return list.size() == 0 ? null : list.get(list.size() - 1);
     }
 
     // 미리 결제준비였던 데이터들 결제 취소로 만듬.
@@ -187,7 +187,8 @@ public class CartService {
                     list.getProduct_discount_price(),
                     list.getProduct_cnt(),
                     list.getList_image_url(),
-                    readyOrder
+                    readyOrder,
+                    list.getReview_status()
             ));
         }
         orderSheetProductsRepository.saveAll(orderSheetProductsList);

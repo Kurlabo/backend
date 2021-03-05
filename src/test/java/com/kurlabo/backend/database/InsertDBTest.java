@@ -2,6 +2,7 @@ package com.kurlabo.backend.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
@@ -14,11 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -165,20 +168,20 @@ public class InsertDBTest {
 //    @Test
 //    @Rollback(value = false)
 //    void InsertCart(){
-////        Member member = memberRepository.findById((long)2).orElseThrow(
-////                () -> new ResourceNotFoundException()
-////        );
-////
-////        List<Cart> cartList = new ArrayList<>();
-////        Cart cart1 = new Cart(null, (long)1, 3, member);
-//////        Cart cart2 = new Cart(null, (long)135, 1,member);
-//////        Cart cart3 = new Cart(null, (long)41, 4,member);
-//////        Cart cart4 = new Cart(null, (long)77, 5,member);
-////        cartList.add(cart1);
-//////        cartList.add(cart2);
-//////        cartList.add(cart3);
-//////        cartList.add(cart4);
-////        cartRepository.saveAll(cartList);
+//        Member member = memberRepository.findById((long)1).orElseThrow(
+//                ResourceNotFoundException::new
+//        );
+//
+//        List<Cart> cartList = new ArrayList<>();
+//        Cart cart1 = new Cart(null, (long)1, 3, member);
+//        Cart cart2 = new Cart(null, (long)135, 1,member);
+//        Cart cart3 = new Cart(null, (long)41, 4,member);
+//        Cart cart4 = new Cart(null, (long)77, 5,member);
+//        cartList.add(cart1);
+//        cartList.add(cart2);
+//        cartList.add(cart3);
+//        cartList.add(cart4);
+//        cartRepository.saveAll(cartList);
 //    }
 //
 //    @Test

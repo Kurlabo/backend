@@ -203,7 +203,7 @@ class MypageControllerTest {
     void updateAddressTest() throws Exception {
         Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
         Deliver_Address da = new Deliver_Address();
-        da.setId(41L);
+        da.setId(45L);
 //        da.setReciever("황시목");
 //        da.setReciever_phone("11111111");
         da.setMember(member);

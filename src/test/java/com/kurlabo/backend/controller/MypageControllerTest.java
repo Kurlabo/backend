@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.MemberRepository;
@@ -170,5 +171,62 @@ class MypageControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("배송지 가져오기 테스트")
+    @Test
+    void getAllAddressTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("배송지 추가 테스트")
+    void createAddressTest() throws Exception {
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Deliver_Address da = new Deliver_Address();
+        da.setDeliver_address("주소어쩌구3");
+        da.setReciever("이창준");
+        da.setReciever_phone("030-0111-3244");
+        da.setMember(member);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(da)))
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("배송지 수정 테스트")
+    @Test
+    void updateAddressTest() throws Exception {
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Deliver_Address da = new Deliver_Address();
+        da.setId(41L);
+//        da.setReciever("황시목");
+//        da.setReciever_phone("11111111");
+        da.setMember(member);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(da)))
+                .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @DisplayName("배송지 삭제 테스트")
+    @Test
+    void deleteAddressTest() throws Exception {
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Deliver_Address da = new Deliver_Address();
+        da.setMember(member);
+        da.setId(32L);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(da)))
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 }

@@ -8,10 +8,4 @@ import java.util.List;
 
 public interface DeliverAddressRepository extends JpaRepository<Deliver_Address, Long> {
     List<Deliver_Address> findByMember(Member member);
-
-//    @Transactional
-//    @Modifying
-//    @Query("update Deliver_Address d set d.is_main = 0 where d.member = :member")
-//    int findByMemberUpdate(Member member);
-
 }

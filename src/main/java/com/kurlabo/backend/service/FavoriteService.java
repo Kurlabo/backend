@@ -46,14 +46,14 @@ public class FavoriteService {
     }
 
     @Transactional
-    public String insertFavorite(Member member, Long product_id){
-        String str = "이미 늘 사는 리스트에 존재하는 상품입니다.";
+    public Boolean insertFavorite(Member member, Long product_id){
+        boolean bool = false;
         if(searchFavorite(member, product_id) == null){
-            str = "늘 사는 리스트에 추가 했습니다.";
             Favorite favorite = new Favorite(null, product_id, member);
             favoriteRepository.save(favorite);
+            bool = true;
         }
-        return str;
+        return bool;
     }
 
     @Transactional

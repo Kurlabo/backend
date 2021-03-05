@@ -56,7 +56,7 @@ public class ReviewServiceTest {
         review.setMember_id(m.getId());
         review.setProduct_id(p.getId());
 
-        reviewService.create(review);
+        reviewService.create(p.getId(), review);
 
         // assertThat (re.getReview_id().equals(24L));
     }

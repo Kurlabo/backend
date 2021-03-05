@@ -6,6 +6,7 @@ import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,6 @@ public class ReviewService {
     private final OrderRepository orderRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
-    private final Order_Sheet_Products orderSheetProducts;
 
     // 리뷰 작성 조건 체크
     public boolean conditionsChk(Long pId) {
@@ -59,10 +59,8 @@ public class ReviewService {
     public List<ReviewListDto> reviewList(int stat) {
         // 사용자 검색
         // memberRepository.findById(member.getId()).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
-        Member member = memberRepository.findById(13L).orElseThrow(
-                ResourceNotFoundException::new
-        );
 
         List<ReviewListDto> list = new ArrayList<>();
         List<Orders> orderList = orderRepository.findByMember(member);
@@ -105,7 +103,7 @@ public class ReviewService {
     }
 
     // 리뷰작성
-    public boolean create(ReviewDto review) {
+    public boolean create(Long pId, ReviewDto review) {
         Member member = memberRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
@@ -113,7 +111,7 @@ public class ReviewService {
 //                ResourceNotFoundException::new
 //        );
 
-        Product product = productRepository.findById(review.getProduct_id()).orElseThrow(
+        Product product = productRepository.findById(pId).orElseThrow(
                 ResourceNotFoundException::new
         );
 
@@ -129,7 +127,8 @@ public class ReviewService {
             newReview.setProduct(product);
 
             reviewRepository.save(newReview);
-            orderSheetProducts.review_status();
+            Order_Sheet_Products order_sheet_products = new Order_Sheet_Products();
+            order_sheet_products.review_status();
         } else {
             return false;
         }

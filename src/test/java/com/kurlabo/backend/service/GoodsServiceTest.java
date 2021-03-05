@@ -59,13 +59,13 @@ class GoodsServiceTest {
     @Test
     @DisplayName("조회수 테스트")
     void reviewCountTest() {
-        Review review = reviewRepository.findById(3L).orElseThrow(
+        Review review = reviewRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
 
         goodsService.reviewUpdateCnt(review);
 
-        Review after = reviewRepository.findById(3L).orElseThrow(
+        Review after = reviewRepository.findById(1L).orElseThrow(
                 ResourceNotFoundException::new
         );
 

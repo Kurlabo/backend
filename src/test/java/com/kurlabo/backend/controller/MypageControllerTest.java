@@ -90,14 +90,14 @@ class MypageControllerTest {
     void orderListTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(1)))
+                .param("page", String.valueOf(0)))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("OrderView")
     @Test
     void orderView() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=15002338")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$.orderProduct[0].product_id").value((long)1))

@@ -98,7 +98,7 @@ public class MypageController {
     @PostMapping("/mypage_review/{pId}")
     public ResponseEntity<Void> create (@PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         // 후기 작성
-        reviewService.create(reviewDto);
+        reviewService.create(pId, reviewDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

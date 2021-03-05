@@ -1,6 +1,5 @@
 package com.kurlabo.backend.dto.review;
 
-import com.kurlabo.backend.model.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +17,8 @@ public class ReviewListDto {
 
     private Long product_id;
 
+    private Long review_id;
+
     private String product_name;
 
     private String title;
@@ -32,5 +33,7 @@ public class ReviewListDto {
 
     private int cnt;
 
-    private String main_img_url;
+    private String list_img_url;
+
+    private boolean written; // 리뷰 작성 가능, 불가능 여부
 }

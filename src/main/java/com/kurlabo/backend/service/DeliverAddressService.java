@@ -5,6 +5,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class DeliverAddressService {
 
     private final DeliverAddressRepository deliverAddressRepository;
 
+    @Transactional
     public Deliver_Address setDeliverAddress(Member member, String address){
         if(member == null){
             return null;

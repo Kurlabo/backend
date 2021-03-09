@@ -1,15 +1,21 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.main.HeaderDto;
 import com.kurlabo.backend.dto.main.InstaSrcDto;
 import com.kurlabo.backend.dto.main.MainPageProductDto;
 import com.kurlabo.backend.dto.main.MainResponseDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Cart;
+import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.db.Slide_img;
+import com.kurlabo.backend.repository.CartRepository;
+import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.repository.db.InstaSrcRepository;
 import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +31,9 @@ public class MainService {
     private final InstaSrcRepository instaSrcRepository;
     private final MainSrcRepository mainSrcRepository;
     private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
+    private final CartRepository cartRepository;
+    private final TokenProvider tokenProvider;
 
     public MainResponseDto setMainPage() {
         return new MainResponseDto(
@@ -197,5 +206,11 @@ public class MainService {
             case 16: productList = productRepository.findByCategoryPet();           break;
         }
         return productList;
+    }
+
+    public HeaderDto setHeader(String token) {
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
+        List<Cart> cartList = cartRepository.findByMember(member);
+        return new HeaderDto(member.getGrade(), member.getName(), cartList.size());
     }
 }

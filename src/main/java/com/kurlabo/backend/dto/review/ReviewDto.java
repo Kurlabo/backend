@@ -1,14 +1,11 @@
 package com.kurlabo.backend.dto.review;
 
-import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor

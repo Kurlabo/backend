@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,14 +91,14 @@ class MypageControllerTest {
     void orderListTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderlist")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", String.valueOf(1)))
+                .param("page", String.valueOf(0)))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("OrderView")
     @Test
     void orderView() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=15002338")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/mypage_orderview?ordno=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$.orderProduct[0].product_id").value((long)1))
@@ -141,25 +141,92 @@ class MypageControllerTest {
         Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
         ReviewDto review = new ReviewDto();
-        review.setContent("리뷰작성테스트2");
-        review.setTitle("리뷰작성테스트2");
+        review.setContent("냠냠굿3");
+        review.setTitle("냠냠굿3");
         review.setRegdate(LocalDate.now());
         review.setWriter(m.getName());
         review.setMember_id(m.getId());
         review.setProduct_id(p.getId());
-
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_review/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(review)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-//                .andExpect((jsonPath("$[0].product_id").value((long)5)))
-//                .andExpect((jsonPath("$[1].product_id").value((long)9)))
-//                .andExpect((jsonPath("$[2].product_id").value((long)13)))
-//                .andExpect((jsonPath("$[3].product_id").value((long)139)))
-//                .andExpect((jsonPath("$[4].product_id").value((long)111)));
+    }
 
+    @DisplayName("작성가능 후기 테스트")
+    @Test
+    void writableReviewsTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/writable-reviews")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("작성완료 후기 테스트")
+    @Test
+    void writtenReviewsTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/written-reviews")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("배송지 가져오기 테스트")
+    @Test
+    void getAllAddressTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("배송지 추가 테스트")
+    void createAddressTest() throws Exception {
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+        Deliver_Address da = new Deliver_Address();
+        da.setDeliver_address("주소어쩌구3");
+        da.setReciever("이창준");
+        da.setReciever_phone("030-0111-3244");
+        da.setMember(member);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(da)))
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("배송지 수정 테스트")
+    @Test
+    void updateAddressTest() throws Exception {
+//        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+//        Deliver_Address da = new Deliver_Address();
+//        da.setId(45L);
+//        da.setReciever("황시목");
+//        da.setReciever_phone("11111111");
+//        da.setMember(member);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(da)))
+//                .andExpect(status().isCreated())
+//                .andDo(print());
+    }
+
+    @DisplayName("배송지 삭제 테스트")
+    @Test
+    void deleteAddressTest() throws Exception {
+//        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+//        Deliver_Address da = new Deliver_Address();
+//        da.setMember(member);
+//        da.setId(32L);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/destination/list")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(da)))
+//                .andExpect(status().isNoContent())
+//                .andDo(print());
     }
 }

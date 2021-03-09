@@ -4,11 +4,9 @@ import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
+import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.service.FavoriteService;
-import com.kurlabo.backend.service.MemberService;
-import com.kurlabo.backend.service.OrderService;
-import com.kurlabo.backend.service.ReviewService;
+import com.kurlabo.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +27,7 @@ public class MypageController {
     private final MemberService memberService;
     private final ReviewService reviewService;
     private final OrderService orderService;
+    private final DeliverAddressService deliverAddressService;
 
     //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
@@ -81,25 +80,54 @@ public class MypageController {
                 .body(new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678"));
     }
 
-//    @GetMapping("/written-reviews")
-//    public ResponseEntity<?> writtenReviews(@PageableDefault Pageable pageable, Review review){
-//        // 작성완료 후기 리스트
-//        return ResponseEntity.ok()
-//                .body(reviewService.reviewList(pageable, review));
-//    }
-//
-//    @GetMapping("/writable-reviews")
-//    public ResponseEntity<?> writableReviews(@PageableDefault Pageable pageable, Review review){
-//        // 작성가능 후기 리스트
-//        return ResponseEntity.ok()
-//                .body(reviewService.reviewList(pageable, review));
-//    }
+    @GetMapping("/writable-reviews")
+    public ResponseEntity<?> writableReviews(){
+        // 작성가능 후기 리스트
+        return ResponseEntity.ok()
+                .body(reviewService.reviewList(0));
+    }
+
+    @GetMapping("/written-reviews")
+    public ResponseEntity<?> writtenReviews(){
+        // 작성완료 후기 리스트
+        return ResponseEntity.ok()
+                .body(reviewService.reviewList(1));
+    }
 
     @PostMapping("/mypage_review/{pId}")
     public ResponseEntity<Void> create (@PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         // 후기 작성
-        reviewService.conditionsChk(pId, reviewDto);
+        reviewService.create(pId, reviewDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // 배송지 리스트
+    @GetMapping("/destination/list")
+    public ResponseEntity<?> getAllAddress(Member member) {
+        member = memberService.findById((long)1);
+        return ResponseEntity.ok(deliverAddressService.getAllAddress(member));
+    }
+
+    // 배송지 추가
+    @PostMapping("/destination/list")
+    public ResponseEntity<?> createAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.creatAddress(deliverAddress);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // 배송지 수정
+    @PutMapping("/destination/list")
+    public ResponseEntity<?> updateAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.updateDeliverAddress(deliverAddress);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // 배송지 삭제
+    @DeleteMapping("/destination/list")
+    public ResponseEntity<?> deleteAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.deleteDeliverAddress(deliverAddress);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        // return ResponseEntity.ok(deliverAddressService.deleteDeliverAddress(deliverAddress));
     }
 }

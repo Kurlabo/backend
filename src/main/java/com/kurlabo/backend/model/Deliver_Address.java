@@ -31,4 +31,9 @@ public class Deliver_Address {
         this.reciever = reciever;
         this.reciever_phone = reciever_phone;
     }
+
+    public int updateIsMain () {
+        this.is_main = 0;
+        return this.is_main;
+    }
 }

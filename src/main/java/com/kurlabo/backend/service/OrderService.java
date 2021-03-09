@@ -1,6 +1,5 @@
 package com.kurlabo.backend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
 import com.kurlabo.backend.dto.order.*;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
@@ -50,7 +49,8 @@ public class OrderService {
                     list.getProduct_price(),
                     list.getDiscounted_price(),
                     list.getProduct_cnt(),
-                    list.getList_image_url()
+                    list.getList_image_url(),
+                    list.getReview_status()
             ));
         }
 

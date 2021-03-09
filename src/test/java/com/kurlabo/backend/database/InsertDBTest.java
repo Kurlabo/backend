@@ -3,6 +3,7 @@ package com.kurlabo.backend.database;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -80,15 +82,7 @@ public class InsertDBTest {
 
     @Test
     void test() {
-        Member member1 = memberRepository.findById((long)60).orElseThrow(ResourceNotFoundException::new);
-        Member member2 = memberRepository.findById((long)61).orElseThrow(ResourceNotFoundException::new);
 
-        List<Member> lists = new ArrayList<>(Arrays.asList(member1, member2));
-
-        System.out.println("mem1 >>>>>>>>>>> " + member1);
-        System.out.println("mem1 >>>>>>>>>>> " + member2);
-
-        memberRepository.deleteAll(lists);
     }
 
 //    @Test
@@ -180,20 +174,20 @@ public class InsertDBTest {
 //    @Test
 //    @Rollback(value = false)
 //    void InsertCart(){
-////        Member member = memberRepository.findById((long)2).orElseThrow(
-////                () -> new ResourceNotFoundException()
-////        );
-////
-////        List<Cart> cartList = new ArrayList<>();
-////        Cart cart1 = new Cart(null, (long)1, 3, member);
-//////        Cart cart2 = new Cart(null, (long)135, 1,member);
-//////        Cart cart3 = new Cart(null, (long)41, 4,member);
-//////        Cart cart4 = new Cart(null, (long)77, 5,member);
-////        cartList.add(cart1);
-//////        cartList.add(cart2);
-//////        cartList.add(cart3);
-//////        cartList.add(cart4);
-////        cartRepository.saveAll(cartList);
+//        Member member = memberRepository.findById((long)1).orElseThrow(
+//                ResourceNotFoundException::new
+//        );
+//
+//        List<Cart> cartList = new ArrayList<>();
+//        Cart cart1 = new Cart(null, (long)1, 3, member);
+//        Cart cart2 = new Cart(null, (long)135, 1,member);
+//        Cart cart3 = new Cart(null, (long)41, 4,member);
+//        Cart cart4 = new Cart(null, (long)77, 5,member);
+//        cartList.add(cart1);
+//        cartList.add(cart2);
+//        cartList.add(cart3);
+//        cartList.add(cart4);
+//        cartRepository.saveAll(cartList);
 //    }
 //
 //    @Test

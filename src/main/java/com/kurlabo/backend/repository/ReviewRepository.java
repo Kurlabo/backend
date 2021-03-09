@@ -29,6 +29,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long > {
 
     List<Review> findByMember(Member member, Pageable pageable);
 
-    @Query("select r from Review r where r.member = :member and r.product = :product")
-    List<Review> findByMemberAndProductId(@Param("member") Member member, @Param("product") Product product);
+    // @Query("select r from Review r where r.member = :member and r.product = :product")
+    List<Review> findByMemberAndProduct(Member member, Product product);
 }

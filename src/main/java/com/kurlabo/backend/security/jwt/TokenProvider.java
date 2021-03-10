@@ -57,8 +57,10 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        // Token의 expire time 설정
         Date validity = Date.from(ZonedDateTime.now().plusSeconds(tokenValidityInSeconds).toInstant());
 
+        // JWT 토큰을 생성해서 리턴
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
@@ -67,6 +69,7 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
     }
+
 
     public Long parseTokenToGetMemberId(String token) {
         if (token.startsWith("B")) {
@@ -77,18 +80,22 @@ public class TokenProvider implements InitializingBean {
         return  Long.parseLong(memberId);
     }
 
-    // Token에 담겨있는 정보를 이용해 Authentication 객체를 리턴하는 메소드
+    // Token에 담겨잇는 정보를 이용해 Authentication 객체를 리턴하는 메소드
     public Authentication getAuthentication(String token) {
 
+        // 토큰으로 클레임을 만듬
         Claims claims = getClaimsFromToken(token);
 
+        // 클레임에서 권한 정보들을 받아옴
         Collection<? extends  GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
+        // 권한정보들을 이용해서 유저 객체를 만듬
         User principal = new User(claims.getSubject(), "", authorities);
 
+        // Authentication 객체를 리턴
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
@@ -100,7 +107,9 @@ public class TokenProvider implements InitializingBean {
                 .getBody();
     }
 
+    // 토큰의 유효성 검증을 수행하는 메소드
     public boolean validateToken(String token) {
+        // 토큰을 받아 파싱해보고 나오는 Exception들을 캐치 문제가 있으면 false, 정상이면 true
         try{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             checkTokenBlackList(JwtFilter.HEADER_PREFIX + token);

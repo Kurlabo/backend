@@ -3,12 +3,14 @@ package com.kurlabo.backend.service;
 import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.dto.member.CheckUidDto;
 import com.kurlabo.backend.dto.member.MemberDto;
+import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +30,12 @@ public class MemberService {
 
     @Transactional
     public String signUp(MemberDto dto){
+        if (checkUid(new CheckUidDto(dto.getUid())).equals("EXISTED UID")){
+            return "SIGNUP FAUILD(EXISTED UID)";
+        }
+        else if (checkEmail(new CheckEmailDto(dto.getEmail())).equals("EXISTED EMAIL")){
+            return "SIGNUP FAUILD(EXISTED EMAIL)";
+        }
 
         Member member = signUpMember(dto);
 
@@ -55,17 +63,17 @@ public class MemberService {
     }
 
     public String checkUid(CheckUidDto dto){
-        if(!memberRepository.findByUid(dto.getCheckUid()).isPresent()){
-            return "NOT EXISTED UID";
+        if(memberRepository.findAllByUid(dto.getCheckUid()).size() > 0){
+            return "EXISTED UID";
         }
-        return "EXISTED UID";
+        return "NOT EXISTED UID";
     }
 
     public String checkEmail(CheckEmailDto dto) {
-        if(!memberRepository.findByEmail(dto.getCheckEmail()).isPresent()){
-            return "NOT EXISTED EMAIL";
+        if(memberRepository.findAllByEmail(dto.getCheckEmail()).size() > 0){
+            return "EXISTED EMAIL";
         }
-        return "EXISTED EMAIL";
+        return "NOT EXISTED EMAIL";
     }
 
     private Collection<? extends GrantedAuthority> authorities(String role) {
@@ -74,6 +82,4 @@ public class MemberService {
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
-
-
 }

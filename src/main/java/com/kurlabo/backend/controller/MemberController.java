@@ -1,14 +1,15 @@
 package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.member.*;
-import com.kurlabo.backend.exception.CUserNotFoundException;
-import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.security.jwt.JwtFilter;
 import com.kurlabo.backend.service.LoginService;
 import com.kurlabo.backend.service.MemberService;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,8 +39,16 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@Valid @RequestBody LoginDto loginDto) {
-        String token = loginService.login(loginDto);
-        return ResponseEntity.ok(new TokenDto(token));
+    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto) {
+        TokenDto dto = loginService.login(loginDto);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + dto.getToken());
+        return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/testgetuserinfo")
+    public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
+        System.out.println("token >>>>>>>>>>>>>>>>>> " + token);
+        return ResponseEntity.ok(loginService.testInfo(token));
     }
 }

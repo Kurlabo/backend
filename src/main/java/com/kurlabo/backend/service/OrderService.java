@@ -82,7 +82,6 @@ public class OrderService {
         readyOrder.setCheckout(dto.getCheckout());
         readyOrder.setDelivery_condition("배송 준비");
         readyOrder.setArrived_alarm(dto.getArrived_alarm());
-        readyOrder.setProduct_id_cnt_list("");
         readyOrder.setTotal_price(dto.getTotal_price());
         readyOrder.setTotal_discount_price(dto.getTotal_discount_price());
         readyOrder.setStatus("결제완료");
@@ -147,6 +146,16 @@ public class OrderService {
                 order.getReciever_place(),
                 order.getReciever_visit_method(),
                 order.getArrived_alarm()
+        );
+    }
+
+    public OrderEndDto setOrderEnd(Long ordno) {
+        Orders orders = orderRepository.findById(ordno).orElseThrow(ResourceNotFoundException::new);
+        return new OrderEndDto(
+                ordno,
+                orders.getTotal_price(),
+                orders.getOrderer(),
+                orders.getCheckout()
         );
     }
 }

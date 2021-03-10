@@ -159,7 +159,6 @@ public class CartService {
                 "",
                 "",
                 "",
-                "",
                 0,
                 0,
                 "결제준비",

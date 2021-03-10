@@ -2,11 +2,6 @@ package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
-import com.kurlabo.backend.dto.order.OrderListDto;
-import com.kurlabo.backend.dto.order.OrderSheetRequestDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +14,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,8 +24,6 @@ class OrdersControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private MemberRepository memberRepository;
 
     @BeforeEach
     void before(WebApplicationContext wac) {

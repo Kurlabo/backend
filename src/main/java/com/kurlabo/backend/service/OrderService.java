@@ -55,6 +55,7 @@ public class OrderService {
         }
 
         return new OrderSheetResponseDto(
+                readyOrder.getId(),
                 member.getName(),
                 member.getPhone(),
                 member.getEmail(),

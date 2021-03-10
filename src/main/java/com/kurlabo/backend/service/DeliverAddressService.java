@@ -16,6 +16,7 @@ public class DeliverAddressService {
 
     private final DeliverAddressRepository deliverAddressRepository;
 
+    @Transactional
     public Deliver_Address setDeliverAddress(Member member, String address){
         if(member == null){
             return null;

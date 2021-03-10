@@ -35,4 +35,9 @@ public class OrderController {
         returnStr = orderService.setCheckout(mem, dto);
         return ResponseEntity.ok(returnStr);
     }
+
+    @GetMapping("/orderEnd")
+    public ResponseEntity<?> orderEnd(@RequestParam Long ordno){
+        return ResponseEntity.ok(orderService.setOrderEnd(ordno));
+    }
 }

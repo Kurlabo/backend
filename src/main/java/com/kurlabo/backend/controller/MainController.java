@@ -24,4 +24,10 @@ public class MainController {
     public ResponseEntity<?> mdRecommend(@PathVariable int category){
         return ResponseEntity.ok(mainService.setMdRecommend(category));
     }
+
+    // 사이트 헤더
+    @GetMapping("/header")
+    public ResponseEntity<?> header(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(mainService.setHeader(token));
+    }
 }

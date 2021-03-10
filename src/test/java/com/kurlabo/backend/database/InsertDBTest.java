@@ -1,6 +1,7 @@
 package com.kurlabo.backend.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
@@ -11,6 +12,7 @@ import com.kurlabo.backend.repository.db.InstaSrcRepository;
 import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
 import com.kurlabo.backend.service.CartService;
+import com.kurlabo.backend.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -66,6 +69,8 @@ public class InsertDBTest {
     private CartService cartService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private MemberService memberService;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -77,6 +82,7 @@ public class InsertDBTest {
 
     @Test
     void test() {
+
     }
 
 //    @Test

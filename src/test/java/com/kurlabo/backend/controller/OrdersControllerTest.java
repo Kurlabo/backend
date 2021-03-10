@@ -72,4 +72,15 @@ class OrdersControllerTest {
 //                .andExpect(status().isOk())
 //                .andExpect(content().string("CHECKOUT SUCCESS"));
     }
+
+    @DisplayName("OrderEnd")
+    @Test
+    void orderEnd() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/order/orderEnd?ordno=15002367").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect((jsonPath("$.orders_id")).value((long)15002367))
+                .andExpect((jsonPath("$.total_price")).value(919018))
+                .andExpect((jsonPath("$.orderer")).value("임정우"))
+                .andExpect((jsonPath("$.checkout")).value("PAYCO 결제"));
+    }
 }

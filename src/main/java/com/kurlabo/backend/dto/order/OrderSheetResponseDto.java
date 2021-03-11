@@ -15,6 +15,8 @@ import java.util.List;
 @Builder
 public class OrderSheetResponseDto {
     @NotNull
+    private Long orders_id;
+    @NotNull
     private String orderer_name;
     @NotNull
     private String orderer_phone;

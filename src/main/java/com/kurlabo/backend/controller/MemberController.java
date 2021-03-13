@@ -63,6 +63,16 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findPw(findPwDto));
     }
 
+    @GetMapping("/myinfo")
+    public ResponseEntity<?> myInfo(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(memberService.getMyInfo(token));
+    }
+
+    @PostMapping("/myinfo")
+    public ResponseEntity<?> myInfo() {
+        return ResponseEntity.ok(null);
+    }
+
     @GetMapping("/testgetuserinfo")
     public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
         System.out.println("token >>>>>>>>>>>>>>>>>> " + token);

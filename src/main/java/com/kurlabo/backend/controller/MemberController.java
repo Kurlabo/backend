@@ -58,10 +58,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findId(findIdDto));
     }
 
-//    @PostMapping("/find_pw")
-//    public ResponseEntity<?> findPw(FindPwDto findPwDto) {
-//        return ResponseEntity.ok(memberService.findPw(findPwDto));
-//    }
+    @PostMapping("/find_pw")
+    public ResponseEntity<?> findPw(FindPwDto findPwDto) {
+        return ResponseEntity.ok(memberService.findPw(findPwDto));
+    }
 
     @GetMapping("/testgetuserinfo")
     public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){

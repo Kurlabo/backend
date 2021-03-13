@@ -1,10 +1,7 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.member.CheckEmailDto;
-import com.kurlabo.backend.dto.member.CheckUidDto;
-import com.kurlabo.backend.dto.member.LoginDto;
-import com.kurlabo.backend.dto.member.MemberDto;
+import com.kurlabo.backend.dto.member.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +17,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 class MemberControllerTest {
@@ -93,6 +89,43 @@ class MemberControllerTest {
                                         .build()
                         )
                 ))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("findId")
+    @Test
+    void findId() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_id")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                FindIdDto.builder()
+                                        .name("임정우")
+                                        .email("limnoah0301@gmail.com")
+                                        .build()
+                        )
+                ))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+                .andExpect(jsonPath("$.uid").value("limnoah0***"))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("findPw")
+    @Test
+    void findPw() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                FindPwDto.builder()
+                                        .name("임정우")
+                                        .uid("limnoah0301")
+                                        .email("limnoah0301@gmail.com")
+                                        .build()
+                        )
+                ))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+                .andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
                 .andExpect(status().isOk());
     }
 }

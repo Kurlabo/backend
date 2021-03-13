@@ -58,10 +58,12 @@ public class LoginService {
     public void logout(String token) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
+        System.out.println("logout 성공");
     }
 
     public TestInfoDto testInfo(String token){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
+
         return new TestInfoDto(token, member.getId(), member.getUid());
     }
 }

@@ -1,9 +1,8 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.member.CheckEmailDto;
-import com.kurlabo.backend.dto.member.CheckUidDto;
-import com.kurlabo.backend.dto.member.MemberDto;
+import com.kurlabo.backend.dto.member.*;
 import com.kurlabo.backend.dto.testdto.TestInfoDto;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -82,4 +82,28 @@ public class MemberService {
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
+
+    public FindIdResponseDto findId(FindIdDto findIdDto) {
+
+        Optional<Member> memberOptional = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail());
+        Member member;
+        if(memberOptional.isPresent()){
+            member = memberOptional.get();
+        } else {
+            throw new DataNotFoundException("NO RESOURCE");
+        }
+        String responseUid = member.getUid().substring(0, member.getUid().length() - 3) + "***";
+
+        return FindIdResponseDto.builder()
+                .message("SUCCESS")
+                .uid(responseUid)
+                .build();
+    }
+
+//    public FindPwResponseDto findPw(FindPwDto findPwDto) {
+//        return new FindPwResponseDto(
+//                "",
+//                ""
+//        );
+//    }
 }

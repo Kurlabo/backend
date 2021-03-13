@@ -75,9 +75,9 @@ public class GoodsControllerTest {
     @DisplayName("GetCartList")
     @Test
     void getCartList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
-                .andExpect(status().isOk())
-                .andDo(print());
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_cart"))
+//                .andExpect(status().isOk())
+//                .andDo(print());
 //                .andExpect(jsonPath("$.cartDataDto[4].product_id").value((long)69))
 //                .andExpect(jsonPath("$.cartDataDto[4].name").value("[바다원] 올리브유 김자반 볶음 50g"))
 //                .andExpect(jsonPath("$.cartDataDto[4].original_price").value(1990))
@@ -111,13 +111,13 @@ public class GoodsControllerTest {
     @Test
     void deleteCart() throws Exception {
 //        List<Long> lists = new ArrayList<>(Arrays.asList((long)52,(long)109));
-        List<Long> lists = new ArrayList<>();
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto(lists))))
-                .andExpect(status().isOk())
-                .andDo(print());
+//        List<Long> lists = new ArrayList<>();
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/goods/goods_cart/delete")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(objectMapper.writeValueAsString(new DeleteCartRequestDto(lists))))
+//                .andExpect(status().isOk())
+//                .andDo(print());
     }
 
     @DisplayName("UpdateCartCnt")

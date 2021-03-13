@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,6 +45,22 @@ public class MemberController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + dto.getToken());
         return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/logout")
+    @PreAuthorize("authenticated")
+    public void logout(@RequestHeader("Authorization") String token){
+        loginService.logout(token);
+    }
+
+    @PostMapping("/find_id")
+    public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto findIdDto) {
+        return ResponseEntity.ok(memberService.findId(findIdDto));
+    }
+
+    @PostMapping("/find_pw")
+    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
+        return ResponseEntity.ok(memberService.findPw(findPwDto));
     }
 
     @GetMapping("/testgetuserinfo")

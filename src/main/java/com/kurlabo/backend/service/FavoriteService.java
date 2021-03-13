@@ -7,6 +7,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.FavoriteRepository;
 import com.kurlabo.backend.repository.ProductRepository;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,8 +24,11 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final ProductRepository productRepository;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
-    public Page<FavoriteProductDto> getFavoriteList(Member member, Pageable pageable){
+    public Page<FavoriteProductDto> getFavoriteList(String token, Pageable pageable){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         List<Favorite> favoList = favoriteRepository.findByMember(member);
         List<FavoriteProductDto> productList = new ArrayList<>();
         for(Favorite list: favoList){
@@ -46,7 +50,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Boolean insertFavorite(Member member, Long product_id){
+    public Boolean insertFavorite(String token, Long product_id){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         boolean bool = false;
         if(searchFavorite(member, product_id) == null){
             Favorite favorite = new Favorite(null, product_id, member);
@@ -57,7 +62,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Page<FavoriteProductDto> deleteFavorite(Member member, List<Long> product_id, Pageable pageable){
+    public Page<FavoriteProductDto> deleteFavorite(String token, List<Long> product_id, Pageable pageable){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         List<Favorite> deleteLists = new ArrayList<>();
         for (Long idList : product_id) {
             Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList);
@@ -69,7 +75,7 @@ public class FavoriteService {
         // member나 product_id가 맞지 않아 null값이 list에 저장되어 delete 불가 상태에서 오류가 발생하여 예외처리 해야 함.
         favoriteRepository.deleteAll(deleteLists);
 
-        return getFavoriteList(member, pageable);
+        return getFavoriteList(token, pageable);
     }
 
     public Favorite searchFavorite(Member member, Long product_id){

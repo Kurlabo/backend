@@ -7,6 +7,7 @@ import com.kurlabo.backend.repository.CartRepository;
 import com.kurlabo.backend.repository.OrderRepository;
 import com.kurlabo.backend.repository.OrderSheetProductsRepository;
 import com.kurlabo.backend.repository.ProductRepository;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,11 @@ public class CartService {
     private final DeliverAddressService deliverAddressService;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final OrderRepository orderRepository;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
-    public GetCartResponseDto getCartList(Member member){
+    public GetCartResponseDto getCartList(String token){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         List<CartDataDto> dtoLists = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByMember(member);
 
@@ -57,10 +61,11 @@ public class CartService {
     }
 
     @Transactional
-    public String insertCart(Member member, InsertCartRequestDto dtos){
+    public String insertCart(String token, InsertCartRequestDto dtos){
 //        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
 //
 //        }
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         String returnStr = "failed";
 
         for (InsertCartDto lists: dtos.getInsertCartList()){
@@ -82,26 +87,29 @@ public class CartService {
     }
 
     @Transactional
-    public DeleteCartResponseDto deleteCart(Member member, List<Long> product_id) {
+    public DeleteCartResponseDto deleteCart(String token, List<Long> product_id) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         List<Cart> deleteLists = new ArrayList<>();
         List<Long> longLists = new ArrayList<>();
 
         for (Long productIdList : product_id) {
             Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList);
             if (deleteCart == null) {     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
+                System.out.println("찾는 카트상품 없음");
                 return null;
             }
             deleteLists.add(deleteCart);
             longLists.add(productIdList);
         }
         cartRepository.deleteAll(deleteLists);
-
+        System.out.println("카트상품 지움");
         return new DeleteCartResponseDto(longLists);
     }
 
     @Transactional
-    public CartDataDto updateCnt(Member memer, Long product_id, UpdateCartCntRequestDto dto) {
-        Cart cart = cartRepository.findByMemberAndProduct_id(memer, product_id);
+    public CartDataDto updateCnt(String token, Long product_id, UpdateCartCntRequestDto dto) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
         Product product = productRepository.findById(product_id).orElseThrow(ResourceNotFoundException::new);
         if(cart != null){
             cart.setCnt(cart.getCnt() + dto.getVariation());
@@ -194,7 +202,8 @@ public class CartService {
     }
 
     @Transactional
-    public String setOrdersSheet(Member member, SelectedProductInfoDto dto){
+    public String setOrdersSheet(String token, SelectedProductInfoDto dto){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         if(dto == null){
             return "failed";
         }

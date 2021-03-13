@@ -8,6 +8,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Order_Sheet_Products;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.*;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,8 +28,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final CartService cartService;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
-    public OrderSheetResponseDto getOrderSheet(Member member){
+    public OrderSheetResponseDto getOrderSheet(String token){
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        System.out.println("member >>>>>>>>>>>>> " + member);
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
         Deliver_Address da = new Deliver_Address();
         for (Deliver_Address list : daList){
@@ -37,6 +42,8 @@ public class OrderService {
         }
 
         Orders readyOrder = cartService.getOrderReady();
+
+        System.out.println("readyOrder>>>>>>>>>>>>> " + readyOrder);
 
         List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(readyOrder);
 
@@ -67,7 +74,8 @@ public class OrderService {
     }
 
     @Transactional
-    public String setCheckout(Member member, CheckoutRequestDto dto) {
+    public String setCheckout(String token, CheckoutRequestDto dto) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         String returnStr = "CHECKOUT SUCCESS";
 
         Orders readyOrder = cartService.getOrderReady();
@@ -93,7 +101,8 @@ public class OrderService {
         return returnStr;
     }
 
-    public Page<OrderListResponseDto> getOrderList (Member member, Pageable pageable) {
+    public Page<OrderListResponseDto> getOrderList (String token, Pageable pageable) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
         List<Orders> orderList = orderRepository.findByMemberAndStatus(member, "결제완료");
         List<OrderListResponseDto> responseList = new ArrayList<>();
 

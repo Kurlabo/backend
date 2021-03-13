@@ -53,6 +53,16 @@ public class MemberController {
         loginService.logout(token);
     }
 
+    @PostMapping("/find_id")
+    public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto findIdDto) {
+        return ResponseEntity.ok(memberService.findId(findIdDto));
+    }
+
+//    @PostMapping("/find_pw")
+//    public ResponseEntity<?> findPw(FindPwDto findPwDto) {
+//        return ResponseEntity.ok(memberService.findPw(findPwDto));
+//    }
+
     @GetMapping("/testgetuserinfo")
     public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
         System.out.println("token >>>>>>>>>>>>>>>>>> " + token);

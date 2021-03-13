@@ -29,10 +29,10 @@ public class MemberService {
     @Transactional
     public String signUp(MemberDto dto){
         if (checkUid(new CheckUidDto(dto.getUid())).equals("EXISTED UID")){
-            return "SIGNUP FAUILD(EXISTED UID)";
+            return "SIGNUP FAILED(EXISTED UID)";
         }
         else if (checkEmail(new CheckEmailDto(dto.getEmail())).equals("EXISTED EMAIL")){
-            return "SIGNUP FAUILD(EXISTED EMAIL)";
+            return "SIGNUP FAILED(EXISTED EMAIL)";
         }
 
         Member member = signUpMember(dto);
@@ -111,7 +111,7 @@ public class MemberService {
         }
 
         int atIdx = member.getEmail().indexOf("@");
-        sb.append(member.getEmail().substring(0, atIdx - 5) + "*******" + member.getEmail().substring(atIdx));
+        sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")

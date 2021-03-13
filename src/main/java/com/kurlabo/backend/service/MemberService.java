@@ -1,12 +1,14 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.member.*;
+import com.kurlabo.backend.dto.mypage.GetMyInfoReponseDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +27,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final DeliverAddressService deliverAddressService;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public String signUp(MemberDto dto){
@@ -116,6 +120,13 @@ public class MemberService {
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
                 .email(sb.toString())
+                .build();
+    }
+
+    public GetMyInfoReponseDto getMyInfo(String token) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        return GetMyInfoReponseDto.builder()
+                .uid(member.getUid())
                 .build();
     }
 }

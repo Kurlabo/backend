@@ -59,7 +59,7 @@ public class MemberController {
     }
 
     @PostMapping("/find_pw")
-    public ResponseEntity<?> findPw(FindPwDto findPwDto) {
+    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
         return ResponseEntity.ok(memberService.findPw(findPwDto));
     }
 

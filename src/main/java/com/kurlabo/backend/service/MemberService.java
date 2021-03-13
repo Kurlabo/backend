@@ -1,7 +1,6 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.member.*;
-import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
@@ -9,7 +8,6 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -84,14 +82,15 @@ public class MemberService {
     }
 
     public FindIdResponseDto findId(FindIdDto findIdDto) {
-
         Optional<Member> memberOptional = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail());
         Member member;
+
         if(memberOptional.isPresent()){
             member = memberOptional.get();
         } else {
             throw new DataNotFoundException("NO RESOURCE");
         }
+
         String responseUid = member.getUid().substring(0, member.getUid().length() - 3) + "***";
 
         return FindIdResponseDto.builder()
@@ -100,10 +99,23 @@ public class MemberService {
                 .build();
     }
 
-//    public FindPwResponseDto findPw(FindPwDto findPwDto) {
-//        return new FindPwResponseDto(
-//                "",
-//                ""
-//        );
-//    }
+    public FindPwResponseDto findPw(FindPwDto findPwDto) {
+        Optional<Member> optionalMember = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail());
+        StringBuilder sb = new StringBuilder();
+        Member member;
+
+        if(optionalMember.isPresent()){
+            member = optionalMember.get();
+        } else {
+            throw new DataNotFoundException("NO RESOURCE");
+        }
+
+        int atIdx = member.getEmail().indexOf("@");
+        sb.append(member.getEmail().substring(0, atIdx - 5) + "*******" + member.getEmail().substring(atIdx));
+
+        return FindPwResponseDto.builder()
+                .message("SUCCESS")
+                .email(sb.toString())
+                .build();
+    }
 }

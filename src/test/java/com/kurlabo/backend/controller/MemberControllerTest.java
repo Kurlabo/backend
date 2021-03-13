@@ -109,4 +109,23 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.uid").value("limnoah0***"))
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("findPw")
+    @Test
+    void findPw() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                FindPwDto.builder()
+                                        .name("임정우")
+                                        .uid("limnoah0301")
+                                        .email("limnoah0301@gmail.com")
+                                        .build()
+                        )
+                ))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+                .andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
+                .andExpect(status().isOk());
+    }
 }

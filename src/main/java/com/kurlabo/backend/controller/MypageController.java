@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,12 +33,14 @@ public class MypageController {
     //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
     @GetMapping("/mypage_wishlist")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> getAllWishList(@RequestHeader("Authorization") String token, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(favoriteService.getFavoriteList(token, pageable));
     }
 
     // 늘 사는 것 Insert
     @PostMapping("/mypage_wishlist")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> insertWishlist(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertWishListDto dto){
         return ResponseEntity.ok(favoriteService.insertFavorite(token, dto.getProduct_id()));
     }
@@ -45,12 +48,14 @@ public class MypageController {
     // @AuthenticationPrincipal Member member,
     // 늘 사는 것 비우기
     @DeleteMapping("/mypage_wishlist")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> deleteWishList (@RequestHeader("Authorization") String token, @RequestBody @Valid DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(favoriteService.deleteFavorite(token, dto.getProduct_id(), pageable));
     }
 
     // 주문 내역 리스트
     @GetMapping("/mypage_orderlist")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> orderList(@RequestHeader("Authorization") String token, @PageableDefault(size = 3) Pageable pageable) {
         return ResponseEntity.ok(orderService.getOrderList(token, pageable));
     }
@@ -77,23 +82,26 @@ public class MypageController {
     }
 
     @GetMapping("/writable-reviews")
-    public ResponseEntity<?> writableReviews(){
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> writableReviews(@RequestHeader("Authorization") String token){
         // 작성가능 후기 리스트
         return ResponseEntity.ok()
-                .body(reviewService.reviewList(0));
+                .body(reviewService.reviewList(token, 0));
     }
 
     @GetMapping("/written-reviews")
-    public ResponseEntity<?> writtenReviews(){
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> writtenReviews(@RequestHeader("Authorization") String token){
         // 작성완료 후기 리스트
         return ResponseEntity.ok()
-                .body(reviewService.reviewList(1));
+                .body(reviewService.reviewList(token, 1));
     }
 
     @PostMapping("/mypage_review/{pId}")
-    public ResponseEntity<Void> create (@PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
+    @PreAuthorize("authenticated")
+    public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         // 후기 작성
-        reviewService.create(pId, reviewDto);
+        reviewService.create(token, pId, reviewDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

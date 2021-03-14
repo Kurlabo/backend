@@ -42,42 +42,36 @@ public class GoodsController {
     //@AuthenticationPrincipal Member member
     // 장바구니 조회
     @GetMapping("/goods_cart")
-    public ResponseEntity<?> getCart(){
-        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-
-        return ResponseEntity.ok(cartService.getCartList(mem));
+    public ResponseEntity<?> getCart(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(cartService.getCartList(token));
     }
 
     //@AuthenticationPrincipal Member member,
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
-    public ResponseEntity<?> insertAndUpdateCart(@RequestBody @Valid InsertCartRequestDto dto){    // Security에서 member 가져와야함
-        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.insertCart(mem, dto));
+    public ResponseEntity<?> insertAndUpdateCart(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertCartRequestDto dto){
+        return ResponseEntity.ok(cartService.insertCart(token, dto));
     }
 
     // @AuthenticationPrincipal Member member,
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
-    public ResponseEntity<?> deleteCart(@RequestBody DeleteCartRequestDto dto) {
-        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.deleteCart(mem, dto.getProduct_id()));
+    public ResponseEntity<?> deleteCart(@RequestHeader("Authorization") String token, @RequestBody DeleteCartRequestDto dto) {
+        return ResponseEntity.ok(cartService.deleteCart(token, dto.getProduct_id()));
     }
 
     // @AuthenticationPrincipal Member member,
     // 장바구니 상품 개수 수정
     @PatchMapping("/goods_cart/{product_id}")
-    public ResponseEntity<?> updateCartCnt(@PathVariable Long product_id
+    public ResponseEntity<?> updateCartCnt(@RequestHeader("Authorization") String token, @PathVariable Long product_id
             , @RequestBody @Valid UpdateCartCntRequestDto dto){
-        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.updateCnt(mem, product_id, dto));
+        return ResponseEntity.ok(cartService.updateCnt(token, product_id, dto));
     }
 
     // 장바구니 주문하기 버튼
     @PostMapping("/goods_cart/orderSheet")
-    public ResponseEntity<?> setOrderSheet(@RequestBody SelectedProductInfoDto dto){
-        Member mem = memberService.findById((long)1);       // 나중에 Spring Security 완성되면 Principal에서 member_id 가져와야함, 로그인 하지 않았을 때 Exception 발생시켜야함
-        return ResponseEntity.ok(cartService.setOrdersSheet(mem, dto));
+    public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
+        return ResponseEntity.ok(cartService.setOrdersSheet(token, dto));
     }
 
     // 상품 리스트

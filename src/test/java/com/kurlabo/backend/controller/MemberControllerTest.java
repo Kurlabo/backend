@@ -134,7 +134,7 @@ class MemberControllerTest {
                 .content(
                         objectMapper.writeValueAsString(
                                 FindPwDto.builder()
-                                        .name("수정된사용자")
+                                        .name("개명함")
                                         .uid("employee")
                                         .email("empl22@gmail.com")
                                         .password("변경할패스워드")

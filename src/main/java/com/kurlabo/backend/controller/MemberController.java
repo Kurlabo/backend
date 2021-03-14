@@ -22,7 +22,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LoginService loginService;
-//     private final TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto dto) {
@@ -58,17 +58,17 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findId(findIdDto));
     }
 
-//    // 이름 아이디 이메일로 비밀번호 찾기 > 성공 여부 체크 > 성공하면 비밀번호 변경 페이지 이동 > 새 비밀번호 입력 > 비밀번호 변경
-//    @PostMapping("/find_pw")
-//    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
-//        return ResponseEntity.ok(memberService.findPw(findPwDto));
-//    }
+    // 이름 아이디 이메일로 비밀번호 찾기 > 성공 여부 체크 > 성공하면 비밀번호 변경 페이지 이동 > 새 비밀번호 입력 > 비밀번호 변경
+    @PostMapping("/find_pw")
+    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
+        return ResponseEntity.ok(memberService.findPw(findPwDto));
+    }
 
     @GetMapping("/testgetuserinfo")
     public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(loginService.testInfo(token));
     }
-/*
+
     @PostMapping(value = "/checkPhone")
     public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto dto) {
         return ResponseEntity.ok(memberService.checkPhone(dto));
@@ -93,5 +93,5 @@ public class MemberController {
     public void deleteMember (@RequestHeader("Authorization") String token) {
         memberService.deleteMember(tokenProvider.parseTokenToGetMemberId(token));
         loginService.logout(token);
-    }*/
+    }
 }

@@ -5,7 +5,7 @@ import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
 import com.kurlabo.backend.model.Deliver_Address;
-import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +25,11 @@ import javax.validation.Valid;
 public class MypageController {
 
     private final FavoriteService favoriteService;
-    private final MemberService memberService;
     private final ReviewService reviewService;
     private final OrderService orderService;
     private final DeliverAddressService deliverAddressService;
+    private final LoginService loginService;
+    private final TokenProvider tokenProvider;
 
     //@AuthenticationPrincipal Member member,
     // 늘 사는 것 리스트 불러오기
@@ -108,29 +109,35 @@ public class MypageController {
 
     // 배송지 리스트
     @GetMapping("/destination/list")
-    public ResponseEntity<?> getAllAddress(Member member) {
-        member = memberService.findById((long)1);
-        return ResponseEntity.ok(deliverAddressService.getAllAddress(member));
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> getAllAddress(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(deliverAddressService.getAllAddress(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     // 배송지 추가
     @PostMapping("/destination/list")
-    public ResponseEntity<?> createAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.creatAddress(deliverAddress);
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> createAddress(@RequestHeader("Authorization") String token,
+                                           @RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.creatAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 배송지 수정
     @PutMapping("/destination/list")
-    public ResponseEntity<?> updateAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.updateDeliverAddress(deliverAddress);
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> updateAddress(@RequestHeader("Authorization") String token,
+                                           @RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.updateDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 배송지 삭제
     @DeleteMapping("/destination/list")
-    public ResponseEntity<?> deleteAddress(@RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.deleteDeliverAddress(deliverAddress);
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> deleteAddress(@RequestHeader("Authorization") String token,
+                                           @RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.deleteDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         // return ResponseEntity.ok(deliverAddressService.deleteDeliverAddress(deliverAddress));
     }

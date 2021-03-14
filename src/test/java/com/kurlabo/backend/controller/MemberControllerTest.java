@@ -129,76 +129,76 @@ class MemberControllerTest {
     @DisplayName("findPw")
     @Test
     void findPw() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(
-//                        objectMapper.writeValueAsString(
-//                                FindPwDto.builder()
-//                                        .name("수정된사용자")
-//                                        .uid("employee")
-//                                        .email("empl22@gmail.com")
-//                                        .password("변경할패스워드")
-//                                        .build()
-//                        )
-//                ))
-//                .andExpect(jsonPath("$.message").value("SUCCESS"))
-//
-//                //.andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
-//                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                FindPwDto.builder()
+                                        .name("개명함")
+                                        .uid("employee")
+                                        .email("empl22@gmail.com")
+                                        .password("변경할패스워드")
+                                        .build()
+                        )
+                ))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+
+                //.andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("getMemberInfoTest")
     @Test
     void getMemberInfoTest() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .header("Authorization", token1)
-//                .content(
-//                        objectMapper.writeValueAsString(
-//                                MemberDto.builder()
-//                                        .uid("employee")
-//                                        .name("수정된사용자")
-//                                        .email("empl22@gmail.com")
-//                                        .gender("선택안함")
-//                                        .phone("01023456778")
-//                                        .date_of_birth(null)
-//                                        .build()
-//                        )
-//                ))
-//                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(
+                        objectMapper.writeValueAsString(
+                                MemberDto.builder()
+                                        .uid("employee")
+                                        .name("수정된사용자")
+                                        .email("empl22@gmail.com")
+                                        .gender("선택안함")
+                                        .phone("01023456778")
+                                        .date_of_birth(null)
+                                        .build()
+                        )
+                ))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("사용자정보수정 테스트")
     @Test
     void updateMemberTest() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/myinfo")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .header("Authorization", token)
-//                .content(
-//                        objectMapper.writeValueAsString(
-//                                MemberDto.builder()
-//                                        .uid("nemnemnemnem")
-//                                        .name("개명함")
-//                                        .email("updateemail@gmail.com")
-//                                        .gender("선택안함")
-//                                        .phone("01001938275")
-//                                        .build()
-//                        )
-//                ))
-//                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/myinfo")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(
+                        objectMapper.writeValueAsString(
+                                MemberDto.builder()
+                                        .uid("employee")
+                                        .name("개명함")
+                                        .email("empl22@gmail.com")
+                                        .gender("선택안함")
+                                        .phone("01001938275")
+                                        .build()
+                        )
+                ))
+                .andExpect(status().isOk());
     }
 
-//    @DisplayName("번호중복 테스트")
-//    @Test
-//    void checkPhoneTest() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/checkPhone")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(
-//                        objectMapper.writeValueAsString(
-//                                new CheckPhoneDto("01012345678")
-//                        )))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("EXISTED PHONE NUMBER"));
-//    }
+    @DisplayName("번호중복 테스트")
+    @Test
+    void checkPhoneTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/checkPhone")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(
+                                new CheckPhoneDto("01012345678")
+                        )))
+                .andExpect(status().isOk())
+                .andExpect(content().string("EXISTED PHONE NUMBER"));
+    }
 
 }

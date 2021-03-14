@@ -130,10 +130,8 @@ public class MemberService {
     }
 
     public Member getMemberInfo (Long id, MemberDto dto) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+        memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
 
-        // 이름 아이디 번호 이메일 성별 생일 (비밀번호 빼고 다)
         return Member.builder()
                 .uid(dto.getUid())
                 .name(dto.getName())
@@ -144,31 +142,31 @@ public class MemberService {
                 .build();
     }
 
-//    @Transactional
-//    public void updateMember(Long id, MemberDto dto) {
-//        Member member = memberRepository.findById(id)
-//                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
-//
-//        if(dto.getPassword() != null) {
-//            member.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        }
-//
-//        member.setName(dto.getName());
-//        member.setEmail(dto.getEmail());
-//        member.setPhone(dto.getPhone());
-//        member.setDate_of_birth(dto.getDate_of_birth());
-//        member.setGender(dto.getGender());
-//
-//        memberRepository.save(member);
-//    }
-//
-//    @Transactional
-//    public void deleteMember(Long id) {
-//        Member member = memberRepository.findById(id)
-//                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
-//
-//        member.setDeleted(true);
-//
-//        memberRepository.delete(member);
-//    }
+    @Transactional
+    public void updateMember(Long id, MemberDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        if(dto.getPassword() != null) {
+            member.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        member.setName(dto.getName());
+        member.setEmail(dto.getEmail());
+        member.setPhone(dto.getPhone());
+        member.setDate_of_birth(dto.getDate_of_birth());
+        member.setGender(dto.getGender());
+
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        member.setDeleted(true);
+
+        memberRepository.delete(member);
+    }
 }

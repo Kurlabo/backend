@@ -3,6 +3,7 @@ package com.kurlabo.backend.controller;
 import com.kurlabo.backend.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
@@ -27,6 +28,7 @@ public class MainController {
 
     // 사이트 헤더
     @GetMapping("/header")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> header(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(mainService.setHeader(token));
     }

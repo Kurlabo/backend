@@ -33,7 +33,6 @@ public class OrderService {
 
     public OrderSheetResponseDto getOrderSheet(String token){
         Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
-        System.out.println("member >>>>>>>>>>>>> " + member);
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
         Deliver_Address da = new Deliver_Address();
         for (Deliver_Address list : daList){
@@ -42,8 +41,6 @@ public class OrderService {
         }
 
         Orders readyOrder = cartService.getOrderReady();
-
-        System.out.println("readyOrder>>>>>>>>>>>>> " + readyOrder);
 
         List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(readyOrder);
 

@@ -17,6 +17,7 @@ public class Deliver_Address {
     private Long id;
 
     private String deliver_address;
+
     private int is_main;
 
     private String reciever;
@@ -26,11 +27,6 @@ public class Deliver_Address {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
-    public void update (String reciever, String reciever_phone) {
-        this.reciever = reciever;
-        this.reciever_phone = reciever_phone;
-    }
 
     public int updateIsMain () {
         this.is_main = 0;

@@ -1,9 +1,8 @@
 package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.member.*;
-import com.kurlabo.backend.dto.testdto.TestInfoDto;
-import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.security.jwt.JwtFilter;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.LoginService;
 import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LoginService loginService;
+//     private final TokenProvider tokenProvider;
 
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto dto) {
@@ -35,7 +35,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/signup/checkemail")
-    public ResponseEntity<?> checkUid(@Valid @RequestBody CheckEmailDto dto) {
+    public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto dto) {
         return ResponseEntity.ok(memberService.checkEmail(dto));
     }
 
@@ -58,14 +58,40 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findId(findIdDto));
     }
 
-    @PostMapping("/find_pw")
-    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
-        return ResponseEntity.ok(memberService.findPw(findPwDto));
-    }
+//    // 이름 아이디 이메일로 비밀번호 찾기 > 성공 여부 체크 > 성공하면 비밀번호 변경 페이지 이동 > 새 비밀번호 입력 > 비밀번호 변경
+//    @PostMapping("/find_pw")
+//    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
+//        return ResponseEntity.ok(memberService.findPw(findPwDto));
+//    }
 
     @GetMapping("/testgetuserinfo")
     public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
-        System.out.println("token >>>>>>>>>>>>>>>>>> " + token);
         return ResponseEntity.ok(loginService.testInfo(token));
     }
+/*
+    @PostMapping(value = "/checkPhone")
+    public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto dto) {
+        return ResponseEntity.ok(memberService.checkPhone(dto));
+    }
+
+    @GetMapping(value = "/myinfo")
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token,
+                                           @Valid @RequestBody MemberDto dto) {
+        return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token), dto));
+    }
+
+    @PutMapping(value = "/myinfo")
+    @PreAuthorize("authenticated")
+    public void updateMember (@RequestHeader("Authorization") String token,
+                              @Valid @RequestBody MemberDto dto) {
+        memberService.updateMember(tokenProvider.parseTokenToGetMemberId(token), dto);
+    }
+
+    @DeleteMapping(value = "/myinfo")
+    @PreAuthorize("authenticated")
+    public void deleteMember (@RequestHeader("Authorization") String token) {
+        memberService.deleteMember(tokenProvider.parseTokenToGetMemberId(token));
+        loginService.logout(token);
+    }*/
 }

@@ -2,6 +2,8 @@ package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.member.*;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.service.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.time.LocalDate;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,8 +24,15 @@ class MemberControllerTest {
 
     private MockMvc mockMvc;
 
+    private TokenDto token;
+
+    private String token1;
+
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    LoginService loginService;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -33,6 +40,15 @@ class MemberControllerTest {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @BeforeEach
+    void getToken() {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUid("employee");
+        loginDto.setPassword("변경할패스워드");
+        token = loginService.login(loginDto);
+        token1 = token.getToken();
     }
 
     @DisplayName("SignUp")
@@ -113,19 +129,76 @@ class MemberControllerTest {
     @DisplayName("findPw")
     @Test
     void findPw() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(
-                        objectMapper.writeValueAsString(
-                                FindPwDto.builder()
-                                        .name("임정우")
-                                        .uid("limnoah0301")
-                                        .email("limnoah0301@gmail.com")
-                                        .build()
-                        )
-                ))
-                .andExpect(jsonPath("$.message").value("SUCCESS"))
-                .andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
-                .andExpect(status().isOk());
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                FindPwDto.builder()
+//                                        .name("수정된사용자")
+//                                        .uid("employee")
+//                                        .email("empl22@gmail.com")
+//                                        .password("변경할패스워드")
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(jsonPath("$.message").value("SUCCESS"))
+//
+//                //.andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
+//                .andExpect(status().isOk());
     }
+
+    @DisplayName("getMemberInfoTest")
+    @Test
+    void getMemberInfoTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .header("Authorization", token1)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                MemberDto.builder()
+//                                        .uid("employee")
+//                                        .name("수정된사용자")
+//                                        .email("empl22@gmail.com")
+//                                        .gender("선택안함")
+//                                        .phone("01023456778")
+//                                        .date_of_birth(null)
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(status().isOk());
+    }
+
+    @DisplayName("사용자정보수정 테스트")
+    @Test
+    void updateMemberTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/member/myinfo")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .header("Authorization", token)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                MemberDto.builder()
+//                                        .uid("nemnemnemnem")
+//                                        .name("개명함")
+//                                        .email("updateemail@gmail.com")
+//                                        .gender("선택안함")
+//                                        .phone("01001938275")
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(status().isOk());
+    }
+
+//    @DisplayName("번호중복 테스트")
+//    @Test
+//    void checkPhoneTest() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/checkPhone")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                new CheckPhoneDto("01012345678")
+//                        )))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("EXISTED PHONE NUMBER"));
+//    }
+
 }

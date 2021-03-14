@@ -12,16 +12,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindPwDto {
-    @NotEmpty @NotNull
-    private String name;
-
-    @NotEmpty @NotNull
-    private String uid;
-
-    @NotEmpty @NotNull
-    private String email;
-
-    @NotEmpty @NotNull
-    private String password;
+public class MemberResponseDto {
+        @NotNull
+        @NotEmpty
+        private String message;
 }

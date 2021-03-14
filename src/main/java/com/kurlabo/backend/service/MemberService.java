@@ -101,21 +101,74 @@ public class MemberService {
 
     public FindPwResponseDto findPw(FindPwDto findPwDto) {
         Optional<Member> optionalMember = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail());
-        StringBuilder sb = new StringBuilder();
+        // StringBuilder sb = new StringBuilder();
         Member member;
 
         if(optionalMember.isPresent()){
             member = optionalMember.get();
+            member.setPassword(passwordEncoder.encode(findPwDto.getPassword()));
+            memberRepository.save(member);
         } else {
             throw new DataNotFoundException("NO RESOURCE");
         }
 
-        int atIdx = member.getEmail().indexOf("@");
-        sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
+        // int atIdx = member.getEmail().indexOf("@");
+        // sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
-                .email(sb.toString())
+                //.email(sb.toString())
                 .build();
     }
+
+    // newly added
+    public String checkPhone(CheckPhoneDto dto) {
+        if(!memberRepository.findByPhone(dto.getCheckPhone()).isPresent()){
+            return "NOT EXISTED PHONE NUMBER";
+        }
+        return "EXISTED PHONE NUMBER";
+    }
+
+    public Member getMemberInfo (Long id, MemberDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        // 이름 아이디 번호 이메일 성별 생일 (비밀번호 빼고 다)
+        return Member.builder()
+                .uid(dto.getUid())
+                .name(dto.getName())
+                .phone(dto.getPhone())
+                .email(dto.getEmail())
+                .gender(dto.getGender())
+                .date_of_birth(dto.getDate_of_birth())
+                .build();
+    }
+
+//    @Transactional
+//    public void updateMember(Long id, MemberDto dto) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+//
+//        if(dto.getPassword() != null) {
+//            member.setPassword(passwordEncoder.encode(dto.getPassword()));
+//        }
+//
+//        member.setName(dto.getName());
+//        member.setEmail(dto.getEmail());
+//        member.setPhone(dto.getPhone());
+//        member.setDate_of_birth(dto.getDate_of_birth());
+//        member.setGender(dto.getGender());
+//
+//        memberRepository.save(member);
+//    }
+//
+//    @Transactional
+//    public void deleteMember(Long id) {
+//        Member member = memberRepository.findById(id)
+//                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+//
+//        member.setDeleted(true);
+//
+//        memberRepository.delete(member);
+//    }
 }

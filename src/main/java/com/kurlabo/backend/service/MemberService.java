@@ -99,8 +99,6 @@ public class MemberService {
 
         if(optionalMember.isPresent()){
             member = optionalMember.get();
-            member.setPassword(passwordEncoder.encode(findPwDto.getPassword()));
-            memberRepository.save(member);
         } else {
             throw new DataNotFoundException("NO RESOURCE");
         }
@@ -110,7 +108,20 @@ public class MemberService {
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
-                //.email(sb.toString())
+                .member_id(member.getId())
+                .build();
+    }
+
+    @Transactional
+    public FindPwChangeResponseDto findPwChange(FindPwChangeDto findPwChangeDto) {
+        Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        member.setPassword(passwordEncoder.encode(findPwChangeDto.getInsertChangePw()));
+
+        memberRepository.save(member);
+
+        return FindPwChangeResponseDto.builder()
+                .message("SUCCESS")
                 .build();
     }
 
@@ -161,4 +172,6 @@ public class MemberService {
 
         memberRepository.delete(member);
     }
+
+
 }

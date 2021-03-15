@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class HeaderDto {
     private String grade;
     private String name;
+    private String mainAddress;
     private int cartCnt;
 }

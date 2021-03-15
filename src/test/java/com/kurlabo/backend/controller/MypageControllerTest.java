@@ -1,6 +1,8 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurlabo.backend.dto.member.LoginDto;
+import com.kurlabo.backend.dto.member.TokenDto;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
@@ -9,6 +11,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
+import com.kurlabo.backend.service.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,12 +36,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MypageControllerTest {
 
     private MockMvc mockMvc;
+    private TokenDto token;
+    private String token1;
+
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    LoginService loginService;
 
     @BeforeEach
     void before(WebApplicationContext wac) {
@@ -46,6 +54,15 @@ class MypageControllerTest {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @BeforeEach
+    void getToken() {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUid("employee");
+        loginDto.setPassword("변경할패스워드");
+        token = loginService.login(loginDto);
+        token1 = token.getToken();
     }
 
     @DisplayName("GetWishList")
@@ -133,33 +150,12 @@ class MypageControllerTest {
                 .andExpect(jsonPath("$.phone").value("010-4321-5678"));
     }
 
-
-    @DisplayName("createReviewTest")
-    @Test
-    void createReviewTest() throws Exception {
-        Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-        Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-
-        ReviewDto review = new ReviewDto();
-        review.setContent("냠냠굿3");
-        review.setTitle("냠냠굿3");
-        review.setRegdate(LocalDate.now());
-        review.setWriter(m.getName());
-        review.setMember_id(m.getId());
-        review.setProduct_id(p.getId());
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_review/1")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(review)))
-                .andDo(print())
-                .andExpect(status().isCreated());
-    }
-
     @DisplayName("작성가능 후기 테스트")
     @Test
     void writableReviewsTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/writable-reviews")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -168,16 +164,40 @@ class MypageControllerTest {
     @Test
     void writtenReviewsTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/written-reviews")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("createReviewTest")
+    @Test
+    void createReviewTest() throws Exception {
+//        Member m = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+//        Product p = productRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+//
+//        ReviewDto review = new ReviewDto();
+//        review.setContent("냠냠굿3");
+//        review.setTitle("냠냠굿3");
+//        review.setRegdate(LocalDate.now());
+//        review.setWriter(m.getName());
+//        review.setMember_id(m.getId());
+//        review.setProduct_id(p.getId());
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/mypage_review/1")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .header("Authorization", token1)
+//                .content(objectMapper.writeValueAsString(review)))
+//                .andDo(print())
+//                .andExpect(status().isCreated());
     }
 
     @DisplayName("배송지 가져오기 테스트")
     @Test
     void getAllAddressTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/destination/list")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -185,48 +205,57 @@ class MypageControllerTest {
     @Test
     @DisplayName("배송지 추가 테스트")
     void createAddressTest() throws Exception {
-        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-        Deliver_Address da = new Deliver_Address();
-        da.setDeliver_address("주소어쩌구3");
-        da.setReciever("이창준");
-        da.setReciever_phone("030-0111-3244");
-        da.setMember(member);
+        Member member = memberRepository.findById(64L).orElseThrow(ResourceNotFoundException::new);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/destination/list")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(da)))
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(
+                        new Deliver_Address(
+                                null,
+                                "서울특별시 용산구 한강대로 92",
+                                1,
+                                "",
+                                "",
+                                member
+                        )
+                )))
                 .andExpect(status().isCreated());
     }
 
     @DisplayName("배송지 수정 테스트")
     @Test
     void updateAddressTest() throws Exception {
-//        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-//        Deliver_Address da = new Deliver_Address();
-//        da.setId(45L);
-//        da.setReciever("황시목");
-//        da.setReciever_phone("11111111");
-//        da.setMember(member);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString(da)))
-//                .andExpect(status().isCreated())
-//                .andDo(print());
+        Member member = memberRepository.findById(64L).orElseThrow(ResourceNotFoundException::new);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(
+                        new Deliver_Address(
+                                53L,
+                                "서울 강남구 삼성동 25",
+                                1,
+                                "",
+                                "",
+                                member
+                        )
+                )))
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
     @DisplayName("배송지 삭제 테스트")
     @Test
     void deleteAddressTest() throws Exception {
-//        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-//        Deliver_Address da = new Deliver_Address();
-//        da.setMember(member);
-//        da.setId(32L);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/destination/list")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString(da)))
-//                .andExpect(status().isNoContent())
-//                .andDo(print());
+        Deliver_Address da = new Deliver_Address();
+        da.setId(66L);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(da)))
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 }

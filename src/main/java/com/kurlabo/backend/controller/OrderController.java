@@ -1,12 +1,10 @@
 package com.kurlabo.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
-import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,16 +16,17 @@ import javax.validation.Valid;
 public class OrderController {
 
     private final OrderService orderService;
-    private final MemberService memberService;
 
     // 주문서
     @GetMapping("/orderSheet")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> getOrderSheet(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(orderService.getOrderSheet(token));
     }
 
     // 결제하기
     @PostMapping("/checkout")
+    @PreAuthorize("authenticated")
     public ResponseEntity<?> setCheckout(@RequestHeader("Authorization") String token, @RequestBody @Valid CheckoutRequestDto dto) {
         String returnStr = "결제에 실패하셨습니다.";
         returnStr = orderService.setCheckout(token, dto);

@@ -45,13 +45,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/shop/header").hasRole("MEMBER")
-                .antMatchers("/api/goods/goods_cart").hasRole("MEMBER")
-                .antMatchers("/api/goods/goods_cart/**").hasRole("MEMBER")
-                .antMatchers("/api/member/logout").hasRole("MEMBER")
-                .antMatchers("/api/member/testgetuserinfo").hasRole("MEMBER")
-                .antMatchers("/api/mypage/**").hasRole("MEMBER")
-                .antMatchers("/api/order/**").hasRole("MEMBER")
                 .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
 

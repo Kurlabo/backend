@@ -1,23 +1,17 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.member.*;
-import com.kurlabo.backend.dto.mypage.GetMyInfoReponseDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
-import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -27,8 +21,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final DeliverAddressService deliverAddressService;
-    private final MemberService memberService;
-    private final TokenProvider tokenProvider;
 
     @Transactional
     public String signUp(MemberDto dto){
@@ -78,9 +70,6 @@ public class MemberService {
         return "NOT EXISTED EMAIL";
     }
 
-    private Collection<? extends GrantedAuthority> authorities(String role) {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role));
-    }
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
@@ -105,28 +94,71 @@ public class MemberService {
 
     public FindPwResponseDto findPw(FindPwDto findPwDto) {
         Optional<Member> optionalMember = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail());
-        StringBuilder sb = new StringBuilder();
+        // StringBuilder sb = new StringBuilder();
         Member member;
 
         if(optionalMember.isPresent()){
             member = optionalMember.get();
+            member.setPassword(passwordEncoder.encode(findPwDto.getPassword()));
+            memberRepository.save(member);
         } else {
             throw new DataNotFoundException("NO RESOURCE");
         }
 
-        int atIdx = member.getEmail().indexOf("@");
-        sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
+        // int atIdx = member.getEmail().indexOf("@");
+        // sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
-                .email(sb.toString())
+                //.email(sb.toString())
                 .build();
     }
 
-    public GetMyInfoReponseDto getMyInfo(String token) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
-        return GetMyInfoReponseDto.builder()
-                .uid(member.getUid())
+    public String checkPhone(CheckPhoneDto dto) {
+        if(!memberRepository.findByPhone(dto.getCheckPhone()).isPresent()){
+            return "NOT EXISTED PHONE NUMBER";
+        }
+        return "EXISTED PHONE NUMBER";
+    }
+
+    public Member getMemberInfo (Long id, MemberDto dto) {
+        memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        return Member.builder()
+                .uid(dto.getUid())
+                .name(dto.getName())
+                .phone(dto.getPhone())
+                .email(dto.getEmail())
+                .gender(dto.getGender())
+                .date_of_birth(dto.getDate_of_birth())
                 .build();
+    }
+
+    @Transactional
+    public void updateMember(Long id, MemberDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        if(dto.getPassword() != null) {
+            member.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        member.setName(dto.getName());
+        member.setEmail(dto.getEmail());
+        member.setPhone(dto.getPhone());
+        member.setDate_of_birth(dto.getDate_of_birth());
+        member.setGender(dto.getGender());
+
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        member.setDeleted(true);
+
+        memberRepository.delete(member);
     }
 }

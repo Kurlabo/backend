@@ -1,9 +1,11 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
+import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.List;
 public class DeliverAddressService {
 
     private final DeliverAddressRepository deliverAddressRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Deliver_Address setDeliverAddress(Member member, String address){
@@ -58,7 +61,11 @@ public class DeliverAddressService {
         } // end for
     }
 
-    public List<Deliver_Address> getAllAddress (Member member){
+    public List<Deliver_Address> getAllAddress (Long id){
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
         if (deliverAddressRepository.findByMember(member).isEmpty()) {
             return null;
         }
@@ -66,7 +73,11 @@ public class DeliverAddressService {
     }
 
     @Transactional
-    public void creatAddress(Deliver_Address deliverAddress) {
+    public void creatAddress(Long id, Deliver_Address deliverAddress) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
         Deliver_Address newAddress = new Deliver_Address();
 
         checkIsMain(deliverAddress);
@@ -75,13 +86,17 @@ public class DeliverAddressService {
         newAddress.setDeliver_address(deliverAddress.getDeliver_address());
         newAddress.setReciever(deliverAddress.getReciever());
         newAddress.setReciever_phone(deliverAddress.getReciever_phone());
-        newAddress.setMember(deliverAddress.getMember());
+        newAddress.setMember(member);
 
         deliverAddressRepository.save(newAddress);
     }
 
     @Transactional
-    public Deliver_Address updateDeliverAddress (Deliver_Address deliverAddress){
+    public Deliver_Address updateDeliverAddress (Long id, Deliver_Address deliverAddress){
+        memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
         Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId())
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -93,7 +108,7 @@ public class DeliverAddressService {
 
         // 기본 배송지가 없다면
         if (address.getIs_main() == 0) {
-            System.out.println("기본 배송지 없음");
+            throw new DataNotFoundException("NO RESOURCE");
         }
 
         if (deliverAddress.getReciever() != null) { // 넘어온 값이 있음
@@ -108,20 +123,27 @@ public class DeliverAddressService {
             address.setReciever_phone(null);
         }
 
+        address.setDeliver_address(deliverAddress.getDeliver_address());
+
         return address;
     }
 
     @Transactional
-    public String deleteDeliverAddress(Deliver_Address deliverAddress) {
-        List<Deliver_Address> daList = deliverAddressRepository.findByMember(deliverAddress.getMember());
+    public String deleteDeliverAddress(Long id, Deliver_Address deliverAddress) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
+        List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
         String msg = "";
 
-        if (daList.size() <= 1) {
-            msg = "삭제할 수 없습니다";
+        if (daList.size() <= 1) { // 저장된 주소지가 하나 이하면 삭제할 수 없음
+            msg = "failed";
         } else {
             deliverAddressRepository.delete(deliverAddress);
-            msg = "삭제되었습니다.";
+            msg = "success";
         }
+
         return msg;
     }
 

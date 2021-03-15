@@ -5,8 +5,8 @@ import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +23,8 @@ public class ReviewService {
     private final OrderRepository orderRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
 
     // 리뷰 작성 조건 체크
     public boolean conditionsChk(Long pId) {
@@ -56,11 +58,9 @@ public class ReviewService {
         return true;
     }
 
-    public List<ReviewListDto> reviewList(int stat) {
+    public List<ReviewListDto> reviewList(String token, int stat) {
         // 사용자 검색
-        // memberRepository.findById(member.getId()).orElseThrow(ResourceNotFoundException::new);
-        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
-
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
 
         List<ReviewListDto> list = new ArrayList<>();
         List<Orders> orderList = orderRepository.findByMember(member);
@@ -103,13 +103,8 @@ public class ReviewService {
     }
 
     // 리뷰작성
-    public boolean create(Long pId, ReviewDto review) {
-        Member member = memberRepository.findById(1L).orElseThrow(
-                ResourceNotFoundException::new
-        );
-//        Member member = memberRepository.findById(review.getMember_id()).orElseThrow(
-//                ResourceNotFoundException::new
-//        );
+    public boolean create(String token, Long pId, ReviewDto review) {
+        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
 
         Product product = productRepository.findById(pId).orElseThrow(
                 ResourceNotFoundException::new

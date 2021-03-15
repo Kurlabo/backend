@@ -18,5 +18,5 @@ public class FindPwResponseDto {
     private String message;
 
     @NotNull @NotEmpty
-    private String email;
+    private Long member_id;
 }

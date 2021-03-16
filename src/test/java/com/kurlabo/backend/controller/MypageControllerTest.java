@@ -59,8 +59,8 @@ class MypageControllerTest {
     @BeforeEach
     void getToken() {
         LoginDto loginDto = new LoginDto();
-        loginDto.setUid("employee");
-        loginDto.setPassword("변경할패스워드");
+        loginDto.setUid("nemnemnemnem");
+        loginDto.setPassword("numnumnum2323");
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }

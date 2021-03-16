@@ -8,14 +8,10 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -74,9 +70,6 @@ public class MemberService {
         return "NOT EXISTED EMAIL";
     }
 
-    private Collection<? extends GrantedAuthority> authorities(String role) {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role));
-    }
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
@@ -106,8 +99,6 @@ public class MemberService {
 
         if(optionalMember.isPresent()){
             member = optionalMember.get();
-            member.setPassword(passwordEncoder.encode(findPwDto.getPassword()));
-            memberRepository.save(member);
         } else {
             throw new DataNotFoundException("NO RESOURCE");
         }
@@ -117,11 +108,23 @@ public class MemberService {
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
-                //.email(sb.toString())
+                .member_id(member.getId())
                 .build();
     }
 
-    // newly added
+    @Transactional
+    public FindPwChangeResponseDto findPwChange(FindPwChangeDto findPwChangeDto) {
+        Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+
+        member.setPassword(passwordEncoder.encode(findPwChangeDto.getInsertChangePw()));
+
+        memberRepository.save(member);
+
+        return FindPwChangeResponseDto.builder()
+                .message("SUCCESS")
+                .build();
+    }
+
     public String checkPhone(CheckPhoneDto dto) {
         if(!memberRepository.findByPhone(dto.getCheckPhone()).isPresent()){
             return "NOT EXISTED PHONE NUMBER";
@@ -169,4 +172,6 @@ public class MemberService {
 
         memberRepository.delete(member);
     }
+
+
 }

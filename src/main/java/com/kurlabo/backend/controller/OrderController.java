@@ -1,9 +1,6 @@
 package com.kurlabo.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
-import com.kurlabo.backend.model.Member;
-import com.kurlabo.backend.service.MemberService;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,6 @@ import javax.validation.Valid;
 public class OrderController {
 
     private final OrderService orderService;
-    private final MemberService memberService;
 
     // 주문서
     @GetMapping("/orderSheet")

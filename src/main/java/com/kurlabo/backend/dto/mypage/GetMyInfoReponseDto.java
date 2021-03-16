@@ -1,4 +1,4 @@
-package com.kurlabo.backend.dto.member;
+package com.kurlabo.backend.dto.mypage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindPwResponseDto {
-    @NotNull
-    @NotEmpty
-    private String message;
-
+public class GetMyInfoReponseDto {
     @NotNull @NotEmpty
-    private Long member_id;
+    private String uid;
 }

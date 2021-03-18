@@ -14,5 +14,4 @@ public class HeaderDto {
     private String name;
     private String mainAddress;
     private int cartCnt;
-    private String uid;
 }

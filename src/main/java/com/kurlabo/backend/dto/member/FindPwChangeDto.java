@@ -12,11 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindPwResponseDto {
-    @NotNull
-    @NotEmpty
-    private String message;
-
-    @NotNull @NotEmpty
+public class FindPwChangeDto {
     private Long member_id;
+    private String insertChangePw;
 }

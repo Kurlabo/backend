@@ -2,7 +2,6 @@ package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurlabo.backend.dto.member.*;
-import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.service.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,8 +44,8 @@ class MemberControllerTest {
     @BeforeEach
     void getToken() {
         LoginDto loginDto = new LoginDto();
-        loginDto.setUid("employee");
-        loginDto.setPassword("aaaa123123");
+        loginDto.setUid("nemnemnemnem");
+        loginDto.setPassword("numnumnum2323");
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }
@@ -130,22 +129,39 @@ class MemberControllerTest {
     @DisplayName("findPw")
     @Test
     void findPw() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw")
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                FindPwDto.builder()
+//                                        .name("개명함")
+//                                        .uid("nemnemnemnem")
+//                                        .email("empl22@gmail.com")
+//                                        .build()
+//                        )
+//                ))
+//                .andExpect(jsonPath("$.message").value("SUCCESS"))
+//                .andExpect(jsonPath("$.member_id").value((long)62))
+//
+//                //.andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
+//                .andExpect(status().isOk());
+    }
+
+    @DisplayName("findPwChange")
+    @Test
+    void findPwChange() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/find_pw_change")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(
                         objectMapper.writeValueAsString(
-                                FindPwDto.builder()
-                                        .name("개명함")
-                                        .uid("employee")
-                                        .email("empl22@gmail.com")
-                                        .password("변경할패스워드")
+                                FindPwChangeDto.builder()
+                                        .member_id((long)1)
+                                        .insertChangePw("noahlimnoah0301")
                                         .build()
-                        )
-                ))
+                        )))
                 .andExpect(jsonPath("$.message").value("SUCCESS"))
-
-                //.andExpect(jsonPath("$.email").value("limnoa*******@gmail.com"))
                 .andExpect(status().isOk());
+
     }
 
     @DisplayName("getMemberInfoTest")

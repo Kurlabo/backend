@@ -28,7 +28,6 @@ public class MypageController {
     private final ReviewService reviewService;
     private final OrderService orderService;
     private final DeliverAddressService deliverAddressService;
-    private final LoginService loginService;
     private final TokenProvider tokenProvider;
 
     //@AuthenticationPrincipal Member member,

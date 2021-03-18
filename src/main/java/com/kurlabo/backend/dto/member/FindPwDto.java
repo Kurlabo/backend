@@ -21,7 +21,4 @@ public class FindPwDto {
 
     @NotEmpty @NotNull
     private String email;
-
-    @NotEmpty @NotNull
-    private String password;
 }

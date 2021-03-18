@@ -45,7 +45,7 @@ class MemberControllerTest {
     void getToken() {
         LoginDto loginDto = new LoginDto();
         loginDto.setUid("nemnemnemnem");
-        loginDto.setPassword("numnumnum2323");
+        loginDto.setPassword("aaaa123123"); // 이전 비밀번호 numnumnum2323
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }

@@ -46,7 +46,7 @@ class MemberControllerTest {
     void getToken() {
         LoginDto loginDto = new LoginDto();
         loginDto.setUid("employee");
-        loginDto.setPassword("변경할패스워드");
+        loginDto.setPassword("aaaa123123");
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }
@@ -97,11 +97,12 @@ class MemberControllerTest {
     void loginTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/member/login")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
                 .content(
                         objectMapper.writeValueAsString(
                                 LoginDto.builder()
-                                        .uid("nemnemnemnem")
-                                        .password("numnumnum2323")
+                                        .uid("employee")
+                                        .password("aaaa123123")
                                         .build()
                         )
                 ))
@@ -178,6 +179,7 @@ class MemberControllerTest {
                         objectMapper.writeValueAsString(
                                 MemberDto.builder()
                                         .uid("employee")
+                                        .password("aaaa123123")
                                         .name("개명함")
                                         .email("empl22@gmail.com")
                                         .gender("선택안함")

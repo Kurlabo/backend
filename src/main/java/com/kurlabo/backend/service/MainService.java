@@ -211,6 +211,6 @@ public class MainService {
     public HeaderDto setHeader(String token) {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
         List<Cart> cartList = cartRepository.findByMember(member);
-        return new HeaderDto(member.getGrade(), member.getName(), cartList.size());
+        return new HeaderDto(member.getGrade(), member.getName(), cartList.size(), member.getUid());
     }
 }

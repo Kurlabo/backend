@@ -214,6 +214,6 @@ public class MainService {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
         List<Cart> cartList = cartRepository.findByMember(member);
         Deliver_Address da = deliverAddressService.selectMainDeliverAddress(member);
-        return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size());
+        return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size(), member.getUid());
     }
 }

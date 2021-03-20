@@ -164,15 +164,27 @@ class MemberControllerTest {
 
     }
 
+    @DisplayName("checkMemberInfoTest")
+    @Test
+    void checkMemberInfoTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/myinfo")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", token1)
+                        .content(objectMapper.writeValueAsString(new CheckPwDto("aaaa123123")))
+        )
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+                .andExpect(status().isOk());
+    }
+
     @DisplayName("getMemberInfoTest")
     @Test
     void getMemberInfoTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/member/myinfo")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", token1)
-                .content(
-                        objectMapper.writeValueAsString(
-                                new CheckPwDto("aaaa123123")
+                .header("Authorization", token1))
+//                .content(
+//                        objectMapper.writeValueAsString(
+//                                new CheckPwDto("aaaa123123")
 //                                MemberDto.builder()
 //                                        .uid("nemnemnemnem")
 //                                        .password("ssss123123")
@@ -182,9 +194,9 @@ class MemberControllerTest {
 //                                        .phone("01001938275")
 //                                        .date_of_birth(null)
 //                                        .build()
-                        )
-                )
-                )
+//                        )
+//                )
+//                )
                 .andExpect(status().isOk());
     }
 

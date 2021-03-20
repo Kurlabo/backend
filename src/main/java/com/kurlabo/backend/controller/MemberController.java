@@ -81,7 +81,7 @@ public class MemberController {
     @GetMapping(value = "/myinfo")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token,
-                                           @Valid @RequestBody MemberDto dto) {
+                                           @Valid @RequestBody CheckPwDto dto) {
         return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 

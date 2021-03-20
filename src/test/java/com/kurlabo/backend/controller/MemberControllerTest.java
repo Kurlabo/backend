@@ -172,16 +172,19 @@ class MemberControllerTest {
                 .header("Authorization", token1)
                 .content(
                         objectMapper.writeValueAsString(
-                                MemberDto.builder()
-                                        .uid("employee")
-                                        .name("수정된사용자")
-                                        .email("empl22@gmail.com")
-                                        .gender("선택안함")
-                                        .phone("01023456778")
-                                        .date_of_birth(null)
-                                        .build()
+                                new CheckPwDto("aaaa123123")
+//                                MemberDto.builder()
+//                                        .uid("nemnemnemnem")
+//                                        .password("ssss123123")
+//                                        .name("곽두팔")
+//                                        .email("dopal123@gmail.com")
+//                                        .gender("선택안함")
+//                                        .phone("01001938275")
+//                                        .date_of_birth(null)
+//                                        .build()
                         )
-                ))
+                )
+                )
                 .andExpect(status().isOk());
     }
 

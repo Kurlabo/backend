@@ -132,16 +132,22 @@ public class MemberService {
         return "EXISTED PHONE NUMBER";
     }
 
-    public Member getMemberInfo (Long id, MemberDto dto) {
-        memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+    public Member getMemberInfo (Long id, CheckPwDto dto) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+            throw new DataNotFoundException("Passwords do not match.");
+        }
 
         return Member.builder()
-                .uid(dto.getUid())
-                .name(dto.getName())
-                .phone(dto.getPhone())
-                .email(dto.getEmail())
-                .gender(dto.getGender())
-                .date_of_birth(dto.getDate_of_birth())
+                .uid(member.getUid())
+                .name(member.getName())
+                .phone(member.getPhone())
+                .email(member.getEmail())
+                .gender(member.getGender())
+                .date_of_birth(member.getDate_of_birth())
                 .build();
     }
 

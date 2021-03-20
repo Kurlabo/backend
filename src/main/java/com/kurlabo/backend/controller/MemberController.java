@@ -78,11 +78,17 @@ public class MemberController {
         return ResponseEntity.ok(memberService.checkPhone(dto));
     }
 
+    @PostMapping(value = "/myinfo")
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> checkMemberInfo(@RequestHeader("Authorization") String token,
+                                           @Valid @RequestBody CheckPwDto dto) {
+        return ResponseEntity.ok(memberService.checkMemberInfo(tokenProvider.parseTokenToGetMemberId(token), dto));
+    }
+
     @GetMapping(value = "/myinfo")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token,
-                                           @Valid @RequestBody CheckPwDto dto) {
-        return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token), dto));
+    public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     @PutMapping(value = "/myinfo")

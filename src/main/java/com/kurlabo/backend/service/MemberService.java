@@ -150,7 +150,12 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
 
-        if(dto.getPassword() != null) {
+        // 현재 비밀번호 기입 && 변경 비밀번호 기입
+        if(dto.getCheckPassword() != null && dto.getPassword() != null) {
+            // 현재 비밀번호 불일치
+            if (!passwordEncoder.matches(member.getPassword(), dto.getCheckPassword())) {
+                throw new DataNotFoundException("Passwords do not match.");
+            }
             member.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 

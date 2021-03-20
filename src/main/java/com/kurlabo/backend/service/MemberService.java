@@ -132,7 +132,7 @@ public class MemberService {
         return "EXISTED PHONE NUMBER";
     }
 
-    public Member getMemberInfo (Long id, CheckPwDto dto) {
+    public CheckMemberInfoResponseDto checkMemberInfo(Long id, CheckPwDto dto) {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Member is not existed.")
         );
@@ -140,6 +140,20 @@ public class MemberService {
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new DataNotFoundException("Passwords do not match.");
         }
+
+        return CheckMemberInfoResponseDto.builder()
+                .message("SUCCESS")
+                .build();
+    }
+
+    public Member getMemberInfo (Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
+//        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+//            throw new DataNotFoundException("Passwords do not match.");
+//        }
 
         return Member.builder()
                 .uid(member.getUid())

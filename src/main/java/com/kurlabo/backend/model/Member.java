@@ -45,6 +45,9 @@ public class Member {
     @Column(nullable = false)
     private String grade;
 
+    private int check_term;
+
+    private int check_sns;
 
     private int total_cost;
 

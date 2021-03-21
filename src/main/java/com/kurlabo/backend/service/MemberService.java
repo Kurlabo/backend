@@ -49,6 +49,8 @@ public class MemberService {
                 .gender(dto.getGender())
                 .date_of_birth(dto.getDate_of_birth())
                 .grade("일반")
+                .check_term(dto.getCheck_term())
+                .check_sns(dto.getCheck_sns())
                 .total_cost(0)
                 .role(MemberRole.MEMBER)
                 .build();
@@ -162,6 +164,8 @@ public class MemberService {
                 .email(member.getEmail())
                 .gender(member.getGender())
                 .date_of_birth(member.getDate_of_birth())
+                .check_term(member.getCheck_term())
+                .check_sns(member.getCheck_sns())
                 .build();
     }
 
@@ -184,6 +188,8 @@ public class MemberService {
         member.setPhone(dto.getPhone());
         member.setDate_of_birth(dto.getDate_of_birth());
         member.setGender(dto.getGender());
+        member.setCheck_term(dto.getCheck_term());
+        member.setCheck_sns(dto.getCheck_sns());
 
         memberRepository.save(member);
     }

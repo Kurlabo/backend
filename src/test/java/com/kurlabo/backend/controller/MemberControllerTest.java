@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,15 +58,17 @@ class MemberControllerTest {
 //        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup").contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .content(
 //                        objectMapper.writeValueAsString(new MemberDto(
-//                                "nemnemnemnem",
-//                                "tosiaki210304@gmail.com",
-//                                "numnumnum2323",
-//                                "numnumnum2323",
-//                                "최유선",
+//                                "jwlim910301",
+//                                "jwlim0301@gmail.com",
+//                                "910301jwlim",
+//                                "910301jwlim",
+//                                "정우씨",
 //                                "01001938275",
-//                                "여자",
+//                                "선택안함",
 //                                LocalDate.of(1991,03,01),
-//                                "서울시 은평구 은평동 은평아파트 122동 1212호"
+//                                "서울시 은평구 은평동 은평아파트 122동 1212호",
+//                                0,
+//                                3
 //                        ))))
 //                .andExpect(status().isOk());
     }
@@ -216,6 +220,8 @@ class MemberControllerTest {
                                         .email("dopal123@gmail.com")
                                         .gender("선택안함")
                                         .phone("01001938275")
+                                        .check_sns(3)
+                                        .check_term(0)
                                         .build()
                         )
                 ))

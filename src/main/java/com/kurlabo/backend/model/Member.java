@@ -54,4 +54,8 @@ public class Member {
 
     @ColumnDefault("false")
     private boolean isDeleted;
+
+    private int check_term;
+
+    private int check_sns;
 }

@@ -36,4 +36,7 @@ public class MemberDto {
     @Past(message = "생년월일을 다시 입력해주세요.")
     private LocalDate date_of_birth;
     private String address;
+
+    private int check_term;
+    private int check_sns;
 }

@@ -216,6 +216,8 @@ class MemberControllerTest {
                                         .email("dopal123@gmail.com")
                                         .gender("선택안함")
                                         .phone("01001938275")
+                                        .check_sns(0)
+                                        .check_term(0)
                                         .build()
                         )
                 ))

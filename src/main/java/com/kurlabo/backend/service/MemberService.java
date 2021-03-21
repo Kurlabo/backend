@@ -49,6 +49,8 @@ public class MemberService {
                 .gender(dto.getGender())
                 .date_of_birth(dto.getDate_of_birth())
                 .grade("일반")
+                .check_term(dto.getCheck_term())
+                .check_sns(dto.getCheck_sns())
                 .total_cost(0)
                 .role(MemberRole.MEMBER)
                 .build();

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -36,6 +37,8 @@ public class MemberDto {
     @Past(message = "생년월일을 다시 입력해주세요.")
     private LocalDate date_of_birth;
     private String address;
+    @Range(min = 0, max = 1)
     private int check_term;
+    @Range(min = 0, max = 3)
     private int check_sns;
 }

@@ -33,7 +33,7 @@ public class MemberService {
 
         Member member = signUpMember(dto);
 
-        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress());
+        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress(), dto.getDetail_address());
 
         return "SIGNUP SUCCESS";
     }

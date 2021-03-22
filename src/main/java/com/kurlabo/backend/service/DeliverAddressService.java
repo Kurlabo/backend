@@ -21,7 +21,7 @@ public class DeliverAddressService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Deliver_Address setDeliverAddress(Member member, String address){
+    public Deliver_Address setDeliverAddress(Member member, String address, String detail_addr){
         if(member == null){
             return null;
         }
@@ -29,6 +29,7 @@ public class DeliverAddressService {
         Deliver_Address da = new Deliver_Address(
                 null,
                 address,
+                detail_addr,
                 1,
                 "",
                 "",
@@ -85,6 +86,7 @@ public class DeliverAddressService {
 
         newAddress.setIs_main(1);
         newAddress.setDeliver_address(deliverAddress.getDeliver_address());
+        newAddress.setDeliver_detail_address(deliverAddress.getDeliver_detail_address());
         newAddress.setReciever(deliverAddress.getReciever());
         newAddress.setReciever_phone(deliverAddress.getReciever_phone());
         newAddress.setMember(member);
@@ -139,6 +141,7 @@ public class DeliverAddressService {
         }
 
         address.setDeliver_address(deliverAddress.getDeliver_address());
+        address.setDeliver_detail_address(deliverAddress.getDeliver_detail_address());
 
         return address;
     }

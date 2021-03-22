@@ -216,6 +216,7 @@ class MypageControllerTest {
 //                        new Deliver_Address(
 //                                null,
 //                                "서울특별시 용산구 한강대로 92",
+//                                null,
 //                                1,
 //                                "",
 //                                "",
@@ -237,6 +238,7 @@ class MypageControllerTest {
                         new Deliver_Address(
                                 68L,
                                 "서울특별시 용산구 한강대로 92",
+                                "23-5",
                                 1,
                                 "",
                                 "",

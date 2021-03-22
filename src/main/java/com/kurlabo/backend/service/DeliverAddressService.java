@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -93,22 +94,36 @@ public class DeliverAddressService {
 
     @Transactional
     public Deliver_Address updateDeliverAddress (Long id, Deliver_Address deliverAddress){
-        memberRepository.findById(id).orElseThrow(
+        Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Member is not existed.")
         );
 
         Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId())
-                .orElseThrow(ResourceNotFoundException::new);
+                            .orElseThrow(ResourceNotFoundException::new);
 
-        // 기본 배송지로 변경
+        List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
+        int cnt = 0;
+
         if (deliverAddress.getIs_main() == 1) {
-            checkIsMain(deliverAddress);
-            address.setIs_main(1);
-        }
+            for (Deliver_Address da : daList) {
+                if (da.getIs_main() == 1) {
+                    checkIsMain(deliverAddress);
+                    address.setIs_main(1);
+                }
+            } // end for
+        } else {
+            for (Deliver_Address da : daList) {
+                if (da.getIs_main() == 0) {
+                    cnt ++;
+                }
+            } // end for
 
-        // 기본 배송지가 없다면
-        if (address.getIs_main() == 0) {
-            throw new DataNotFoundException("NO RESOURCE");
+            if (cnt == daList.size()-1) {
+                throw new DataNotFoundException("There is no default shipping address.");
+            } else {
+                address.setIs_main(0);
+            }
+
         }
 
         if (deliverAddress.getReciever() != null) { // 넘어온 값이 있음

@@ -59,8 +59,10 @@ class MypageControllerTest {
     @BeforeEach
     void getToken() {
         LoginDto loginDto = new LoginDto();
-        loginDto.setUid("nemnemnemnem");
-        loginDto.setPassword("aaaa123123"); // 이전 비밀번호 numnumnum2323
+//        loginDto.setUid("nemnemnemnem");
+//        loginDto.setPassword("aaaa123123"); // 이전 비밀번호 numnumnum2323
+        loginDto.setUid("employee");
+        loginDto.setPassword("aaaa123123");
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }
@@ -214,6 +216,7 @@ class MypageControllerTest {
 //                        new Deliver_Address(
 //                                null,
 //                                "서울특별시 용산구 한강대로 92",
+//                                null,
 //                                1,
 //                                "",
 //                                "",
@@ -226,23 +229,24 @@ class MypageControllerTest {
     @DisplayName("배송지 수정 테스트")
     @Test
     void updateAddressTest() throws Exception {
-//        Member member = memberRepository.findById(64L).orElseThrow(ResourceNotFoundException::new);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .header("Authorization", token1)
-//                .content(objectMapper.writeValueAsString(
-//                        new Deliver_Address(
-//                                53L,
-//                                "서울 강남구 삼성동 25",
-//                                1,
-//                                "",
-//                                "",
-//                                member
-//                        )
-//                )))
-//                .andExpect(status().isCreated())
-//                .andDo(print());
+        Member member = memberRepository.findById(64L).orElseThrow(ResourceNotFoundException::new);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(
+                        new Deliver_Address(
+                                68L,
+                                "서울특별시 용산구 한강대로 92",
+                                "23-5",
+                                1,
+                                "",
+                                "",
+                                member
+                        )
+                )))
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
     @DisplayName("배송지 삭제 테스트")

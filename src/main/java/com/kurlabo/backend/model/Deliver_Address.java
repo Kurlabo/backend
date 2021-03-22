@@ -18,6 +18,8 @@ public class Deliver_Address {
 
     private String deliver_address;
 
+    private String deliver_detail_address;
+
     private int is_main;
 
     private String reciever;

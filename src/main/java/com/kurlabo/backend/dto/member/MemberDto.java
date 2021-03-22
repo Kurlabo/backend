@@ -37,6 +37,7 @@ public class MemberDto {
     @Past(message = "생년월일을 다시 입력해주세요.")
     private LocalDate date_of_birth;
     private String address;
+    private String detail_address;
     @Range(min = 0, max = 1)
     private int check_term;
     @Range(min = 0, max = 3)

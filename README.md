@@ -50,5 +50,4 @@
 <br>
 
 ## API Documentation
-https://documenter.getpostman.com/view/14493383/TzCS6maN
-<br>
+> Postman을 활용한 [API Design Documentation](https://documenter.getpostman.com/view/14493383/TzCS6maN)

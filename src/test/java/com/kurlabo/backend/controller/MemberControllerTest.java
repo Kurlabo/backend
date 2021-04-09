@@ -55,22 +55,23 @@ class MemberControllerTest {
     @DisplayName("SignUp")
     @Test
     void signUp() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup").contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(
-//                        objectMapper.writeValueAsString(new MemberDto(
-//                                "jwlim910301",
-//                                "jwlim0301@gmail.com",
-//                                "910301jwlim",
-//                                "910301jwlim",
-//                                "정우씨",
-//                                "01001938275",
-//                                "선택안함",
-//                                LocalDate.of(1991,03,01),
-//                                "서울시 은평구 은평동 은평아파트 122동 1212호",
-//                                0,
-//                                3
-//                        ))))
-//                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/signup").contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(
+                        objectMapper.writeValueAsString(new MemberDto(
+                                "usun202",
+                                "usun202@gmail.com",
+                                "aaaa123123",
+                                "aaaa123123",
+                                "최유선",
+                                "01001938275",
+                                "선택안함",
+                                LocalDate.of(1991,03,01),
+                                "세종특별자치시 보듬2로 42",
+                                "132동 2305호",
+                                0,
+                                3
+                        ))))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("CheckUid")

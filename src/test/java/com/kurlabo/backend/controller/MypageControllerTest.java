@@ -61,8 +61,8 @@ class MypageControllerTest {
         LoginDto loginDto = new LoginDto();
 //        loginDto.setUid("nemnemnemnem");
 //        loginDto.setPassword("aaaa123123"); // 이전 비밀번호 numnumnum2323
-        loginDto.setUid("employee");
-        loginDto.setPassword("aaaa123123");
+        loginDto.setUid("limnoah0301");
+        loginDto.setPassword("noahlimnoah0301");
         token = loginService.login(loginDto);
         token1 = token.getToken();
     }
@@ -229,18 +229,18 @@ class MypageControllerTest {
     @DisplayName("배송지 수정 테스트")
     @Test
     void updateAddressTest() throws Exception {
-        Member member = memberRepository.findById(64L).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/mypage/destination/list")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", token1)
                 .content(objectMapper.writeValueAsString(
                         new Deliver_Address(
-                                68L,
-                                "서울특별시 용산구 한강대로 92",
-                                "23-5",
+                                86L,
+                                "서울 서대문구 홍제내길 12 107동 ",
+                                null,
                                 1,
-                                "",
+                                "수정된받는사람",
                                 "",
                                 member
                         )

@@ -101,31 +101,26 @@ public class DeliverAddressService {
         );
 
         Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId())
-                            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
 
+        // 해당 멤버가 가진 다른 주소
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
         int cnt = 0;
 
-        if (deliverAddress.getIs_main() == 1) {
-            for (Deliver_Address da : daList) {
-                if (da.getIs_main() == 1) {
-                    checkIsMain(deliverAddress);
-                    address.setIs_main(1);
-                }
-            } // end for
-        } else {
-            for (Deliver_Address da : daList) {
-                if (da.getIs_main() == 0) {
-                    cnt ++;
-                }
-            } // end for
-
-            if (cnt == daList.size()-1) {
-                throw new DataNotFoundException("There is no default shipping address.");
-            } else {
-                address.setIs_main(0);
+        for (Deliver_Address da : daList) {
+            if (da.getIs_main() == 0 || deliverAddress.getIs_main() == 0) {
+                cnt ++;
             }
 
+            if (da.getId().equals(deliverAddress.getId()) && deliverAddress.getIs_main() == 1) {
+                address.setIs_main(1);
+            } else if (!da.getId().equals(deliverAddress.getId()) && deliverAddress.getIs_main() == 1) {
+                da.setIs_main(0);
+            }
+        } // end for
+
+        if (cnt >= daList.size()) {
+            throw new DataNotFoundException("There is no default shipping address.");
         }
 
         if (deliverAddress.getReciever() != null) { // 넘어온 값이 있음
@@ -136,7 +131,7 @@ public class DeliverAddressService {
 
         if (deliverAddress.getReciever_phone() != null) {
             address.setReciever_phone(deliverAddress.getReciever_phone());
-        }else {
+        } else {
             address.setReciever_phone(null);
         }
 

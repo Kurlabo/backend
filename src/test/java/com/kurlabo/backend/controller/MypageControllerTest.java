@@ -207,23 +207,24 @@ class MypageControllerTest {
     @Test
     @DisplayName("배송지 추가 테스트")
     void createAddressTest() throws Exception {
-//        Member member = memberRepository.findById(62L).orElseThrow(ResourceNotFoundException::new);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/destination/list")
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .header("Authorization", token1)
-//                .content(objectMapper.writeValueAsString(
-//                        new Deliver_Address(
-//                                null,
-//                                "서울특별시 용산구 한강대로 92",
-//                                null,
-//                                1,
-//                                "",
-//                                "",
-//                                member
-//                        )
-//                )))
-//                .andExpect(status().isCreated());
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(
+                        new Deliver_Address(
+                                null,
+                                "서울특별시 용산구 한강대로 92",
+                                null,
+                                1,
+                                "",
+                                "",
+                                0,
+                                member
+                        )
+                )))
+                .andExpect(status().isCreated());
     }
 
     @DisplayName("배송지 수정 테스트")
@@ -242,6 +243,7 @@ class MypageControllerTest {
                                 1,
                                 "수정된받는사람",
                                 "",
+                                1,
                                 member
                         )
                 )))
@@ -261,5 +263,29 @@ class MypageControllerTest {
 //                .content(objectMapper.writeValueAsString(da)))
 //                .andExpect(status().isNoContent())
 //                .andDo(print());
+    }
+
+    @DisplayName("배송지 선택 테스트")
+    @Test
+    void updateChkAddress() throws Exception {
+        Member member = memberRepository.findById(1L).orElseThrow(ResourceNotFoundException::new);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/mypage/destination/list")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", token1)
+                .content(objectMapper.writeValueAsString(
+                        new Deliver_Address(
+                                86L,
+                                "서울 서대문구 홍제내길 12 107동 ",
+                                null,
+                                1,
+                                "수정된받는사람",
+                                "",
+                                1,
+                                member
+                        )
+                )))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

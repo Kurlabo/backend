@@ -1,7 +1,6 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +31,7 @@ public class DeliverAddressService {
                 1,
                 "",
                 "",
+                0,
                 member
         );
 
@@ -53,12 +52,16 @@ public class DeliverAddressService {
         return da;
     }
 
-    // 기본 배송지 체크
+    // 기본 배송지, 선택 배송지 체크
     public void checkIsMain (Deliver_Address deliverAddress) {
         List<Deliver_Address> isMainChk = deliverAddressRepository.findByMember(deliverAddress.getMember());
         for (Deliver_Address mainChk : isMainChk) {
             if (mainChk.getIs_main() == 1) {
                 mainChk.setIs_main(deliverAddress.updateIsMain());
+            }
+
+            if (mainChk.getChecked() == 1) {
+                mainChk.setChecked(deliverAddress.updateChecked());
             }
         } // end for
     }
@@ -85,6 +88,7 @@ public class DeliverAddressService {
         checkIsMain(deliverAddress);
 
         newAddress.setIs_main(1);
+        newAddress.setChecked(1);
         newAddress.setDeliver_address(deliverAddress.getDeliver_address());
         newAddress.setDeliver_detail_address(deliverAddress.getDeliver_detail_address());
         newAddress.setReciever(deliverAddress.getReciever());
@@ -100,41 +104,26 @@ public class DeliverAddressService {
                 () -> new DataNotFoundException("Member is not existed.")
         );
 
-        Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId())
-                .orElseThrow(ResourceNotFoundException::new);
+        Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId()).orElseThrow(
+                () -> new DataNotFoundException("Address is not existed.")
+        );
 
         // 해당 멤버가 가진 다른 주소
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
-        int cnt = 0;
 
         for (Deliver_Address da : daList) {
-            if (da.getIs_main() == 0 || deliverAddress.getIs_main() == 0) {
-                cnt ++;
-            }
-
-            if (da.getId().equals(deliverAddress.getId()) && deliverAddress.getIs_main() == 1) {
-                address.setIs_main(1);
-            } else if (!da.getId().equals(deliverAddress.getId()) && deliverAddress.getIs_main() == 1) {
-                da.setIs_main(0);
+            if (deliverAddress.getIs_main() == 1) { // 기본 배송지로 지정
+                if (da.getId().equals(deliverAddress.getId())) {
+                    address.setIs_main(deliverAddress.getIs_main());
+                } else {
+                    da.setIs_main(0);
+                }
             }
         } // end for
 
-        if (cnt >= daList.size()) {
-            throw new DataNotFoundException("There is no default shipping address.");
-        }
-
-        if (deliverAddress.getReciever() != null) { // 넘어온 값이 있음
-            address.setReciever(deliverAddress.getReciever());
-        } else {
-            address.setReciever(null);
-        }
-
-        if (deliverAddress.getReciever_phone() != null) {
-            address.setReciever_phone(deliverAddress.getReciever_phone());
-        } else {
-            address.setReciever_phone(null);
-        }
-
+        address.setChecked(deliverAddress.getChecked());
+        address.setReciever(deliverAddress.getReciever());
+        address.setReciever_phone(deliverAddress.getReciever_phone());
         address.setDeliver_address(deliverAddress.getDeliver_address());
         address.setDeliver_detail_address(deliverAddress.getDeliver_detail_address());
 
@@ -159,5 +148,34 @@ public class DeliverAddressService {
 
         return msg;
     }
+
+    @Transactional
+    public void updateChkAddress(Long id, Deliver_Address deliverAddress) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Member is not existed.")
+        );
+
+        Deliver_Address address = deliverAddressRepository.findById(deliverAddress.getId()).orElseThrow(
+                () -> new DataNotFoundException("Address is not existed.")
+        );
+
+        List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
+
+        for (Deliver_Address da : daList) {
+            if (deliverAddress.getChecked() == 1 ) { // 배송지 선택 (리스트 가장 위로 고정)
+                if (da.getId().equals(deliverAddress.getId())) {
+                    address.setChecked(deliverAddress.getChecked());
+                } else {
+                    da.setChecked(0);
+                }
+            }
+        } // end for
+
+        // return address;
+
+    }
+
+
+
 
 }

@@ -140,4 +140,12 @@ public class MypageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         // return ResponseEntity.ok(deliverAddressService.deleteDeliverAddress(deliverAddress));
     }
+
+    @PatchMapping("/destination/list")
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> updateChkAddress(@RequestHeader("Authorization") String token,
+                                           @RequestBody @Valid Deliver_Address deliverAddress) {
+        deliverAddressService.updateChkAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

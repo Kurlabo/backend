@@ -26,6 +26,8 @@ public class Deliver_Address {
 
     private String reciever_phone;
 
+    private int checked;
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -33,5 +35,10 @@ public class Deliver_Address {
     public int updateIsMain () {
         this.is_main = 0;
         return this.is_main;
+    }
+
+    public int updateChecked () {
+        this.checked = 0;
+        return this.checked;
     }
 }

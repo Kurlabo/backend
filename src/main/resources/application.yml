@@ -21,7 +21,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://kurlabo-rds.c7mbllne7stz.ap-northeast-2.rds.amazonaws.com:3306/kurlaboDB?user=lnoah&password=tkdrud1dnjf!
-    username: admin
+    username: lnoah
     password: tkdrud1dnjf!
   h2:
     console:

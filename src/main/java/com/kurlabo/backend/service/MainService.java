@@ -74,26 +74,28 @@ public class MainService {
         List<MainPageProductDto> list = new ArrayList<>();
         List<Long> longList = new ArrayList<>();
 
-        for(int i = 0; i < 16; i++){
-            Long n = (long)random.nextInt(321) + 1;
-            while (longList.contains(n)){
-                n = (long)random.nextInt(321) + 1;
-            }
-            longList.add(n);
-
-            Product product = productRepository.findById(n).orElseThrow(ResourceNotFoundException::new);
-            list.add(new MainPageProductDto(
-                    product.getId(),
-                    product.getOriginal_image_url(),
-                    product.getSticker_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getDiscount_percent()
-            ));
-        }
-
-        return list;
+        // 전체 상품 수를 어떻게 알지?
+//        for(int i = 0; i < 16; i++){
+////            Long n = (long)random.nextInt(321) + 1;
+////            while (longList.contains(n)){
+////                n = (long)random.nextInt(321) + 1;
+////            }
+//            Long n = 3L;
+//            longList.add(n);
+//
+//            Product product = productRepository.findById(n).orElseThrow(ResourceNotFoundException::new);
+//            list.add(new MainPageProductDto(
+//                    product.getId(),
+//                    product.getOriginal_image_url(),
+//                    product.getSticker_image_url(),
+//                    product.getName(),
+//                    product.getOriginal_price(),
+//                    product.getDiscounted_price(),
+//                    product.getDiscount_percent()
+//            ));
+//        }
+        // 리팩토링 해야함
+        return null;
     }
     public List<MainPageProductDto> setFrugality(){
         Random random = new Random();
@@ -101,26 +103,26 @@ public class MainService {
         List<Product> productsList = productRepository.findByDiscount_percent();
         List<Integer> intlist = new ArrayList<>();
 
-        for(int i = 0; i < 16; i++){
-            int n = random.nextInt(productsList.size());
-            while (intlist.contains(n)){
-                n = random.nextInt(productsList.size());
-            }
-            intlist.add(n);
-            Product product = productsList.get(n);
-
-            list.add(new MainPageProductDto(
-                    product.getId(),
-                    product.getOriginal_image_url(),
-                    product.getSticker_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getDiscount_percent()
-            ));
-        }
-
-        return list;
+//        for(int i = 0; i < 16; i++){
+//            int n = random.nextInt(productsList.size());
+//            while (intlist.contains(n)){
+//                n = random.nextInt(productsList.size());
+//            }
+//            intlist.add(n);
+//            Product product = productsList.get(n);
+//
+//            list.add(new MainPageProductDto(
+//                    product.getId(),
+//                    product.getOriginal_image_url(),
+//                    product.getSticker_image_url(),
+//                    product.getName(),
+//                    product.getOriginal_price(),
+//                    product.getDiscounted_price(),
+//                    product.getDiscount_percent()
+//            ));
+//        }
+        // 리팩토링 해야함
+        return null;
     }
     public List<MainPageProductDto> setMdRecommend(int mainCategory){
         Random random = new Random();
@@ -129,26 +131,29 @@ public class MainService {
         List<Integer> intList = new ArrayList<>();
         productsList = getProducts(mainCategory, productsList, productRepository);
 
-        for(int i = 0; i < 16; i++){
-            int n = random.nextInt(productsList.size());
-            while (intList.contains(n)){
-                n = random.nextInt(productsList.size());
-            }
-            intList.add(n);
-            Product product = productsList.get(n);
-
-            list.add(new MainPageProductDto(
-                    product.getId(),
-                    product.getOriginal_image_url(),
-                    product.getSticker_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getDiscount_percent()
-            ));
-        }
-
-        return list;
+//        if(productsList.size() > 0) {
+//            for(int i = 0; i < 16; i++){
+//
+//                int n = random.nextInt(productsList.size());
+//                while (intList.contains(n)){
+//                    n = random.nextInt(productsList.size());
+//                }
+//                intList.add(n);
+//                Product product = productsList.get(n);
+//
+//                list.add(new MainPageProductDto(
+//                        product.getId(),
+//                        product.getOriginal_image_url(),
+//                        product.getSticker_image_url(),
+//                        product.getName(),
+//                        product.getOriginal_price(),
+//                        product.getDiscounted_price(),
+//                        product.getDiscount_percent()
+//                ));
+//            }
+//        }
+        // 리팩토링 해야함
+        return null;
     }
     public List<MainPageProductDto> setTodays(){
         return setHowAbout();
@@ -165,26 +170,26 @@ public class MainService {
         List<Integer> intlist = new ArrayList<>();
         List<MainPageProductDto> list = new ArrayList<>();
 
-        for(int i = 0; i < 16; i++){
-            int n = random.nextInt(productList.size());
-            while (intlist.contains(n)){
-                n = random.nextInt(productList.size());
-            }
-            intlist.add(n);
-            Product product = productList.get(n);
-
-            list.add(new MainPageProductDto(
-                    product.getId(),
-                    product.getOriginal_image_url(),
-                    product.getSticker_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getDiscount_percent()
-            ));
-        }
-
-        return list;
+//        for(int i = 0; i < 16; i++){
+//            int n = random.nextInt(productList.size());
+//            while (intlist.contains(n)){
+//                n = random.nextInt(productList.size());
+//            }
+//            intlist.add(n);
+//            Product product = productList.get(n);
+//
+//            list.add(new MainPageProductDto(
+//                    product.getId(),
+//                    product.getOriginal_image_url(),
+//                    product.getSticker_image_url(),
+//                    product.getName(),
+//                    product.getOriginal_price(),
+//                    product.getDiscounted_price(),
+//                    product.getDiscount_percent()
+//            ));
+//        }
+        // 리팩토링 해야함
+        return null;
     }
 
     private List<Product> getProducts(int category, List<Product> productList, ProductRepository productRepository) {

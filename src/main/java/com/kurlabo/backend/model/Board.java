@@ -20,5 +20,6 @@ public class Board {
     private String writer;
     private LocalDate regdate;
     private int cnt;
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 }

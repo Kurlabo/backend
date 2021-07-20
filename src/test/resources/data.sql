@@ -305,3 +305,59 @@ values (
            '500g(2~4개입)',
            '["식품 특성상 중량은 5% 내외의 차이가 발생할 수 있습니다.", "해당 상품은 여러 협력업체에서 납품하고 있는 상품으로 수령 시, 상이한 협력업체의 상품을 받아보실 수 있습니다. 품질은 동일 기준으로 입고되고 있사오니 참고 부탁드립니다."]'
        );
+
+-- member
+
+insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
+values (
+        1,
+        'testid1',
+        'mdmdmd131313',
+        '임정우1',
+        'limjw01@gmail.com',
+        '01011111111',
+        '남자',
+        '1991-03-01',
+        '',
+        0,
+        1,
+        100000,
+        'MEMBER',
+        false
+       );
+
+insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
+values (
+           2,
+           'testid2',
+           'mdmdmd232323',
+           '임정우2',
+           'limjw02@gmail.com',
+           '01022222222',
+           '남자',
+           '1991-03-02',
+           '',
+           1,
+           1,
+           200000,
+           'MEMBER',
+           true
+       );
+
+insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
+values (
+           3,
+           'testid3',
+           'mdmdmd333333',
+           '임정우3',
+           'limjw03@gmail.com',
+           '01033333333',
+           '남자',
+           '1991-03-03',
+           '',
+           0,
+           0,
+           300000,
+           'MEMBER',
+           false
+       );

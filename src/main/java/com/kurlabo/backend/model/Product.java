@@ -19,7 +19,7 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
     private int category;
-    @Convert(converter = JsonConverter.class)
+//    @Convert(converter = JsonConverter.class)
     @Column(columnDefinition = "text")
     private String data;
     private String detail_img_url;// 상품설명 대표 이미지

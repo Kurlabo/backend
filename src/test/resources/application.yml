@@ -6,7 +6,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
   h2:
     console:
       enabled: true

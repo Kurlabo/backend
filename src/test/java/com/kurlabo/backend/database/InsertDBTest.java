@@ -1,10 +1,12 @@
 package com.kurlabo.backend.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.com.eclipsesource.json.JsonObject;
 import com.kurlabo.backend.converter.StringRevisor;
 import com.kurlabo.backend.dto.member.CheckEmailDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
+import com.kurlabo.backend.model.db.Insta_src;
 import com.kurlabo.backend.model.db.Main_src;
 import com.kurlabo.backend.model.db.Slide_img;
 import com.kurlabo.backend.repository.*;
@@ -17,6 +19,10 @@ import com.kurlabo.backend.service.MemberService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +35,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +96,31 @@ public class InsertDBTest {
                 .build();
     }
 
+    private List<String> crawlingData (int productNo){
+        String url = "https://www.kurly.com/shop/goods/goods_view.php?&goodsno=" + productNo;
+        List<String> list = new ArrayList<>();
+
+        try {
+            Connection connection = Jsoup.connect(url);
+
+            Document document = connection.get();
+
+            Elements elements = document.getElementsByAttributeValue("id", "goods-view-infomation");
+
+            if(elements.size() < 1){
+                return null;
+            }
+
+            list.add(elements.get(0).getElementsByAttributeValue("class", "goods_intro").get(0).getElementsByTag("img").attr("src"));
+            list.add(elements.get(0).getElementsByAttributeValue("class", "goods_intro").get(0).getElementsByAttributeValue("class", "words").text());
+            list.add(elements.get(0).getElementsByAttributeValue("id", "goods_pi").get(0).getElementsByTag("img").attr("src"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+//    // Insert Board (v)
 //    @Test
 //    @Rollback
 //    void InsertBoard(){
@@ -153,7 +186,7 @@ public class InsertDBTest {
 //        ));
 //        boardRepository.saveAll(lists);
 //    }
-//
+
 //    @Test
 //    @Rollback(value = false)
 //    void InsertFavo(){
@@ -173,7 +206,7 @@ public class InsertDBTest {
 ////
 ////        favoriteRepository.saveAll(list);
 //    }
-//
+
 //    @Test
 //    @Rollback(value = false)
 //    void InsertCart(){
@@ -192,7 +225,7 @@ public class InsertDBTest {
 //        cartList.add(cart4);
 //        cartRepository.saveAll(cartList);
 //    }
-//
+
 //    @Test
 //    @Rollback(value = false)
 //    void InsertDeliverAddress(){
@@ -207,7 +240,7 @@ public class InsertDBTest {
 ////        );
 ////        deliverAddressRepository.save(da);
 //    }
-//
+
 //    @Test
 //    @Rollback(value = false)
 //    void InsertMemberInfo(){
@@ -226,11 +259,12 @@ public class InsertDBTest {
 ////        );
 ////        memberRepository.save(member);
 //    }
-//
-    // Insert Main page / Slide Images
+
+//    // Insert Main page / Slide Images (v)
 //    @Test
-////    @Rollback(value = false)
+//    @Rollback(value = false)
 //    void InsertSlideImgDb(){
+//        List<Slide_img> slideImgList = new ArrayList<>();
 //        String[] slideImgs ={
 //                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1626426244.jpg",
 //                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1626344232.jpg",
@@ -243,92 +277,80 @@ public class InsertDBTest {
 //                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1596164134.jpg",
 //                "https://img-cf.kurly.com/shop/data/main/1/pc_img_1583112495.jpg"
 //        };
-//
-////        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
-////                () -> new ResourceNotFoundException()
-////        );
-//
-//        for(int i = 0; i < slideImgs.length; i++){
-//            Slide_img slideImg = new Slide_img(null, slideImgs[i]);
-//            slideImgRepository.save(slideImg);
+//        for (String img : slideImgs) {
+//            Slide_img slideImg = new Slide_img(null, img);
+//            slideImgList.add(slideImg);
 //        }
+//        slideImgRepository.saveAll(slideImgList);
 //    }
-//
-//    // Insert Main page / Insta Images, Landing URLs
+
+//    // Insert Main page / Insta Images, Landing URLs (v)
 //    @Test
 //    @Rollback(value = false)
 //    void InsertInstaDb() throws Exception {
-////        String[] instaUrls = {
-////                "https://www.instagram.com/p/CLBkjugpKrf/",
-////                "https://www.instagram.com/p/CK5HdanJLXa/",
-////                "https://www.instagram.com/p/CK0Fk8Opzlc/",
-////                "https://www.instagram.com/p/CKvWCaHpSAH/",
-////                "https://www.instagram.com/p/CKDCsW_pjfT/",
-////                "https://www.instagram.com/p/CJ-j1ViJPnX/",
-////                "https://www.instagram.com/p/CJ4zQZQJE3r/",
-////                "https://www.instagram.com/p/CJvS_CYpHtm/",
-////                "https://www.instagram.com/p/CJsiyY1pduY/",
-////                "https://www.instagram.com/p/CJqFpArpxIL/",
-////                "https://www.instagram.com/p/CJaO30LJY9Y/",
-////                "https://www.instagram.com/p/CJXjjMypd9O/",
-////                "https://www.instagram.com/p/CJIZwSsJT8R/",
-////                "https://www.instagram.com/p/CJFMu6GJYXi/",
-////                "https://www.instagram.com/p/CI7MfU0JRii/",
-////                "https://www.instagram.com/p/CI2TZkwpzuO/",
-////                "https://www.instagram.com/p/CIws3xEJ3Gx/",
-////                "https://www.instagram.com/p/CIpZrrfJVi8/",
-////                "https://www.instagram.com/p/CIkZTOppuOZ/",
-////                "https://www.instagram.com/p/CIesNuYJ5Fr/"
-////        };
-////        String[] instaImgs = {
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/146717917_1133595607155564_6927575805678431077_n.jpg?_nc_cat=104&ccb=2&_nc_sid=8ae9d6&_nc_ohc=zCFQMEbuySoAX9akslT&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=8a5341918e533ec5754bb3e715aa50d7&oe=6045B671",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/145829497_429910031618977_2686700364585205332_n.jpg?_nc_cat=101&ccb=2&_nc_sid=8ae9d6&_nc_ohc=Bpgfs7v5MrEAX_dUvyg&_nc_oc=AQnLmFvpkTuc2Qnyf1A7Cv0uZ4YMmTUN28JMU7ULdiK5AxmNhEBRKa7BswfHKjaU17w&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=006682d37604404d3d4011885d0379c7&oe=6046C3D5",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/145699202_173277657764348_7186325738012278752_n.jpg?_nc_cat=108&ccb=2&_nc_sid=8ae9d6&_nc_ohc=d8fk7tg98ncAX_U9TiQ&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ccba1e1f834e7b5011064f416fc9e32c&oe=604809C0",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/145166627_690796704929009_3137692220607683881_n.jpg?_nc_cat=102&ccb=2&_nc_sid=8ae9d6&_nc_ohc=UvQUg7XRIHoAX_HhY9K&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=0ccd9a2217dd955f4076fe0ed1e0822e&oe=60494680",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/138612535_1002060843651200_8038603372875075827_n.jpg?_nc_cat=111&ccb=2&_nc_sid=8ae9d6&_nc_ohc=tWbrlgfn0scAX9oZ8MO&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=91d86f7547a942aece145a23c08e532c&oe=6047077E",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/137535263_288737882673797_5133712456374454917_n.jpg?_nc_cat=108&ccb=2&_nc_sid=8ae9d6&_nc_ohc=7STRFBqei2sAX-Oey3Z&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=f00f77796157ce2bb44a455a6e1fb74f&oe=60474984",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/137225553_774188450120787_6930718593709013243_n.jpg?_nc_cat=102&ccb=2&_nc_sid=8ae9d6&_nc_ohc=n2WzqXR6AlkAX8OEpF3&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=befe2929baec69552ae789fdbbce26d4&oe=60477494",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/136366996_192615215904205_8306368317716846058_n.jpg?_nc_cat=107&ccb=2&_nc_sid=8ae9d6&_nc_ohc=BgN4HT50PSMAX8YDeYp&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=d5aa4a91eccb796791372fd3f420bbad&oe=60488BF7",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/135353939_2979344559018503_6638205904339600026_n.jpg?_nc_cat=110&ccb=2&_nc_sid=8ae9d6&_nc_ohc=p2TNcI8ONM0AX9Igk2A&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=08e1695b8e65daf18cdc087ef98d8e34&oe=60497903",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/135855569_1106024176515262_7522184421204961221_n.jpg?_nc_cat=104&ccb=2&_nc_sid=8ae9d6&_nc_ohc=hUa9RZwY93QAX8zFO7C&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=1bbfafc93178a8ba58592fad47ea79c6&oe=60464199",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/133740249_1081468305645551_7425631588608142276_n.jpg?_nc_cat=107&ccb=2&_nc_sid=8ae9d6&_nc_ohc=-YOQbouBm0QAX8LViJh&_nc_oc=AQlY76ytp8SExlnstcCqKd0NDYXxw8ayak2X4biQeFRRnZeCQns_jkq7iAJX-tyf0Mg&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=2d84a734e9dd60bb2dd8cc907a4f0815&oe=6047FD3A",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/133794738_431775864614286_3979166985680235825_n.jpg?_nc_cat=105&ccb=2&_nc_sid=8ae9d6&_nc_ohc=rE1kYFVHLD8AX_g1k-N&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=9f871a6ed0422f1bd2fccd2cbc4b2311&oe=6045A851",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/132014374_874243333323044_334545707376363984_n.jpg?_nc_cat=111&ccb=2&_nc_sid=8ae9d6&_nc_ohc=AaWt8ViOyIsAX8nIxIg&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=997dd984dfded7412ca22d9346895399&oe=6048F835",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/131992660_3453712921407975_3537333884386915309_n.jpg?_nc_cat=101&ccb=2&_nc_sid=8ae9d6&_nc_ohc=m8cSIXVAXrkAX80m88e&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=69fab1603ebcf82440311db41de4941c&oe=6048E423",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/131300330_426265792076878_8415232806622742688_n.jpg?_nc_cat=100&ccb=2&_nc_sid=8ae9d6&_nc_ohc=MzOoT2iVgAMAX9P5TF7&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=544344186423bc27db047a34d9bf7f54&oe=60488B5C",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/131276883_834147770758904_1061547541056682891_n.jpg?_nc_cat=108&ccb=2&_nc_sid=8ae9d6&_nc_ohc=-7ifmfpLPYIAX9ymKKU&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=c2a3dac50ddab326703ca7a075732648&oe=60493655",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/130524946_388830355790279_2119235762455725959_n.jpg?_nc_cat=101&ccb=2&_nc_sid=8ae9d6&_nc_ohc=tLBwGP7cI-wAX-08P51&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=5ecf7bf4a48ff92fbfd2be608ae3a1a5&oe=6048AEDF",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/130527127_1510988522425735_7992170002968224868_n.jpg?_nc_cat=102&ccb=2&_nc_sid=8ae9d6&_nc_ohc=8bDQqJK5nSkAX9xd1AY&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ce4f0d32d055b281fb767dc326f6dc28&oe=60497CEF",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/130220148_742452453035145_5391754046717583792_n.jpg?_nc_cat=110&ccb=2&_nc_sid=8ae9d6&_nc_ohc=kqEY5JSkFIYAX8MBqbk&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=2cdfbb55abf51f990889c67a5aa91270&oe=60482D75",
-////                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/129722677_200004505003591_6157755695462520982_n.jpg?_nc_cat=104&ccb=2&_nc_sid=8ae9d6&_nc_ohc=JMNs8DGQN1AAX_D8sRH&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=331c6a336219a11cbd0f0c771694f51c&oe=6047356C"
-////        };
-//////        Main_src mainSrc = new Main_src(null, "//img-cf.kurly.com/shop/data/main/15/pc_img_1568875999.png");
-//////        mainSrcRepository.save(mainSrc);
-////
-////        Main_src mainSrc = mainSrcRepository.findById((long)1).orElseThrow(
-////                () -> new ResourceNotFoundException()
-////        );
-////        System.out.println(mainSrc);
-////        for(int i = 0; i < instaUrls.length; i++){
-////            Insta_src instaSrc = new Insta_src(null, instaUrls[i], instaImgs[i], mainSrc);
-////            instaSrcRepository.save(instaSrc);
-////        }
+//        List<Insta_src> insta_srcList = new ArrayList<>();
+//        // 인스타 Landing URL
+//        String[] instaUrls = {
+//                "https://www.instagram.com/p/CRTd4kIJcLB/",
+//                "https://www.instagram.com/p/CRQhtrjpX17/",
+//                "https://www.instagram.com/p/CRAj6bdpk-G/",
+//                "https://www.instagram.com/p/CRAihvrp-h5/",
+//                "https://www.instagram.com/p/CRAiZVop5hS/",
+//                "https://www.instagram.com/p/CQzl9TXJnaL/",
+//                "https://www.instagram.com/p/CQpiyRRJ-QC/",
+//                "https://www.instagram.com/p/CQiaU3KJ9rN/",
+//                "https://www.instagram.com/p/CQci4KBJjFY/",
+//                "https://www.instagram.com/p/CQZ7QtipjW3/",
+//                "https://www.instagram.com/p/CQPqD79phq4/",
+//                "https://www.instagram.com/p/CQPp7ENJByn/",
+//                "https://www.instagram.com/p/CQIS6OxpEV3/",
+//                "https://www.instagram.com/p/CP9_jAIpQLX/",
+//                "https://www.instagram.com/p/CP4Y1Tgpko-/",
+//                "https://www.instagram.com/p/CP178Kzp2gt/",
+//                "https://www.instagram.com/p/CPrkmbGJDkY/",
+//                "https://www.instagram.com/p/CPkKYfKpKcx/",
+//                "https://www.instagram.com/p/CPhY-H3ptjJ/",
+//                "https://www.instagram.com/p/CPXBWULJDmr/"
+//        };
+//        // 인스타 Img URL
+//        String[] instaImgs = {
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/217787090_4421425621208945_2623964379085059202_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=j7IWA_haBzQAX9mhKcb&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=25aa3253fd2b66f20e325e3e3ac50ec2&oe=60FC6927",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/217880860_1065421947196970_8878709286796371299_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=XVncyQn45OEAX-RvviL&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ae05c84c9dec21d692a47ef5889e2e2b&oe=60FD822A",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/210551988_178324497604795_5373716652515546316_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=EolN4948hwAAX8vgFh4&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=75c7122773dd560507f17926975081aa&oe=60FD1EC5",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/212050929_2611951445776357_6717020443434314024_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=QdhVBc96IGMAX_7u5gZ&_nc_ht=scontent-nrt1-1.cdninstagram.com&edm=ANo9K5cEAAAA&oh=3bd9c4d21c86b5dc7dd4f9dc723d7208&oe=60FC9523",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/210868990_123643839840233_3997342401212751663_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=hUht-NoJ9gIAX9ELLE2&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=f12d1d0756701172cf224e5f9fe6b6ca&oe=60FCC27E",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/209256934_563682511307839_6439455020536109910_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=YbskNCbjRB4AX-wfRTo&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=9b725cd10e63273c5f95e23b0e3d24df&oe=60FCC488",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/208970613_331053075355894_1607974875794718739_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=jGy2lKaY_aMAX-EGhiN&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=de1a814fd52324af86d0c9337aa5b4fb&oe=60FC107D",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/208594682_391246255639368_2930906952563692905_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=YKp4RvrToiUAX_AbQez&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ab96d1817fc6aaef1e64aa375884de40&oe=60FBCA3B",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/204975807_535015767645424_4512323582612749967_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=NyTq38GrllAAX-vJngl&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=0da0bc9302300cba4b6533f1623de2f2&oe=60FCDADE",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/203992720_2962280777325287_6072648476173974479_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=DUnsPpXNiwMAX_dXyDy&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=2bd25b7b510a82b82f85e60f75a9afa1&oe=60FBAEC7",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/202328169_535378717483197_6730880900395042541_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=J_sd8ixGJMcAX-VtAfR&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=97f0798ef9eb4cad3477f1d8c106f7c6&oe=60FBE3A7",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/202046878_319173352995485_4556945369398009411_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=-MSihr48L3QAX-7Leyy&_nc_ht=scontent-nrt1-1.cdninstagram.com&edm=ANo9K5cEAAAA&oh=ecaa7cc65167f03c502fadeca9680217&oe=60FCB7A8",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/200544367_167746445245557_3733803320861022205_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=Pt-3aOeI2NgAX94T2X4&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=4bf1247c0b20547c94d8e0db5d5d06f6&oe=60FBCB6A",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/200768024_2917013425292642_5973334379347867911_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=JC9ifImVKU8AX_ibPcD&_nc_ht=scontent-nrt1-1.cdninstagram.com&edm=ANo9K5cEAAAA&oh=9316461cff211c1ec0d2bf2b2d0acf0a&oe=60FCC1B6",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/199051331_336428437992123_4622818417024420468_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=ce8oYiii98YAX_z2fPR&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ddded439ee60954d243b2dbc65e82778&oe=60FCD808",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/197843741_173632057955857_1629541059183903619_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=B8BpO5puEG4AX_DeVrH&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=986ec9b4438cc04858ffab4680d21ec8&oe=60FCBF9A",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/191952766_485200939455618_1445995895969973520_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=jAs6J1d4S-EAX8SX7Ip&_nc_ht=scontent-nrt1-1.cdninstagram.com&edm=ANo9K5cEAAAA&oh=b64a8bd65ad563ef0a13c32219132d7d&oe=60FC0E70",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/193756819_213105403974226_3336028563214286027_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=EB9MXECXteUAX9oIDoL&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=173435f3fa6788d0a23a14b4def42c71&oe=60FD5265",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/193647166_789959181893848_2864131780433851687_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=-NIZxST9eVYAX_yaYPM&_nc_oc=AQmNTPmLjX-t_gIVGAqKigrodrY05LEd0SfbjCxkujSGgH87uSTNyYF02GelM6e6KQk&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=d571e77279362c3a64df89fe112d1cb7&oe=60FC27B7",
+//                "https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/191640927_330898418411090_8334589705079284754_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=ZFCigawinXUAX_NWxS_&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=a2901f934534e043bc38e445cf8360fa&oe=60FC5ED7"
+//        };
+//        for(int i = 0; i < instaUrls.length; i++){
+//            Insta_src instaSrc = new Insta_src(null, instaUrls[i], instaImgs[i]);
+//            insta_srcList.add(instaSrc);
+//        }
+//        instaSrcRepository.saveAll(insta_srcList);
 //    }
-//
-//    // Insert Crawling Product Data
+
+//    // Insert Crawling Product Data (v)
 //    @Test
 //    @Rollback(value = false)
 //    void InsertProductDb() throws Exception {
-//
 //        JSONParser jsonParser = new JSONParser();
-//
-////        FileInputStream input = new FileInputStream("C:\\Crawling_Data\\0.json");
-////        InputStreamReader reader = new InputStreamReader(input, "UTF-8");
-////        BufferedReader in = new BufferedReader(reader);
-////        jsonObject = (JSONObject) jsonParser.parse(in);
-////        System.out.println("테스트 크롤링 데이터 name: " + jsonObject.get("short_description"));
+//        List<Product> productList = new ArrayList<>();
 //
 //        int categoryIdx = 0;
+//        // 사전에 정해 놓은 카테고리 번호들
 //        int[] categoryNumList = {
 //                0, 1, 2, 3, 4, 5, 6,
 //                10,11,12,13,14,15,16,
@@ -349,14 +371,15 @@ public class InsertDBTest {
 //                160,161,162,163,164,165,166};
 //
 //        int cnt = 0;
-//        for(int i = 0; i < 321; i++){//321
+//        for(int i = 0; i < 321; i++){       // 총 Crawling 한 데이터 수 = 321
+//            // 특정 카테고리의 개수만큼만 카운트
 //            if(categoryNumList[categoryIdx] == 132){
 //                if(cnt / 2 > 0){
 //                    cnt = 0;
 //                    categoryIdx++;
 //                }
 //            } else if(categoryNumList[categoryIdx] == 166){
-//                if(cnt / 1 > 0){
+//                if(cnt > 0){
 //                    cnt = 0;
 //                    categoryIdx++;
 //                }
@@ -367,54 +390,52 @@ public class InsertDBTest {
 //                }
 //            }
 //
+//            // CrawlingData 파일 가져와 JSONObject로 변환
 //            FileInputStream input = new FileInputStream("C:\\Crawling_Data\\" + i + ".json");
-//            InputStreamReader reader = new InputStreamReader(input, "UTF-8");
+//            InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
 //            BufferedReader in = new BufferedReader(reader);
 //            JSONObject jsonObject = (JSONObject) jsonParser.parse(in);
+//
+//            // HTML Parsing Data List ( 0 = detail_img_url / 1 = detail_context / 2 = product_img_url
+//            List<String> productDetailData = crawlingData(Integer.parseInt(jsonObject.get("no").toString()));
+//            String detail_img_url = productDetailData != null ? productDetailData.get(0) : "";
+//            String detail_context = productDetailData != null ? productDetailData.get(1) : "";
+//            String product_img_url = productDetailData != null ? productDetailData.get(2) : "";
+//
 //            Product products = Product.builder()
 //                    .id(null)
 //                    .category(categoryNumList[categoryIdx])
-//                    .data(jsonObject.toJSONString())
-//                    .detail_img_url(jsonObject.get("detail_image_url").toString())
-//                    .detail_context(jsonObject.get("").toString())
-//                    .detail_title()
-//                    .product_img_url()
-//                    .name()
-//                    .short_description()
-//                    .is_sales()
-//                    .unit_text()
-//                    .weight()
-//                    .origin()
-//                    .contactant()
-//                    .brand_title()
-//                    .expiration_date()
-//                    .guides()
-//                    .delivery_time_type_text()
-//                    .packing_type_text()
-//                    .original_price()
-//                    .discounted_price()
-//                    .discount_percent()
-//                    .discount_end_datetime()
-//                    .original_image_url()
-//                    .main_image_url()
-//                    .list_image_url()
-//                    .detail_image_url()
-//                    .sticker_image_url()
+//                    .detail_img_url(detail_img_url)
+//                    .detail_context(detail_context)
+//                    .product_img_url(product_img_url)
+//                    .name(jsonObject.get("name").toString())
+//                    .short_description(jsonObject.get("short_description").toString())
+//                    .is_sales(Boolean.parseBoolean(jsonObject.get("is_sales").toString()))
+//                    .unit_text(jsonObject.get("unit_text").toString())
+//                    .weight(jsonObject.get("weight").toString())
+//                    .origin(jsonObject.get("origin").toString())
+//                    .contactant(jsonObject.get("contactant").toString())
+//                    .brand_title(jsonObject.get("brand_title").toString())
+//                    .expiration_date(jsonObject.get("expiration_date").toString())
+//                    .guides(jsonObject.get("guides").toString())
+//                    .delivery_time_type_text(jsonObject.get("delivery_time_type_text").toString())
+//                    .packing_type_text(jsonObject.get("packing_type_text").toString())
+//                    .original_price(Integer.parseInt(jsonObject.get("original_price").toString()))
+//                    .discounted_price(Integer.parseInt(jsonObject.get("discounted_price").toString()))
+//                    .discount_percent(Integer.parseInt(jsonObject.get("discount_percent").toString()))
+//                    .discount_end_datetime(jsonObject.get("discount_end_datetime").toString())
+//                    .original_image_url(jsonObject.get("original_image_url").toString())
+//                    .main_image_url(jsonObject.get("main_image_url").toString())
+//                    .list_image_url(jsonObject.get("list_image_url").toString())
+//                    .detail_image_url(jsonObject.get("detail_image_url").toString())
+//                    .sticker_image_url(jsonObject.get("sticker_image_url") != null ? jsonObject.get("sticker_image_url").toString() : "")
 //                    .build();
-//            insertDBRepository.save(products);
+//            productList.add(products);
 //            cnt++;
 //        }
-//
-////        Product testProduct = insertDBRepository.findById((long) 1).orElseThrow(
-////                () -> new ResourceNotFoundException()
-////        );
-////        System.out.println("product >>> " + testProduct);
-////
-////        JsonObject str = testProduct.getData();
-////        StringRevisor sr = new StringRevisor();
-////        System.out.println("StringRevisor >>> " + sr.reviseBackSlash(str));
+//        productRepository.saveAll(productList);
 //    }
-//
+
 //    @Test
 //    @Rollback
 //    void insertReview() throws Exception {

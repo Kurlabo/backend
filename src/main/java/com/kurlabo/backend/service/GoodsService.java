@@ -170,7 +170,6 @@ public class GoodsService {
         // productDto.setDetail_image_url(product.getDetail_image_url());
         productDto.setSticker_image_url(product.getSticker_image_url());
         productDto.setDetail_img_url(product.getDetail_img_url());
-        productDto.setDetail_title(product.getDetail_title());
         productDto.setDetail_context(product.getDetail_context());
         productDto.setProduct_img_url(product.getProduct_img_url());
         productDto.setGuides(getGuide);

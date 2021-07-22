@@ -13,6 +13,24 @@ cache:
 
 script: "./gradlew clean build"
 
+before_deploy:
+  - zip -r backend *
+  - mkdir -p deploy
+  - mv backend.zip deploy/backend.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: kurlabo-springboot-build
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private
+    local_dir: deploy
+    wait-until-deployed: true
+      on:
+        branch: main
+
 notifications:
   email:
     recipients:

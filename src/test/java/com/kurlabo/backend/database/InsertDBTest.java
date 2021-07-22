@@ -120,6 +120,11 @@ public class InsertDBTest {
         return list;
     }
 
+    @Test
+    public void test(){
+
+    }
+
 //    // Insert Board (v)
 //    @Test
 //    @Rollback

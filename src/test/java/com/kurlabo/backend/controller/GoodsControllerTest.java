@@ -46,10 +46,11 @@ public class GoodsControllerTest {
 
     @Test
     void getProduct() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/172"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/3"))
+                .andExpect(jsonPath("$.product_id").value(3L))
+                .andExpect(jsonPath("$.name").value("친환경 당근 500g"))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.product_id").value((long)172));
+                .andDo(print());
     }
 
 //    @DisplayName("상품후기 리뷰 리스트")
@@ -134,18 +135,10 @@ public class GoodsControllerTest {
     @DisplayName("GoodsList")
     @Test
     void goodsList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=200")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .param("page", String.valueOf(1)))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/goods/goods_list?category=0")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).param("page", String.valueOf(1)))
+                .andExpect((jsonPath("$.content[0].product_id").value(21L)))
                 .andExpect(status().isOk());
-//                .andExpect((jsonPath("$[3].product_id").value((long)12)))     // 자식 카테고리 Test
-//                .andExpect((jsonPath("$[3].original_image_url").value("https://img-cf.kurly.com/shop/data/goods/1490946589409l0.jpg")))
-//                .andExpect((jsonPath("$[3].sticker_image_url").value("https://img-cf.kurly.com/shop/data/my_icon/icon_farming_coupon_20_percent.png")))
-//                .andExpect((jsonPath("$[3].name").value("무농약 깐 양파 1개")))
-//                .andExpect((jsonPath("$[3].original_price").value(1250)))
-//                .andExpect((jsonPath("$[3].discounted_price").value(1250)))
-//                .andExpect((jsonPath("$[3].discount_percent").value(0)))
-//                .andExpect((jsonPath("$[3].short_description").value("신선하고 깔끔하게 쓰는 양파(1개/100g내외)")));
     }
 
     @DisplayName("SetOrderSheet")

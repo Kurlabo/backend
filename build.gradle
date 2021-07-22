@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.kurlabo'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.1-SNAPSHOT-'+new Date().format("yyyyMMddHHmmss")
 sourceCompatibility = '1.8'
 
 configurations {
@@ -44,9 +44,11 @@ dependencies {
     runtime group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+
     testCompileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
+    compile('com.h2database:h2')
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

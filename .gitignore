@@ -36,3 +36,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Img dir ###
+/src/test/resources/img/*
+
+### yaml file ###
+application-oauth.yml
+application-real-db.yml

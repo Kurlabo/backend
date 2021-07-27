@@ -318,7 +318,7 @@ values (
 -- member
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           1,
+           null,
            'testid1',
            'mdmdmd131313',
            '임정우1',
@@ -336,7 +336,7 @@ values (
 
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           2,
+           null,
            'testid2',
            'mdmdmd232323',
            '임정우2',
@@ -354,7 +354,7 @@ values (
 
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           3,
+           null,
            'testid3',
            'mdmdmd333333',
            '임정우3',
@@ -366,6 +366,24 @@ values (
            0,
            0,
            300000,
+           'MEMBER',
+           false
+       );
+
+insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
+values (
+           null,
+           'testid4',
+           'mdmdmd434343',
+           '임정우4',
+           'limjw04@gmail.com',
+           '01044444444',
+           '남자',
+           '1991-03-04',
+           '',
+           0,
+           1,
+           400000,
            'MEMBER',
            false
        );

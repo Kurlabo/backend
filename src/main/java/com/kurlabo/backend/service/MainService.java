@@ -66,7 +66,7 @@ public class MainService {
     }
 
     public String getSetbyulImg(){
-        return mainSrcRepository.findAllBySetbyulImg();
+        return mainSrcRepository.findAll().get(0).getSetbyul_img();
     }
 
     public List<MainPageProductDto> setHowAbout(){

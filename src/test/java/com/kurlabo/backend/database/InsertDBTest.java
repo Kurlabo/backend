@@ -1,14 +1,6 @@
 package com.kurlabo.backend.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.com.eclipsesource.json.JsonObject;
-import com.kurlabo.backend.converter.StringRevisor;
-import com.kurlabo.backend.dto.member.CheckEmailDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.model.db.Insta_src;
-import com.kurlabo.backend.model.db.Main_src;
-import com.kurlabo.backend.model.db.Slide_img;
 import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.repository.db.InsertDBRepository;
 import com.kurlabo.backend.repository.db.InstaSrcRepository;
@@ -16,9 +8,6 @@ import com.kurlabo.backend.repository.db.MainSrcRepository;
 import com.kurlabo.backend.repository.db.SlideImgRepository;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.MemberService;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,20 +16,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,7 +56,7 @@ public class InsertDBTest {
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
-    private OrderRepository orderRepository;
+    private OrdersRepository ordersRepository;
     @Autowired
     private ReviewRepository reviewRepository;
     @Autowired

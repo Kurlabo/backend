@@ -6,7 +6,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   h2:
     console:
       enabled: true
@@ -24,6 +24,7 @@ spring:
     driver-class-name: org.h2.Driver
     data: classpath:data.sql
     initialization-mode: always
+    sql-script-encoding: UTF-8
 
 logging:
   level:

@@ -1,4 +1,4 @@
-package com.kurlabo.backend.repository.db;
+package com.kurlabo.backend.repository;
 
 import com.kurlabo.backend.model.db.Main_src;
 import org.springframework.data.jpa.repository.JpaRepository;

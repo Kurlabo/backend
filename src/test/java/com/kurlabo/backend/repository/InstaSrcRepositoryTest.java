@@ -18,7 +18,7 @@ public class InstaSrcRepositoryTest {
     @DisplayName("랜딩URL 조회")
     @Test
     void findAllByLandingUrl(){
-        List<String> landingList = instaSrcRepository.findAllByLandingUrl();
+        List<String> landingList = instaSrcRepository.findAllLandingUrl();
 
         assertThat(landingList.get(0)).isEqualTo("https://www.instagram.com/p/CRTd4kIJcLB/");
         assertThat(landingList.get(1)).isEqualTo("https://www.instagram.com/p/CRQhtrjpX17/");
@@ -28,7 +28,7 @@ public class InstaSrcRepositoryTest {
     @DisplayName("썸네일 조회")
     @Test
     void findAllByThumbnail_img_url(){
-        List<String> thumbnailList = instaSrcRepository.findAllByThumbnail_img_url();
+        List<String> thumbnailList = instaSrcRepository.findAllThumbnailImgUrl();
 
         assertThat(thumbnailList.get(0)).contains("25aa3253fd2b66f20e325e3e3ac50ec2&oe=60FC6927");
         assertThat(thumbnailList.get(1)).contains("ae05c84c9dec21d692a47ef5889e2e2b&oe=60FD822A");

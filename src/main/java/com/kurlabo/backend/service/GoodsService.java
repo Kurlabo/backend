@@ -1,14 +1,14 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.goods.GoodsListResponseDto;
+import com.kurlabo.backend.dto.goods.ProductDto;
+import com.kurlabo.backend.dto.goods.RelatedProductDtoProjection;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;
-import com.kurlabo.backend.dto.goods.ProductDto;
-import com.kurlabo.backend.dto.goods.RelatedProductDto;
-import com.kurlabo.backend.repository.*;
+import com.kurlabo.backend.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.StringTokenizer;
 
 @Service
 @RequiredArgsConstructor
@@ -28,157 +28,53 @@ public class GoodsService {
     private final ReviewRepository reviewRepository;
 
     public ProductDto goodDetail(Pageable pageable, Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+        Product product = productRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
 
         List<ReviewDto> reviewList = new ArrayList<>();
         for(Review review: reviews){
-            ReviewDto list = new ReviewDto(
-                    review.getReview_id(),
-                    review.getMember().getId(),
-                    review.getProduct().getId(),
-                    review.getTitle(),
-                    review.getContent(),
-                    review.getMember().getName(),
-                    review.getRegdate(),
-                    review.getHelp(),
-                    review.getCnt()
-            );
-            reviewList.add(list);
+            ReviewDto dto = ReviewDto.builder()
+                    .review_id(review.getReview_id())
+                    .member_id(review.getMember().getId())
+                    .product_id(review.getProduct().getId())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .writer(review.getMember().getName())
+                    .regdate(review.getRegdate())
+                    .help(review.getHelp())
+                    .cnt(review.getHelp())
+                    .build();
+            reviewList.add(dto);
         }
 
-        List<Product> related_product = new ArrayList<>(); // 상위 카테고리에서 아이템 랜덤으로 넣을 리스트
-        List<RelatedProductDto> list = new ArrayList<>();
-        List<Integer> intList = new ArrayList<>();
-        Random random = new Random();
-
-        switch (product.getCategory()/10) {
-            case 0:
-                related_product = productRepository.findByCategoryVege();
-                break;
-            case 1:
-                related_product = productRepository.findByCategoryFruits();
-                break;
-            case 2:
-                related_product = productRepository.findByCategorySeafood();
-                break;
-            case 3:
-                related_product = productRepository.findByCategoryMeat();
-                break;
-            case 4:
-                related_product = productRepository.findByCategoryMaindish();
-                break;
-            case 5:
-                related_product = productRepository.findByCategoryFastFood();
-                break;
-            case 6:
-                related_product = productRepository.findByCategoryNoodleoil();
-                break;
-            case 7:
-                related_product = productRepository.findByCategoryDring();
-                break;
-            case 8:
-                related_product = productRepository.findByCategorySnacks();
-                break;
-            case 9:
-                related_product = productRepository.findByCategoryBakery();
-                break;
-            case 10:
-                related_product = productRepository.findByCategoryHealthFood();
-                break;
-            case 11:
-                related_product = productRepository.findByCategoryLiving();
-                break;
-            case 12:
-                related_product = productRepository.findByCategoryBeauty();
-                break;
-            case 13:
-                related_product = productRepository.findByCategoryKitchen();
-                break;
-            case 14:
-                related_product = productRepository.findByCategoryHomeAppliance();
-                break;
-            case 15:
-                related_product = productRepository.findByCategoryBabyKiz();
-                break;
-            case 16:
-                related_product = productRepository.findByCategoryPet();
-                break;
-        }
-
-        int max = related_product.size() - 1;
-
-        if (max > 20){
-            max = 20;
-        }
-
-        for (int i = 0; i < max; i++) {
-            int n = random.nextInt(related_product.size());
-            while (intList.contains(n)){
-                n = random.nextInt(related_product.size());
-            }
-            intList.add(n);
-
-            Product getRelate = related_product.get(n);
-
-            if(getRelate.getId().equals(id)){
-                i--;
-                continue;
-            }
-
-            list.add(new RelatedProductDto(
-                    getRelate.getId(),
-                    getRelate.getName(),
-                    getRelate.getOriginal_image_url(),
-                    getRelate.getOriginal_price(),
-                    getRelate.getDiscounted_price()
-            ));
-        }
-
-        String getGuides = product.getGuides().replace('|','"');
-        getGuides = getGuides.replace('\'',' ')
-                .replace("[", "")
-                .replace("]", "");
-
-        String[] array = getGuides.split(",");
-        List<String> getGuide = new ArrayList<>();
-
-        for(int i = 0; i < array.length; i++) {
-            getGuide.add(array[i]);
-        }
-
-        ProductDto productDto = new ProductDto();
-        productDto.setProduct_id(product.getId());
-        productDto.setName(product.getName());
-        productDto.setShort_description(product.getShort_description());
-        productDto.setUnit_text(product.getUnit_text());
-        productDto.setWeight(product.getWeight());
-        productDto.setOrigin(product.getOrigin());
-        productDto.setContactant(product.getContactant());
-        productDto.setBrand_title(product.getBrand_title());
-        productDto.setExpiration_date(product.getExpiration_date());
-        productDto.setDelivery_time_type_text(product.getDelivery_time_type_text());
-        productDto.setOriginal_price(product.getOriginal_price());
-        productDto.setDiscounted_price(product.getDiscounted_price());
-        productDto.setDiscount_percent(product.getDiscount_percent());
-        productDto.setDiscount_end_datetime(product.getDiscount_end_datetime());
-        productDto.setOriginal_image_url(product.getOriginal_image_url());
-        productDto.setMain_image_url(product.getMain_image_url());
-        productDto.setList_image_url(product.getList_image_url());
-        // productDto.setDetail_image_url(product.getDetail_image_url());
-        productDto.setSticker_image_url(product.getSticker_image_url());
-        productDto.setDetail_img_url(product.getDetail_img_url());
-        productDto.setDetail_context(product.getDetail_context());
-        productDto.setProduct_img_url(product.getProduct_img_url());
-        productDto.setGuides(getGuide);
-        productDto.setPacking_type_text(product.getPacking_type_text());
-
-        productDto.setReviews(reviewList);
-        productDto.setRelated_product(list);
-
-        return productDto;
+        return ProductDto.builder()
+                .product_id(product.getId())
+                .name(product.getName())
+                .short_description(product.getShort_description())
+                .unit_text(product.getUnit_text())
+                .weight(product.getWeight())
+                .origin(product.getOrigin())
+                .contactant(product.getContactant())
+                .brand_title(product.getBrand_title())
+                .expiration_date(product.getExpiration_date())
+                .delivery_time_type_text(product.getDelivery_time_type_text())
+                .original_price(product.getOriginal_price())
+                .discounted_price(product.getDiscounted_price())
+                .discount_percent(product.getDiscount_percent())
+                .discount_end_datetime(product.getDiscount_end_datetime())
+                .original_image_url(product.getOriginal_image_url())
+                .main_image_url(product.getMain_image_url())
+                .list_image_url(product.getList_image_url())
+                .sticker_image_url(product.getSticker_image_url())
+                .detail_img_url(product.getDetail_img_url())
+                .detail_context(product.getDetail_context())
+                .product_img_url(product.getProduct_img_url())
+                .guides(combineGuides(product.getGuides()))
+                .packing_type_text(product.getPacking_type_text())
+                .reviews(reviewList)
+                .related_product(findRelatedProductDtoList(product.getCategory() / 10 * 10, (product.getCategory() / 10 * 10) + 10))
+                .build();
     }
 
     public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
@@ -217,6 +113,26 @@ public class GoodsService {
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), responseDtos.size());
         return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
+    }
+
+    private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){
+        return productRepository.findRelatedProductDtoList(min, max);
+    }
+
+    private List<String> combineGuides(String guideStr){
+        StringBuilder sb = new StringBuilder(guideStr);
+
+        sb.delete(0, 2);
+        sb.delete(sb.length() - 2, sb.length());
+
+        StringTokenizer st = new StringTokenizer(sb.toString(), "\",");
+        List<String> guideElements = new ArrayList<>();
+
+        while(st.hasMoreTokens()){
+            guideElements.add(st.nextToken());
+        }
+
+        return guideElements;
     }
 
     private List<Product> getProducts(int category, List<Product> productList) {

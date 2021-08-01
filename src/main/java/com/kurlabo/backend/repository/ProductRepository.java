@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "select product_id, name, original_image_url, original_price, discounted_price" +
             " from product where category >= :min and category <= :max order by rand() limit 10", nativeQuery = true)
-    List<RelatedProductDtoProjection> findRelatedProductDtoList(@Param("min") int min, @Param("max")int max);
+    List<RelatedProductDtoProjection> findRandRelatedProductList(@Param("min") int min, @Param("max")int max);
 
     // 없애야함 GoodsService에서
     @Query("select p from Product p where p.discount_percent > 0")

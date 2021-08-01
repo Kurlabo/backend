@@ -42,20 +42,20 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        TokenDto dto = loginService.login(loginDto);
-        Cookie cookie = new Cookie("refreshToken", dto.getAccessToken());
-
-        cookie.setMaxAge(5 * 60);
-
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setDomain("kurlabo.cf");
-
-        response.addCookie(cookie);
-
+    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto) {
 //        TokenDto dto = loginService.login(loginDto);
+//        Cookie cookie = new Cookie("refreshToken", dto.getAccessToken());
+//
+//        cookie.setMaxAge(5 * 60);
+//
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setDomain("kurlabo.cf");
+//
+//        response.addCookie(cookie);
+
+        TokenDto dto = loginService.login(loginDto);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + dto.getAccessToken());
         return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);

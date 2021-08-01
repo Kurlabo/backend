@@ -116,7 +116,7 @@ public class GoodsService {
     }
 
     private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){
-        return productRepository.findRelatedProductDtoList(min, max);
+        return productRepository.findRandRelatedProductList(min, max);
     }
 
     private List<String> combineGuides(String guideStr){

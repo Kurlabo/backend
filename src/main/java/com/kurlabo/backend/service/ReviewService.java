@@ -20,7 +20,7 @@ import java.util.List;
 public class ReviewService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
-    private final OrderRepository orderRepository;
+    private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
     private final MemberService memberService;
@@ -44,7 +44,7 @@ public class ReviewService {
 
         LocalDate fromDate = LocalDate.now();
         LocalDate chkDate = fromDate.minusMonths(1L);
-        List<Orders> orderList = orderRepository.findByMemberAndCheckoutDate(member, chkDate, fromDate);
+        List<Orders> orderList = ordersRepository.findByMemberAndCheckoutDate(member, chkDate, fromDate);
         List<Review> reviews = reviewRepository.findByMemberAndProduct(member, product);
 
         if (orderList.isEmpty()) {
@@ -63,7 +63,7 @@ public class ReviewService {
         Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
 
         List<ReviewListDto> list = new ArrayList<>();
-        List<Orders> orderList = orderRepository.findByMember(member);
+        List<Orders> orderList = ordersRepository.findByMember(member);
 
         for (Orders order : orderList) {
             List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(order);

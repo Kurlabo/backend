@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Orders, Long> {
+public interface OrdersRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByMember(Member member);
 
     List<Orders> findByMemberAndStatus(Member member, String str);

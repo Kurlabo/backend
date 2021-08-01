@@ -43,3 +43,6 @@ out/
 ### yaml file ###
 application-oauth.yml
 application-real-db.yml
+
+### Insert DB Test class ##
+/src/test/java/com/kurlabo/backend/database/

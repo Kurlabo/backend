@@ -2,27 +2,19 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.main.HeaderDto;
 import com.kurlabo.backend.dto.main.InstaSrcDto;
-import com.kurlabo.backend.dto.main.MainPageProductDto;
+import com.kurlabo.backend.dto.main.MainPageProductDtoProjection;
 import com.kurlabo.backend.dto.main.MainResponseDto;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.model.db.Slide_img;
-import com.kurlabo.backend.repository.CartRepository;
-import com.kurlabo.backend.repository.MemberRepository;
-import com.kurlabo.backend.repository.ProductRepository;
-import com.kurlabo.backend.repository.InstaSrcRepository;
-import com.kurlabo.backend.repository.MainSrcRepository;
-import com.kurlabo.backend.repository.SlideImgRepository;
+import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -37,182 +29,24 @@ public class MainService {
     private final DeliverAddressService deliverAddressService;
     private final TokenProvider tokenProvider;
 
-    public MainResponseDto setMainPage() {
-        return new MainResponseDto(
-                getSlideImgs(),
-                getInstaSrc(),
-                getSetbyulImg(),
-                setHowAbout(),
-                setFrugality(),
-                setMdRecommend(0),
-                setTodays(),
-                setHots(),
-                setGoodPrice(),
-                setFastFood()
-        );
+    public MainResponseDto getMainPage() {
+        return MainResponseDto.builder()
+                .slide_img_list(getSlideImgs())
+                .instaSrcDto(getInstaSrc())
+                .setbyul_img(getSetbyulImg())
+                .howAbout(setHowAbout())
+                .frugality(setFrugality())
+                .mdRecommend(setMdRecommend(0))
+                .todays(setTodays())
+                .hots(setHots())
+                .goodPrice(setGoodPrice())
+                .fastFood(setFastFood())
+                .build();
     }
 
-    public List<String> getSlideImgs(){
-        List<Slide_img> slideImgLists = slideImgRepository.findAll();
-        List<String> imgsList = new ArrayList<>();
-        for(Slide_img list : slideImgLists){
-            imgsList.add(list.getUrl());
-        }
-        return imgsList;
-    }
-
-    public InstaSrcDto getInstaSrc(){
-        return new InstaSrcDto(instaSrcRepository.findAllByLandingUrl(), instaSrcRepository.findAllByThumbnail_img_url());
-    }
-
-    public String getSetbyulImg(){
-        return mainSrcRepository.findAll().get(0).getSetbyul_img();
-    }
-
-    public List<MainPageProductDto> setHowAbout(){
-        Random random = new Random();
-        List<MainPageProductDto> list = new ArrayList<>();
-        List<Long> longList = new ArrayList<>();
-
-        // 전체 상품 수를 어떻게 알지?
-//        for(int i = 0; i < 16; i++){
-////            Long n = (long)random.nextInt(321) + 1;
-////            while (longList.contains(n)){
-////                n = (long)random.nextInt(321) + 1;
-////            }
-//            Long n = 3L;
-//            longList.add(n);
-//
-//            Product product = productRepository.findById(n).orElseThrow(ResourceNotFoundException::new);
-//            list.add(new MainPageProductDto(
-//                    product.getId(),
-//                    product.getOriginal_image_url(),
-//                    product.getSticker_image_url(),
-//                    product.getName(),
-//                    product.getOriginal_price(),
-//                    product.getDiscounted_price(),
-//                    product.getDiscount_percent()
-//            ));
-//        }
-        // 리팩토링 해야함
-        return null;
-    }
-    public List<MainPageProductDto> setFrugality(){
-        Random random = new Random();
-        List<MainPageProductDto> list = new ArrayList<>();
-        List<Product> productsList = productRepository.findByDiscount_percent();
-        List<Integer> intlist = new ArrayList<>();
-
-//        for(int i = 0; i < 16; i++){
-//            int n = random.nextInt(productsList.size());
-//            while (intlist.contains(n)){
-//                n = random.nextInt(productsList.size());
-//            }
-//            intlist.add(n);
-//            Product product = productsList.get(n);
-//
-//            list.add(new MainPageProductDto(
-//                    product.getId(),
-//                    product.getOriginal_image_url(),
-//                    product.getSticker_image_url(),
-//                    product.getName(),
-//                    product.getOriginal_price(),
-//                    product.getDiscounted_price(),
-//                    product.getDiscount_percent()
-//            ));
-//        }
-        // 리팩토링 해야함
-        return null;
-    }
-    public List<MainPageProductDto> setMdRecommend(int mainCategory){
-        Random random = new Random();
-        List<MainPageProductDto> list = new ArrayList<>();
-        List<Product> productsList = new ArrayList<>();
-        List<Integer> intList = new ArrayList<>();
-        productsList = getProducts(mainCategory, productsList, productRepository);
-
-//        if(productsList.size() > 0) {
-//            for(int i = 0; i < 16; i++){
-//
-//                int n = random.nextInt(productsList.size());
-//                while (intList.contains(n)){
-//                    n = random.nextInt(productsList.size());
-//                }
-//                intList.add(n);
-//                Product product = productsList.get(n);
-//
-//                list.add(new MainPageProductDto(
-//                        product.getId(),
-//                        product.getOriginal_image_url(),
-//                        product.getSticker_image_url(),
-//                        product.getName(),
-//                        product.getOriginal_price(),
-//                        product.getDiscounted_price(),
-//                        product.getDiscount_percent()
-//                ));
-//            }
-//        }
-        // 리팩토링 해야함
-        return null;
-    }
-    public List<MainPageProductDto> setTodays(){
-        return setHowAbout();
-    }
-    public List<MainPageProductDto> setHots(){
-        return setFrugality();
-    }
-    public List<MainPageProductDto> setGoodPrice(){
-        return setFrugality();
-    }
-    public List<MainPageProductDto> setFastFood(){
-        Random random = new Random();
-        List<Product> productList = productRepository.findByCategoryFastFood();
-        List<Integer> intlist = new ArrayList<>();
-        List<MainPageProductDto> list = new ArrayList<>();
-
-//        for(int i = 0; i < 16; i++){
-//            int n = random.nextInt(productList.size());
-//            while (intlist.contains(n)){
-//                n = random.nextInt(productList.size());
-//            }
-//            intlist.add(n);
-//            Product product = productList.get(n);
-//
-//            list.add(new MainPageProductDto(
-//                    product.getId(),
-//                    product.getOriginal_image_url(),
-//                    product.getSticker_image_url(),
-//                    product.getName(),
-//                    product.getOriginal_price(),
-//                    product.getDiscounted_price(),
-//                    product.getDiscount_percent()
-//            ));
-//        }
-        // 리팩토링 해야함
-        return null;
-    }
-
-    private List<Product> getProducts(int category, List<Product> productList, ProductRepository productRepository) {
-        switch (category){
-            case 0: productList = productRepository.findByCategoryVege();           break;
-            case 1: productList = productRepository.findByCategoryFruits();         break;
-            case 2: productList = productRepository.findByCategorySeafood();        break;
-            case 3: productList = productRepository.findByCategoryMeat();           break;
-            case 4: productList = productRepository.findByCategoryMaindish();       break;
-            case 5: productList = productRepository.findByCategoryFastFood();       break;
-            case 6: productList = productRepository.findByCategoryNoodleoil();      break;
-            case 7: productList = productRepository.findByCategoryDring();          break;
-            case 8: productList = productRepository.findByCategorySnacks();         break;
-            case 9: productList = productRepository.findByCategoryBakery();         break;
-            case 10: productList = productRepository.findByCategoryHealthFood();    break;
-            case 11: productList = productRepository.findByCategoryLiving();        break;
-            case 12: productList = productRepository.findByCategoryBeauty();        break;
-            case 13: productList = productRepository.findByCategoryKitchen();       break;
-            case 14: productList = productRepository.findByCategoryHomeAppliance(); break;
-            case 15: productList = productRepository.findByCategoryBabyKiz();       break;
-            case 16: productList = productRepository.findByCategoryPet();           break;
-        }
-        return productList;
+    public List<MainPageProductDtoProjection> setMdRecommend(int mainCategory){
+        int[] categoryRange = setCategoryRange(mainCategory);
+        return productRepository.findRandProductCategoryRange(categoryRange[0], categoryRange[1]);
     }
 
     public HeaderDto setHeader(String token) {
@@ -220,5 +54,70 @@ public class MainService {
         List<Cart> cartList = cartRepository.findByMember(member);
         Deliver_Address da = deliverAddressService.selectMainDeliverAddress(member);
         return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size(), member.getUid());
+    }
+
+    private List<String> getSlideImgs(){
+        return slideImgRepository.findAllUrl();
+    }
+
+    private InstaSrcDto getInstaSrc(){
+        return InstaSrcDto.builder()
+                .landing_url_list(instaSrcRepository.findAllLandingUrl())
+                .thumbnail_img_list(instaSrcRepository.findAllThumbnailImgUrl())
+                .build();
+    }
+
+    private String getSetbyulImg(){
+        return mainSrcRepository.findSetbyulImg();
+    }
+
+    private List<MainPageProductDtoProjection> setHowAbout(){
+        return productRepository.findAllRandom();
+    }
+
+    private List<MainPageProductDtoProjection> setFrugality(){
+        return productRepository.findDiscountPercentOverZero();
+    }
+
+    private List<MainPageProductDtoProjection> setTodays(){
+        return setHowAbout();
+    }
+
+    private List<MainPageProductDtoProjection> setHots(){
+        return setFrugality();
+    }
+
+    private List<MainPageProductDtoProjection> setGoodPrice(){
+        return setFrugality();
+    }
+
+    private List<MainPageProductDtoProjection> setFastFood(){
+        return productRepository.findRandProductCategoryRange(50, 59);
+    }
+
+    private int[] setCategoryRange(int mdCategory){
+        int min = 0;
+        int max = 0;
+        // Enum 으로 바꿔보기
+        switch (mdCategory){
+            case 0: min = 0; max = 9; break;
+            case 1: min = 10; max = 19; break;
+            case 2: min = 20; max = 29; break;
+            case 3: min = 30; max = 39; break;
+            case 4: min = 40; max = 49; break;
+            case 5: min = 50; max = 59; break;
+            case 6: min = 60; max = 69; break;
+            case 7: min = 70; max = 79; break;
+            case 8: min = 80; max = 89; break;
+            case 9: min = 90; max = 99; break;
+            case 10: min = 100; max = 109; break;
+            case 11: min = 110; max = 119; break;
+            case 12: min = 120; max = 129; break;
+            case 13: min = 130; max = 139; break;
+            case 14: min = 140; max = 149; break;
+            case 15: min = 150; max = 159; break;
+            case 16: min = 160; max = 169; break;
+        }
+        return new int[] {min, max};
     }
 }

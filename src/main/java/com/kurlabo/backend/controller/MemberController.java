@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto) {
 //        TokenDto dto = loginService.login(loginDto);
 //        Cookie cookie = new Cookie("refreshToken", dto.getAccessToken());
 //

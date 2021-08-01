@@ -1,9 +1,9 @@
 package com.kurlabo.backend.repository;
 
+import com.kurlabo.backend.dto.main.MainPageProductDtoProjection;
 import com.kurlabo.backend.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -13,14 +13,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select p from Product p where p.category = :category order by p.id desc")
     List<Product> findByCategoryDesc(int category);
-    //    @Override
-//    @Query("select p from Product p where p.member = :member and p.products_id = :product_id")
-//    List<Product> findById(@Param("product_id") Long product_id, );
-    @Query("select p.id, p.name, p.list_image_url, p.original_price, p.discounted_price " +
-            "from Product p " +
-            "where p.category = :category")
-    List<Product> findByCategoryDetail(@Param("category") int category);
 
+    @Query(value = "select product_id, detail_image_url, sticker_image_url, name, original_price, discounted_price, discount_percent" +
+            " from product order by rand() limit 16", nativeQuery = true)
+    List<MainPageProductDtoProjection> findAllRandom();
+
+    @Query(value = "select product_id, detail_image_url, sticker_image_url, name, original_price, discounted_price, discount_percent" +
+            " from product where discount_percent > 0 order by rand() limit 16", nativeQuery = true)
+    List<MainPageProductDtoProjection> findDiscountPercentOverZero();
+
+    @Query(value = "select product_id, detail_image_url, sticker_image_url, name, original_price, discounted_price, discount_percent" +
+            " from product where category >= ?1 and category <= ?2 order by rand() limit 16", nativeQuery = true)
+    List<MainPageProductDtoProjection> findRandProductCategoryRange(int min, int max);
+
+    // 없애야함 GoodsService에서
     @Query("select p from Product p where p.discount_percent > 0")
     List<Product> findByDiscount_percent();
 

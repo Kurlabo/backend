@@ -4,7 +4,7 @@ import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.CartRepository;
-import com.kurlabo.backend.repository.OrderRepository;
+import com.kurlabo.backend.repository.OrdersRepository;
 import com.kurlabo.backend.repository.OrderSheetProductsRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
@@ -24,7 +24,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final DeliverAddressService deliverAddressService;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
-    private final OrderRepository orderRepository;
+    private final OrdersRepository ordersRepository;
     private final MemberService memberService;
     private final TokenProvider tokenProvider;
 
@@ -133,20 +133,20 @@ public class CartService {
     }
 
     public Orders getOrderReady(){
-        List<Orders> list = orderRepository.findAllByStatus("결제준비");
+        List<Orders> list = ordersRepository.findAllByStatus("결제준비");
         return list.size() == 0 ? null : list.get(list.size() - 1);
     }
 
     // 미리 결제준비였던 데이터들 결제 취소로 만듬.
     @Transactional
     public void setOrderCancel(){
-        List<Orders> readyOrders = orderRepository.findAllByStatus("결제준비");
+        List<Orders> readyOrders = ordersRepository.findAllByStatus("결제준비");
 
         for(Orders ro: readyOrders){
             ro.setStatus("결제취소");
         }
 
-        orderRepository.saveAll(readyOrders);
+        ordersRepository.saveAll(readyOrders);
     }
 
     // Orders에 새로운 주문서 생성
@@ -154,7 +154,7 @@ public class CartService {
     public void createNewOrder(Member member){
 
         setOrderCancel();
-        orderRepository.save(new Orders(
+        ordersRepository.save(new Orders(
                 null,
                 member.getName(),
                 member.getName(),
@@ -179,7 +179,7 @@ public class CartService {
         order.setTotal_price(total_price);
         order.setTotal_discount_price(discount_price);
 
-        orderRepository.save(order);
+        ordersRepository.save(order);
     }
 
     @Transactional

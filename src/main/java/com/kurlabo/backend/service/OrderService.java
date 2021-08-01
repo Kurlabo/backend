@@ -25,7 +25,7 @@ import java.util.List;
 public class OrderService {
 
     private final DeliverAddressRepository deliverAddressRepository;
-    private final OrderRepository orderRepository;
+    private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final CartService cartService;
     private final MemberService memberService;
@@ -93,14 +93,14 @@ public class OrderService {
         readyOrder.setStatus("결제완료");
         readyOrder.setMember(member);
 
-        orderRepository.save(readyOrder);
+        ordersRepository.save(readyOrder);
 
         return returnStr;
     }
 
     public Page<OrderListResponseDto> getOrderList (String token, Pageable pageable) {
         Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
-        List<Orders> orderList = orderRepository.findByMemberAndStatus(member, "결제완료");
+        List<Orders> orderList = ordersRepository.findByMemberAndStatus(member, "결제완료");
         List<OrderListResponseDto> responseList = new ArrayList<>();
 
         for(Orders list: orderList){
@@ -124,7 +124,7 @@ public class OrderService {
     }
 
     public OrderViewResponseDto getOrderView(Long order_id) {
-        Orders order = orderRepository.findById(order_id).orElseThrow(ResourceNotFoundException::new);
+        Orders order = ordersRepository.findById(order_id).orElseThrow(ResourceNotFoundException::new);
         List<OrderProductDto> orderProducts = new ArrayList<>();
         List<Order_Sheet_Products> ospList = orderSheetProductsRepository.findAllByOrders(order);
 
@@ -157,7 +157,7 @@ public class OrderService {
     }
 
     public OrderEndDto setOrderEnd(Long ordno) {
-        Orders orders = orderRepository.findById(ordno).orElseThrow(ResourceNotFoundException::new);
+        Orders orders = ordersRepository.findById(ordno).orElseThrow(ResourceNotFoundException::new);
         return new OrderEndDto(
                 ordno,
                 orders.getTotal_price(),

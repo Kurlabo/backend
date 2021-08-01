@@ -73,6 +73,29 @@ insert into board (board_id, cnt, content, regdate, title, writer) values(
                                                                              'MarketKurly'
                                                                          );
 
+-- insta_src
+insert into insta_src(insta_src_id, landing_url, thumbnail_img_url)
+values(
+       null,
+       'https://www.instagram.com/p/CRTd4kIJcLB/',
+       'https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/217787090_4421425621208945_2623964379085059202_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=j7IWA_haBzQAX9mhKcb&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=25aa3253fd2b66f20e325e3e3ac50ec2&oe=60FC6927'
+      );
+insert into insta_src(insta_src_id, landing_url, thumbnail_img_url)
+values(
+          null,
+          'https://www.instagram.com/p/CRQhtrjpX17/',
+          'https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/217880860_1065421947196970_8878709286796371299_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=XVncyQn45OEAX-RvviL&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=ae05c84c9dec21d692a47ef5889e2e2b&oe=60FD822A'
+      );
+insert into insta_src(insta_src_id, landing_url, thumbnail_img_url)
+values(
+          null,
+          'https://www.instagram.com/p/CRAj6bdpk-G/',
+          'https://scontent-nrt1-1.cdninstagram.com/v/t51.29350-15/210551988_178324497604795_5373716652515546316_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=EolN4948hwAAX8vgFh4&_nc_ht=scontent-nrt1-1.cdninstagram.com&oh=75c7122773dd560507f17926975081aa&oe=60FD1EC5'
+      );
+
+-- main_src
+insert into main_src(main_src_id, setbyul_img) values (null, 'https://img-cf.kurly.com/shop/data/main/15/pc_img_1568875999.png');
+
 -- goods
 insert into product (product_id, category, original_price, detail_img_url, detail_context, product_img_url, name, brand_title, contactant, delivery_time_type_text, detail_image_url,
                      discount_end_datetime, discount_percent, discounted_price, expiration_date, is_sales, list_image_url, main_image_url, origin, original_image_url, packing_type_text, short_description,
@@ -293,10 +316,9 @@ values (
        );
 
 -- member
-
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           1,
+           null,
            'testid1',
            'mdmdmd131313',
            '임정우1',
@@ -314,7 +336,7 @@ values (
 
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           2,
+           null,
            'testid2',
            'mdmdmd232323',
            '임정우2',
@@ -332,7 +354,7 @@ values (
 
 insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
 values (
-           3,
+           null,
            'testid3',
            'mdmdmd333333',
            '임정우3',
@@ -344,6 +366,24 @@ values (
            0,
            0,
            300000,
+           'MEMBER',
+           false
+       );
+
+insert into member (member_id, uid, password, name, email, phone, gender, date_of_birth, grade, check_term, check_sns, total_cost, role, is_deleted)
+values (
+           null,
+           'testid4',
+           'mdmdmd434343',
+           '임정우4',
+           'limjw04@gmail.com',
+           '01044444444',
+           '남자',
+           '1991-03-04',
+           '',
+           0,
+           1,
+           400000,
            'MEMBER',
            false
        );

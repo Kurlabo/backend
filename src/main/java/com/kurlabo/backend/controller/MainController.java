@@ -17,7 +17,7 @@ public class MainController {
     // 메인 페이지
     @GetMapping("/main")
     public ResponseEntity<?> mainPage(){
-        return ResponseEntity.ok(mainService.setMainPage());
+        return ResponseEntity.ok(mainService.getMainPage());
     }
 
     // MD의 추천 페이지

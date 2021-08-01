@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface InstaSrcRepository extends JpaRepository<Insta_src, Long> {
     @Query("select i.landing_url from Insta_src i")
-    List<String> findAllByLandingUrl();
+    List<String> findAllLandingUrl();
 
     @Query("select i.thumbnail_img_url from Insta_src i")
-    List<String> findAllByThumbnail_img_url();
+    List<String> findAllThumbnailImgUrl();
 }

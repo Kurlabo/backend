@@ -1,4 +1,4 @@
-package com.kurlabo.backend.model.db;
+package com.kurlabo.backend.model;
 
 
 import lombok.AllArgsConstructor;

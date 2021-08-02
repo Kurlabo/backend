@@ -72,7 +72,7 @@ public class MainService {
     }
 
     private List<MainPageProductDtoProjection> setHowAbout(){
-        return productRepository.findAllRandom();
+        return productRepository.findAllRandom(16);
     }
 
     private List<MainPageProductDtoProjection> setFrugality(){

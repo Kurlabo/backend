@@ -76,7 +76,7 @@ public class MainService {
     }
 
     private List<MainPageProductDtoProjection> setFrugality(){
-        return productRepository.findDiscountPercentOverZero();
+        return productRepository.findDiscountPercentOverZero(16);
     }
 
     private List<MainPageProductDtoProjection> setTodays(){

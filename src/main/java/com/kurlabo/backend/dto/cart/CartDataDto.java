@@ -1,7 +1,13 @@
 package com.kurlabo.backend.dto.cart;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CartDataDto {
     private Long product_id;

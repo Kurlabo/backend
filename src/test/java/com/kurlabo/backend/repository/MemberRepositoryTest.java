@@ -1,7 +1,6 @@
 package com.kurlabo.backend.repository;
 
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

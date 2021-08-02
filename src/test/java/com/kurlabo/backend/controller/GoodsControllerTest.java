@@ -1,11 +1,6 @@
 package com.kurlabo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
-import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
-import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,12 +14,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 public class GoodsControllerTest {

@@ -1,9 +1,5 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.goods.ProductDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
-import com.kurlabo.backend.model.Product;
-import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.repository.ReviewRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest

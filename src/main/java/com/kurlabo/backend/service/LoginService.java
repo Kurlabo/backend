@@ -44,21 +44,15 @@ public class LoginService {
 
         return new TokenDto(jwt);
     }
-    private void checkMemberStatus(LoginDto loginDto) {
-        Member member = memberRepository
-                .findByUid(loginDto.getUid())
-                .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
-    }
+
     public void logout(String token) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
         System.out.println("logout 성공");
     }
 
-    public TestInfoDto testInfo(String token){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-
-        return new TestInfoDto(token, member.getId(), member.getUid());
+    private void checkMemberStatus(LoginDto loginDto) {
+        Member member = memberRepository.findByUid(loginDto.getUid())
+                .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
     }
 }

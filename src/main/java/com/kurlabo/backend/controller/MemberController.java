@@ -82,11 +82,6 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findPwChange(findPwChangeDto));
     }
 
-    @GetMapping("/testgetuserinfo")
-    public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(loginService.testInfo(token));
-    }
-
     @PostMapping(value = "/checkPhone")
     public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto dto) {
         return ResponseEntity.ok(memberService.checkPhone(dto));

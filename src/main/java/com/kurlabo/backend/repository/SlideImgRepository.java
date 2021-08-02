@@ -1,6 +1,6 @@
 package com.kurlabo.backend.repository;
 
-import com.kurlabo.backend.model.db.Slide_img;
+import com.kurlabo.backend.model.Slide_img;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

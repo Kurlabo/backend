@@ -17,8 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryDesc(int category);
 
     @Query(value = "select product_id, detail_image_url, sticker_image_url, name, original_price, discounted_price, discount_percent" +
-            " from product order by rand() limit 16", nativeQuery = true)
-    List<MainPageProductDtoProjection> findAllRandom();
+            " from product order by rand() limit :limitCnt", nativeQuery = true)
+    List<MainPageProductDtoProjection> findAllRandom(int limitCnt);
 
     @Query(value = "select product_id, detail_image_url, sticker_image_url, name, original_price, discounted_price, discount_percent" +
             " from product where discount_percent > 0 order by rand() limit ?1", nativeQuery = true)

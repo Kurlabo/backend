@@ -147,25 +147,11 @@ public class MemberService {
                 .build();
     }
 
-    public Member getMemberInfo (Long id) {
+    public MemberInfoDto getMemberInfo (Long id) {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Member is not existed.")
         );
-
-//        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-//            throw new DataNotFoundException("Passwords do not match.");
-//        }
-
-        return Member.builder()
-                .uid(member.getUid())
-                .name(member.getName())
-                .phone(member.getPhone())
-                .email(member.getEmail())
-                .gender(member.getGender())
-                .date_of_birth(member.getDate_of_birth())
-                .check_term(member.getCheck_term())
-                .check_sns(member.getCheck_sns())
-                .build();
+        return member.toMemberInfoDto(member);
     }
 
     @Transactional

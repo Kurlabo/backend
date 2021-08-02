@@ -1,6 +1,6 @@
 package com.kurlabo.backend.repository;
 
-import com.kurlabo.backend.model.db.Insta_src;
+import com.kurlabo.backend.model.Insta_src;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

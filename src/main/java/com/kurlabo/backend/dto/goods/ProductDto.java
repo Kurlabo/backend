@@ -65,6 +65,6 @@ public class ProductDto {
 
     private List<ReviewDto> reviews;
 
-    private List<RelatedProductDto> related_product;
+    private List<RelatedProductDtoProjection> related_product;
 
 }

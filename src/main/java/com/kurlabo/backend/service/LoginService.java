@@ -57,7 +57,8 @@ public class LoginService {
     }
 
     public TestInfoDto testInfo(String token){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
 
         return new TestInfoDto(token, member.getId(), member.getUid());
     }

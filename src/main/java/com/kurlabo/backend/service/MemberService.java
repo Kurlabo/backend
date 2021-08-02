@@ -73,7 +73,7 @@ public class MemberService {
     }
 
     public Member findById(Long id){
-        return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        return memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
     }
 
     public FindIdResponseDto findId(FindIdDto findIdDto) {

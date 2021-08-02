@@ -41,8 +41,6 @@ public class GoodsController {
         goodsService.reviewHelpCount(review);
     }
 
-
-    //@AuthenticationPrincipal Member member
     // 장바구니 조회
     @GetMapping("/goods_cart")
     @PreAuthorize("authenticated")
@@ -50,7 +48,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.getCartList(token));
     }
 
-    //@AuthenticationPrincipal Member member,
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
     @PreAuthorize("authenticated")
@@ -58,7 +55,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.insertCart(token, dto));
     }
 
-    // @AuthenticationPrincipal Member member,
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
     @PreAuthorize("authenticated")
@@ -66,7 +62,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.deleteCart(token, dto.getProduct_id()));
     }
 
-    // @AuthenticationPrincipal Member member,
     // 장바구니 상품 개수 수정
     @PatchMapping("/goods_cart/{product_id}")
     @PreAuthorize("authenticated")

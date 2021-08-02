@@ -2,6 +2,7 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.cart.CheckoutProductsDto;
 import com.kurlabo.backend.dto.order.*;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
@@ -124,7 +125,7 @@ public class OrderService {
     }
 
     public OrderViewResponseDto getOrderView(Long order_id) {
-        Orders order = ordersRepository.findById(order_id).orElseThrow(ResourceNotFoundException::new);
+        Orders order = ordersRepository.findById(order_id).orElseThrow(() -> new DataNotFoundException("해당 주문을 찾을 수 없습니다. Id = " + order_id));
         List<OrderProductDto> orderProducts = new ArrayList<>();
         List<Order_Sheet_Products> ospList = orderSheetProductsRepository.findAllByOrders(order);
 
@@ -156,10 +157,10 @@ public class OrderService {
         );
     }
 
-    public OrderEndDto setOrderEnd(Long ordno) {
-        Orders orders = ordersRepository.findById(ordno).orElseThrow(ResourceNotFoundException::new);
+    public OrderEndDto setOrderEnd(Long order_id) {
+        Orders orders = ordersRepository.findById(order_id).orElseThrow(() -> new DataNotFoundException("해당 주문을 찾을 수 없습니다. Id = " + order_id));
         return new OrderEndDto(
-                ordno,
+                order_id,
                 orders.getTotal_price(),
                 orders.getOrderer(),
                 orders.getCheckout()

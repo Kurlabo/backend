@@ -4,6 +4,7 @@ import com.kurlabo.backend.dto.main.HeaderDto;
 import com.kurlabo.backend.dto.main.InstaSrcDto;
 import com.kurlabo.backend.dto.main.MainPageProductDtoProjection;
 import com.kurlabo.backend.dto.main.MainResponseDto;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Deliver_Address;
@@ -50,7 +51,8 @@ public class MainService {
     }
 
     public HeaderDto setHeader(String token) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Cart> cartList = cartRepository.findByMember(member);
         Deliver_Address da = deliverAddressService.selectMainDeliverAddress(member);
         return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size(), member.getUid());

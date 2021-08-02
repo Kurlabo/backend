@@ -1,6 +1,7 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.mypage.FavoriteProductDto;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Favorite;
 import com.kurlabo.backend.model.Member;
@@ -32,7 +33,8 @@ public class FavoriteService {
         List<Favorite> favoList = favoriteRepository.findByMember(member);
         List<FavoriteProductDto> productList = new ArrayList<>();
         for(Favorite list: favoList){
-            Product product = productRepository.findById(list.getProducts_id()).orElseThrow(ResourceNotFoundException::new);
+            Product product = productRepository.findById(list.getProducts_id()).orElseThrow(() ->
+                    new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProducts_id()));
             FavoriteProductDto dto = new FavoriteProductDto(
                     product.getId(),
                     product.getList_image_url(),

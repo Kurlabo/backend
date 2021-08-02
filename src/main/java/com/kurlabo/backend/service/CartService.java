@@ -1,12 +1,10 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.cart.*;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.repository.CartRepository;
-import com.kurlabo.backend.repository.OrdersRepository;
-import com.kurlabo.backend.repository.OrderSheetProductsRepository;
-import com.kurlabo.backend.repository.ProductRepository;
+import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,11 +23,12 @@ public class CartService {
     private final DeliverAddressService deliverAddressService;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final OrdersRepository ordersRepository;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
     public GetCartResponseDto getCartList(String token){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<CartDataDto> dtoLists = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByMember(member);
 
@@ -38,7 +37,7 @@ public class CartService {
         }
 
         for(Cart list : cartList){
-            Product product = productRepository.findById(list.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
+            Product product = productRepository.findById(list.getProduct_id()).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProduct_id()));
             CartDataDto dto = new CartDataDto(
                     product.getId(),
                     product.getName(),
@@ -65,11 +64,13 @@ public class CartService {
 //        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
 //
 //        }
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         String returnStr = "failed";
 
         for (InsertCartDto lists: dtos.getInsertCartList()){
-            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id());
+            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id()).orElseThrow(() ->
+                    new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + lists.getProduct_id()));
 
             if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
                 cart.setCnt(cart.getCnt() + lists.getCnt());
@@ -88,12 +89,14 @@ public class CartService {
 
     @Transactional
     public DeleteCartResponseDto deleteCart(String token, List<Long> product_id) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Cart> deleteLists = new ArrayList<>();
         List<Long> longLists = new ArrayList<>();
 
         for (Long productIdList : product_id) {
-            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList);
+            Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList).orElseThrow(() ->
+                    new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + productIdList));
             if (deleteCart == null) {     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
                 System.out.println("찾는 카트상품 없음");
                 return null;
@@ -108,9 +111,11 @@ public class CartService {
 
     @Transactional
     public CartDataDto updateCnt(String token, Long product_id, UpdateCartCntRequestDto dto) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
-        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id);
-        Product product = productRepository.findById(product_id).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id).orElseThrow(() ->
+                new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + product_id));
+        Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
         if(cart != null){
             cart.setCnt(cart.getCnt() + dto.getVariation());
             cartRepository.save(cart);
@@ -203,7 +208,8 @@ public class CartService {
 
     @Transactional
     public String setOrdersSheet(String token, SelectedProductInfoDto dto){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         if(dto == null){
             return "failed";
         }

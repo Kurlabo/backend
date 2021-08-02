@@ -2,6 +2,7 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.review.ReviewListDto;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
@@ -27,20 +28,14 @@ public class ReviewService {
     private final TokenProvider tokenProvider;
 
     // 리뷰 작성 조건 체크
-    public boolean conditionsChk(Long pId) {
-        Member member = memberRepository.findById(1L).orElseThrow(
-                ResourceNotFoundException::new
+    public boolean conditionsChk(Long product_id) {
+        Member member = memberRepository.findById(1L).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + product_id)
         );
-
-        // 사용자 정보 없음
-//        Member member = memberRepository.findById(reviewDto.getMember_id()).orElseThrow(
-//                ResourceNotFoundException::new
-//        );
 
         // 상품 정보가 없음
-        Product product = productRepository.findById(pId).orElseThrow(
-                ResourceNotFoundException::new
-        );
+        Product product = productRepository.findById(product_id).orElseThrow(() ->
+                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 
         LocalDate fromDate = LocalDate.now();
         LocalDate chkDate = fromDate.minusMonths(1L);
@@ -69,7 +64,8 @@ public class ReviewService {
             List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(order);
 
             for (Order_Sheet_Products product : productsList) {
-                Product products = productRepository.findById(product.getProduct_id()).orElseThrow(ResourceNotFoundException::new);
+                Product products = productRepository.findById(product.getProduct_id()).orElseThrow(() ->
+                        new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product.getProduct_id()));
                 List<Review> reviewChk = reviewRepository.findByMemberAndProduct(member, products);
 
                 if (stat == 0 && product.getReview_status() == 0) { // 작성가능 리뷰
@@ -103,12 +99,10 @@ public class ReviewService {
     }
 
     // 리뷰작성
-    public boolean create(String token, Long pId, ReviewDto review) {
+    public boolean create(String token, Long product_id, ReviewDto review) {
         Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
 
-        Product product = productRepository.findById(pId).orElseThrow(
-                ResourceNotFoundException::new
-        );
+        Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 
         if (conditionsChk(review.getProduct_id())) {
             Review newReview = new Review();

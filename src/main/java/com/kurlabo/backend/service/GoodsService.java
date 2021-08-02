@@ -4,6 +4,7 @@ import com.kurlabo.backend.dto.goods.GoodsListResponseDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDtoProjection;
 import com.kurlabo.backend.dto.review.ReviewDto;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
@@ -30,7 +31,7 @@ public class GoodsService {
     private final DynamicProductRepository dynamicProductRepository;
 
     public ProductDto goodDetail(Pageable pageable, Long id) {
-        Product product = productRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + id));
 
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
 

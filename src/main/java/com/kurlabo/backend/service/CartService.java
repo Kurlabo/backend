@@ -2,12 +2,14 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.InvalidCartCntException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,18 +39,18 @@ public class CartService {
 
         for(Cart list : cartList){
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProduct_id()));
-            CartDataDto dto = new CartDataDto(
-                    product.getId(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getPacking_type_text(),
-                    1,
-                    99,
-                    product.getList_image_url(),
-                    list.getCnt(),
-                    (product.getOriginal_price()-product.getDiscounted_price())
-            );
+            CartDataDto dto = CartDataDto.builder()
+                    .product_id(product.getId())
+                    .name(product.getName())
+                    .original_price(product.getOriginal_price())
+                    .discounted_price(product.getDiscounted_price())
+                    .packing_type_text(product.getPacking_type_text())
+                    .min_ea(1)
+                    .max_ea(99)
+                    .list_image_url(product.getList_image_url())
+                    .cnt(list.getCnt())
+                    .reduced_price(product.getOriginal_price()-product.getDiscounted_price())
+                    .build();
             dtoLists.add(dto);
         }
 
@@ -59,28 +61,22 @@ public class CartService {
     }
 
     @Transactional
-    public String insertCart(String token, InsertCartRequestDto dtos){
-//        if(cnt < 1){      // 프론트쪽에서 validation 해주는지
-//
-//        }
+    public String insertCart(String token, InsertCartRequestDto dto){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        String returnStr = "failed";
+        String returnStr = "add";
 
-        for (InsertCartDto lists: dtos.getInsertCartList()){
-            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id()).orElseThrow(() ->
-                    new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + lists.getProduct_id()));
+        for (InsertCartDto lists: dto.getInsertCartList()){
+            Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id()).orElse(Cart.builder()
+                    .id(null)
+                    .product_id(lists.getProduct_id())
+                    .cnt(0)
+                    .member(member)
+                    .build());
 
-            if(cart != null){   // 이미 있는 상품이면 cnt만 추가로 올려줌
-                cart.setCnt(cart.getCnt() + lists.getCnt());
-                cartRepository.save(cart);
-                returnStr = "addCnt";
-
-            } else {            // 카트에 없는 상품이면 바로 저장해 줌
-                cart = new Cart(null, lists.getProduct_id(), lists.getCnt(), member);
-                cartRepository.save(cart);
-                returnStr = "add";
-            }
+            cart.setCnt(cart.getCnt() + lists.getCnt());
+            cartRepository.save(cart);
+            returnStr = cart.getCnt() == lists.getCnt() ? returnStr : "addCnt";
         }
 
         return returnStr;
@@ -114,26 +110,28 @@ public class CartService {
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id).orElseThrow(() ->
                 new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + product_id));
-        Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
-        if(cart != null){
+        Product product = productRepository.findById(product_id).orElseThrow(() ->
+                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
+
+        if(cart.getCnt() > 1){
             cart.setCnt(cart.getCnt() + dto.getVariation());
             cartRepository.save(cart);
-            return new CartDataDto(
-                    product.getId(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price(),
-                    product.getPacking_type_text(),
-                    1,
-                    99,
-                    product.getList_image_url(),
-                    cart.getCnt(),
-                    (product.getOriginal_price()-product.getDiscounted_price())
-            );
         } else {
-            return null;
-            // Exception 만들어야함
+            throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
         }
+
+        return CartDataDto.builder()
+                .product_id(product.getId())
+                .name(product.getName())
+                .original_price(product.getOriginal_price())
+                .discounted_price(product.getDiscounted_price())
+                .packing_type_text(product.getPacking_type_text())
+                .min_ea(1)
+                .max_ea(99)
+                .list_image_url(product.getList_image_url())
+                .cnt(cart.getCnt())
+                .reduced_price(product.getOriginal_price()-product.getDiscounted_price())
+                .build();
     }
 
     public Orders getOrderReady(){

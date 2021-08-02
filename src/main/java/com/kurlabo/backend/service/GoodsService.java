@@ -9,6 +9,7 @@ import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.repository.ReviewRepository;
+import com.kurlabo.backend.repository.dynamic.DynamicProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +27,7 @@ public class GoodsService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final DynamicProductRepository dynamicProductRepository;
 
     public ProductDto goodDetail(Pageable pageable, Long id) {
         Product product = productRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
@@ -78,41 +80,28 @@ public class GoodsService {
     }
 
     public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
-        List<GoodsListResponseDto> responseDtos = new ArrayList<>();
-        List<Product> productList = new ArrayList<>();
+        List<GoodsListResponseDto> responseDtos;
 
-        if(category >= 0 && category <= 166){           // 자식 카테고리
-//            productList = productRepository.findByCategory(category);
-
-//             임시적으로 같은 상품 데이터 3개 뿌려주고 나중에 리팩토링 해야 함.
-            productList = productRepository.findByCategory(category);
-            productList.addAll(productRepository.findByCategoryDesc(category));
-        } else if(category == 200){                     // 신상품
-            productList = setRandomProducts();
-        } else if(category == 300){                     // 베스트
-            productList = setRandomProducts();
-        } else if(category == 400){                     // 알뜰쇼핑
-            productList = productRepository.findByDiscount_percent();
-        } else {                                        // 부모카테고리
-            productList = getProducts(category, productList);
-        }
-
-        for(Product list: productList){
-            responseDtos.add(new GoodsListResponseDto(
-                    list.getId(),
-                    list.getOriginal_image_url(),
-                    list.getSticker_image_url(),
-                    list.getName(),
-                    list.getOriginal_price(),
-                    list.getDiscounted_price(),
-                    list.getDiscount_percent(),
-                    list.getShort_description()
-            ));
+        if(category >= 0 && category <= 166){
+            responseDtos = dynamicProductRepository.findBySmallCategory(category);
+        } else if (category == 200 || category == 300) {
+            responseDtos = dynamicProductRepository.findCntProducts(90);
+            Collections.shuffle(responseDtos);
+        } else if (category == 400) {
+            responseDtos = dynamicProductRepository.findDiscountPercentOverZero(80);
+        } else if (category >= 1001 && category <= 1016){
+            responseDtos = dynamicProductRepository.findByBigCategory(setCategoryMinValue(category));
+        } else {
+            return null;
         }
 
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), responseDtos.size());
         return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
+    }
+
+    private int setCategoryMinValue(int category){
+        return (category % 1000) * 10;
     }
 
     private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){
@@ -135,40 +124,7 @@ public class GoodsService {
         return guideElements;
     }
 
-    private List<Product> getProducts(int category, List<Product> productList) {
-        switch (category){
-            case 1000: productList = productRepository.findByCategoryVege();            break;
-            case 1001: productList = productRepository.findByCategoryFruits();          break;
-            case 1002: productList = productRepository.findByCategorySeafood();         break;
-            case 1003: productList = productRepository.findByCategoryMeat();            break;
-            case 1004: productList = productRepository.findByCategoryMaindish();        break;
-            case 1005: productList = productRepository.findByCategoryFastFood();        break;
-            case 1006: productList = productRepository.findByCategoryNoodleoil();       break;
-            case 1007: productList = productRepository.findByCategoryDring();           break;
-            case 1008: productList = productRepository.findByCategorySnacks();          break;
-            case 1009: productList = productRepository.findByCategoryBakery();          break;
-            case 1010: productList = productRepository.findByCategoryHealthFood();      break;
-            case 1011: productList = productRepository.findByCategoryLiving();          break;
-            case 1012: productList = productRepository.findByCategoryBeauty();          break;
-            case 1013: productList = productRepository.findByCategoryKitchen();         break;
-            case 1014: productList = productRepository.findByCategoryHomeAppliance();   break;
-            case 1015: productList = productRepository.findByCategoryBabyKiz();         break;
-            case 1016: productList = productRepository.findByCategoryPet();             break;
-        }
-        return productList;
-    }
-
-    private List<Product> setRandomProducts(){      // 일단 데이터 양이 많지 않으니 만들어 놓지만 절대 쓰면 안됨.
-        List<Product> lists = productRepository.findAll();
-        Collections.shuffle(lists);
-        return lists;
-    }
-
     public void reviewHelpCount(Review review) {
         review.increaseHelp();
-    }
-
-    public void reviewUpdateCnt(Review review) {
-        review.increaseCount();
     }
 }

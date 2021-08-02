@@ -100,6 +100,10 @@ public class GoodsService {
         return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
     }
 
+    public void reviewHelpCount(Review review) {
+        review.increaseHelp();
+    }
+
     private int setCategoryMinValue(int category){
         return (category % 1000) * 10;
     }
@@ -122,9 +126,5 @@ public class GoodsService {
         }
 
         return guideElements;
-    }
-
-    public void reviewHelpCount(Review review) {
-        review.increaseHelp();
     }
 }

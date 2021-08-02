@@ -2,7 +2,6 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.member.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;

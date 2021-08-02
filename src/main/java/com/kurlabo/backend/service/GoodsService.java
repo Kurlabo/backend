@@ -5,7 +5,6 @@ import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDtoProjection;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;

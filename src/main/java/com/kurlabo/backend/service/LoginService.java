@@ -4,7 +4,6 @@ import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.TokenDto;
 import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;

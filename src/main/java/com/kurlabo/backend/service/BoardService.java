@@ -1,7 +1,6 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Board;
 import com.kurlabo.backend.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,6 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
 import com.kurlabo.backend.security.jwt.TokenProvider;

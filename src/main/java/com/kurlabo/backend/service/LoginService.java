@@ -50,7 +50,7 @@ public class LoginService {
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
         System.out.println("logout 성공");
     }
-
+    
     private void checkMemberStatus(LoginDto loginDto) {
         Member member = memberRepository.findByUid(loginDto.getUid())
                 .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));

@@ -92,16 +92,15 @@ public class CartService {
         for (Long productIdList : product_id) {
             Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList).orElseThrow(() ->
                     new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + productIdList));
-            if (deleteCart == null) {     // 만약 들어온 product_id가 Cart에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
-                System.out.println("찾는 카트상품 없음");
-                return null;
-            }
             deleteLists.add(deleteCart);
             longLists.add(productIdList);
         }
+
         cartRepository.deleteAll(deleteLists);
-        System.out.println("카트상품 지움");
-        return new DeleteCartResponseDto(longLists);
+
+        return DeleteCartResponseDto.builder()
+                .deleted_product_id(longLists)
+                .build();
     }
 
     @Transactional

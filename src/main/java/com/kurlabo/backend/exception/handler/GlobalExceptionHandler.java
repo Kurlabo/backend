@@ -2,6 +2,7 @@ package com.kurlabo.backend.exception.handler;
 
 import com.kurlabo.backend.dto.exception.ExceptionDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.InvalidCartCntException;
 import com.kurlabo.backend.exception.InvalidTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionDto InvalidTokenExceptionHandler(InvalidTokenException e) {
+        return ExceptionDto.builder()
+                .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(InvalidCartCntException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDto InvalidCartCntExceptionHandler(InvalidCartCntException e) {
         return ExceptionDto.builder()
                 .message(e.getMessage())
                 .build();

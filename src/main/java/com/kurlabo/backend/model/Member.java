@@ -1,5 +1,6 @@
 package com.kurlabo.backend.model;
 
+import com.kurlabo.backend.dto.member.MemberInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -57,4 +58,17 @@ public class Member {
 
     @ColumnDefault("false")
     private boolean isDeleted;
+
+    public MemberInfoDto toMemberInfoDto(Member member) {
+        return MemberInfoDto.builder()
+                .uid(member.getUid())
+                .name(member.getName())
+                .phone(member.getPhone())
+                .email(member.getEmail())
+                .gender(member.getGender())
+                .date_of_birth(member.getDate_of_birth())
+                .check_term(member.getCheck_term())
+                .check_sns(member.getCheck_sns())
+                .build();
+    }
 }

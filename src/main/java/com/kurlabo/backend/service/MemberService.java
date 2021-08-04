@@ -45,6 +45,28 @@ public class MemberService {
         return MessageResponseDto.builder().message("SIGNUP SUCCESS").build();
     }
 
+    @Transactional
+    public void updateMember(Long id, MemberDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+
+        member.update(dto, passwordEncoder);
+
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public MessageResponseDto deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+
+        member.setDeleted(true);
+
+        memberRepository.save(member);
+
+        return MessageResponseDto.builder().message("DELETE SUCCESS").build();
+    }
+
     public MessageResponseDto checkUid(CheckUidDto dto){
         if(memberRepository.findAllByUid(dto.getCheckUid()).size() > 0){
             return MessageResponseDto.builder().message("EXISTED UID").build();
@@ -65,7 +87,7 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
     }
 
-    public FindIdResponseDto findId(FindIdDto findIdDto) {
+    public FindIdResponseDto findByNameAndEmail(FindIdDto findIdDto) {
         Member member = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail()).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
@@ -120,28 +142,6 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id)
         );
-        return member.toMemberDto(member);
-    }
-
-    @Transactional
-    public void updateMember(Long id, MemberDto dto) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
-
-        member.update(dto, passwordEncoder);
-
-        memberRepository.save(member);
-    }
-
-    @Transactional
-    public MemberDto deleteMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
-
-        member.setDeleted(true);
-
-        memberRepository.save(member);
-
         return member.toMemberDto(member);
     }
 }

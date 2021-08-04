@@ -70,13 +70,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.updateCnt(token, product_id, dto));
     }
 
-    // 장바구니 주문하기 버튼
-    @PostMapping("/goods_cart/orderSheet")
-    @PreAuthorize("authenticated")
-    public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
-        return ResponseEntity.ok(cartService.setOrdersSheet(token, dto));
-    }
-
     // 상품 리스트
     @GetMapping("/goods_list")
     public ResponseEntity<?> goodsList(@RequestParam int category, @PageableDefault(size = 6) Pageable pageable){

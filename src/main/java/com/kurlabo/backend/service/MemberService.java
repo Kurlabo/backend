@@ -89,14 +89,11 @@ public class MemberService {
                 .build();
     }
 
-    public FindPwResponseDto findByNameAndUidAndEmail(FindPwDto findPwDto) {
+    public FindPwChangeDto findByNameAndUidAndEmail(FindPwDto findPwDto) {
         Member member = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail()).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
-        return FindPwResponseDto.builder()
-                .message("SUCCESS")
-                .member_id(member.getId())
-                .build();
+        return FindPwChangeDto.builder().member_id(member.getId()).build();
     }
 
     @Transactional

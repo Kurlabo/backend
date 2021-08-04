@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,18 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderSheet(token));
     }
 
+    // 장바구니 주문하기 버튼
+    @PostMapping("/orderSheet")
+    @PreAuthorize("authenticated")
+    public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
+        return ResponseEntity.ok(orderService.setOrdersSheet(token, dto));
+    }
+
     // 결제하기
     @PostMapping("/checkout")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> setCheckout(@RequestHeader("Authorization") String token, @RequestBody @Valid CheckoutRequestDto dto) {
-        String returnStr = "결제에 실패하셨습니다.";
-        returnStr = orderService.setCheckout(token, dto);
-        return ResponseEntity.ok(returnStr);
+        return ResponseEntity.ok(orderService.setCheckout(token, dto));
     }
 
     @GetMapping("/orderEnd")

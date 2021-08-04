@@ -1,17 +1,15 @@
 package com.kurlabo.backend.model;
 
-import com.kurlabo.backend.dto.member.MemberInfoDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.kurlabo.backend.dto.member.MemberDto;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -59,8 +57,21 @@ public class Member {
     @ColumnDefault("false")
     private boolean isDeleted;
 
-    public MemberInfoDto toMemberInfoDto(Member member) {
-        return MemberInfoDto.builder()
+    public void update(MemberDto dto, PasswordEncoder encoder){
+        if(dto.getPassword() != null && (dto.getPassword().equals(dto.getCheckPassword()))){
+            this.password = encoder.encode(dto.getPassword());
+        }
+        this.name = dto.getName();
+        this.email = dto.getEmail();
+        this.phone = dto.getPhone();
+        this.date_of_birth = dto.getDate_of_birth();
+        this.gender = dto.getGender();
+        this.check_term = dto.getCheck_term();
+        this.check_sns = dto.getCheck_sns();
+    }
+
+    public MemberDto toMemberDto(Member member){
+        return MemberDto.builder()
                 .uid(member.getUid())
                 .name(member.getName())
                 .phone(member.getPhone())
@@ -70,5 +81,13 @@ public class Member {
                 .check_term(member.getCheck_term())
                 .check_sns(member.getCheck_sns())
                 .build();
+    }
+
+    public void setDeleted(boolean isDeleted){
+        this.isDeleted = isDeleted;
+    }
+
+    public void setPassword(String newPassword){
+        this.password = newPassword;
     }
 }

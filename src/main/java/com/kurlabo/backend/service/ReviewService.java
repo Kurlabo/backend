@@ -54,7 +54,8 @@ public class ReviewService {
 
     public List<ReviewListDto> reviewList(String token, int stat) {
         // 사용자 검색
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
 
         List<ReviewListDto> list = new ArrayList<>();
         List<Orders> orderList = ordersRepository.findByMember(member);
@@ -99,7 +100,8 @@ public class ReviewService {
 
     // 리뷰작성
     public boolean create(String token, Long product_id, ReviewDto review) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
 
         Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 

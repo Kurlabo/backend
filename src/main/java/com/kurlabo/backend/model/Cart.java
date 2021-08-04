@@ -1,15 +1,12 @@
 package com.kurlabo.backend.model;
 
 import com.kurlabo.backend.dto.cart.CartProductDto;
-import com.kurlabo.backend.dto.cart.GetCartResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.kurlabo.backend.exception.InvalidCartCntException;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -38,5 +35,13 @@ public class Cart {
                 .cnt(this.getCnt())
                 .reduced_price(product.getOriginal_price()-product.getDiscounted_price())
                 .build();
+    }
+
+    public void setCnt(int value){
+        if(this.cnt > 1){
+            this.cnt += value;
+        } else {
+            throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
+        }
     }
 }

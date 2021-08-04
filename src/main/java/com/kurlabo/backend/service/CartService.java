@@ -58,7 +58,7 @@ public class CartService {
                     .cnt(0)
                     .member(member)
                     .build());
-            cart.setCnt(cart.getCnt() + lists.getCnt());
+            cart.addCnt(cart.getCnt() + lists.getCnt());
             cartRepository.save(cart);
         }
 

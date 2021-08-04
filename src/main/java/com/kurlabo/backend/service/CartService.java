@@ -1,16 +1,20 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.exception.InvalidCartCntException;
-import com.kurlabo.backend.model.*;
-import com.kurlabo.backend.repository.*;
+import com.kurlabo.backend.model.Cart;
+import com.kurlabo.backend.model.Member;
+import com.kurlabo.backend.model.Product;
+import com.kurlabo.backend.repository.CartRepository;
+import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +25,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final DeliverAddressService deliverAddressService;
-    private final OrderSheetProductsRepository orderSheetProductsRepository;
-    private final OrdersRepository ordersRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
@@ -46,10 +48,9 @@ public class CartService {
     }
 
     @Transactional
-    public String insertCart(String token, InsertCartRequestDto dto){
+    public MessageResponseDto insertCart(String token, InsertCartRequestDto dto){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        String returnStr = "add";
 
         for (InsertCartDto lists: dto.getInsertCartList()){
             Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id()).orElse(Cart.builder()
@@ -61,20 +62,19 @@ public class CartService {
 
             cart.setCnt(cart.getCnt() + lists.getCnt());
             cartRepository.save(cart);
-            returnStr = cart.getCnt() == lists.getCnt() ? returnStr : "addCnt";
         }
 
-        return returnStr;
+        return MessageResponseDto.builder().message("SUCCESS").build();
     }
 
     @Transactional
-    public DeleteCartResponseDto deleteCart(String token, List<Long> product_id) {
+    public DeleteCartResponseDto deleteCart(String token, List<Long> idList) {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Cart> deleteLists = new ArrayList<>();
         List<Long> longLists = new ArrayList<>();
 
-        for (Long productIdList : product_id) {
+        for (Long productIdList : idList) {
             Cart deleteCart = cartRepository.findByMemberAndProduct_id(member, productIdList).orElseThrow(() ->
                     new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + productIdList));
             deleteLists.add(deleteCart);
@@ -118,99 +118,12 @@ public class CartService {
                 .build();
     }
 
-    public Orders getOrderReady(){
-        List<Orders> list = ordersRepository.findAllByStatus("결제준비");
-        return list.size() == 0 ? null : list.get(list.size() - 1);
-    }
 
-    // 미리 결제준비였던 데이터들 결제 취소로 만듬.
-    @Transactional
-    public void setOrderCancel(){
-        List<Orders> readyOrders = ordersRepository.findAllByStatus("결제준비");
 
-        for(Orders ro: readyOrders){
-            ro.setStatus("결제취소");
-        }
 
-        ordersRepository.saveAll(readyOrders);
-    }
 
-    // Orders에 새로운 주문서 생성
-    @Transactional
-    public void createNewOrder(Member member){
 
-        setOrderCancel();
-        ordersRepository.save(new Orders(
-                null,
-                member.getName(),
-                member.getName(),
-                "",
-                "",
-                "",
-                "",
-                "",
-                LocalDate.now(),
-                "",
-                "",
-                "",
-                0,
-                0,
-                "결제준비",
-                member
-        ));
-    }
 
-    @Transactional
-    public void setPricesToOrder(Orders order, int total_price,int discount_price){
-        order.setTotal_price(total_price);
-        order.setTotal_discount_price(discount_price);
 
-        ordersRepository.save(order);
-    }
-
-    @Transactional
-    public void setOrderSheetProducts(Orders readyOrder, SelectedProductInfoDto dto){
-        List<Order_Sheet_Products> orderSheetProductsList = new ArrayList<>();
-        for(CheckoutProductsDto list : dto.getCheckout_Products()){
-            orderSheetProductsList.add(new Order_Sheet_Products(
-                    null,
-                    list.getProduct_id(),
-                    list.getProduct_name(),
-                    list.getProduct_price(),
-                    list.getProduct_discount_price(),
-                    list.getProduct_cnt(),
-                    list.getList_image_url(),
-                    readyOrder,
-                    list.getReview_status()
-            ));
-        }
-        orderSheetProductsRepository.saveAll(orderSheetProductsList);
-    }
-
-    @Transactional
-    public String setOrdersSheet(String token, SelectedProductInfoDto dto){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        if(dto == null){
-            return "failed";
-        }
-
-        // 1. 새로은 주문서 작성
-        createNewOrder(member);
-
-        // 2. 주문서중에 "결제준비"인 주문서를 가져옴
-        Orders readyOrder = getOrderReady();
-        if(getOrderReady() == null){
-            return "FAILED";
-        }
-
-        // 3. 요청받은 장바구니의 상품 개수만큼 dto를 for문으로 돌려 orderSheetProductsList에 저장함
-        setOrderSheetProducts(readyOrder, dto);
-
-        // 4. dto로 받은 전체 금액과 할인 금액 orders에 저장
-        setPricesToOrder(readyOrder, dto.getTotal_price(), dto.getTotal_discounted_price());
-
-        return "success";
-    }
 
 }

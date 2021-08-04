@@ -2,13 +2,11 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
-import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
-import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +23,6 @@ import javax.validation.Valid;
 @RequestMapping(value="/api/goods")
 public class GoodsController {
 
-    private final MemberService memberService;
     private final CartService cartService;
     private final GoodsService goodsService;
 

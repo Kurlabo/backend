@@ -37,11 +37,19 @@ public class Cart {
                 .build();
     }
 
-    public void setCnt(int value){
-        if(this.cnt > 1){
-            this.cnt += value;
+    public void setCnt(int cnt){
+        this.cnt = cnt;
+    }
+
+    public void updateCnt(int value){
+        if(value < 0){
+            if(this.cnt > 1){
+                this.cnt += value;
+            } else {
+                throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
+            }
         } else {
-            throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
+            this.cnt += value;
         }
     }
 }

@@ -12,5 +12,5 @@ public interface DeliverAddressRepository extends JpaRepository<Deliver_Address,
     List<Deliver_Address> findByMember(Member member);
 
     Optional<Deliver_Address> findByMemberAndIs_main(Member member, int isMain);
-    
+
 }

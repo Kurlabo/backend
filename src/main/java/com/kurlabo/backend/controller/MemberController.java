@@ -63,8 +63,8 @@ public class MemberController {
 
     @GetMapping("/logout")
     @PreAuthorize("authenticated")
-    public void logout(@RequestHeader("Authorization") String token){
-        loginService.logout(token);
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(loginService.logout(token));
     }
 
     @PostMapping("/find_id")

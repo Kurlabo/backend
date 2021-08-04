@@ -9,7 +9,6 @@ import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,34 +29,20 @@ public class CartService {
     public GetCartResponseDto getCartList(String token){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        List<CartDataDto> dtoLists = new ArrayList<>();
+        List<CartProductDto> dtoLists = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByMember(member);
 
-        if(cartList.size() == 0){  // 나중에 Exception 처리 해줘야함
-            return null;
-        }
-
         for(Cart list : cartList){
-            Product product = productRepository.findById(list.getProduct_id()).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProduct_id()));
-            CartDataDto dto = CartDataDto.builder()
-                    .product_id(product.getId())
-                    .name(product.getName())
-                    .original_price(product.getOriginal_price())
-                    .discounted_price(product.getDiscounted_price())
-                    .packing_type_text(product.getPacking_type_text())
-                    .min_ea(1)
-                    .max_ea(99)
-                    .list_image_url(product.getList_image_url())
-                    .cnt(list.getCnt())
-                    .reduced_price(product.getOriginal_price()-product.getDiscounted_price())
-                    .build();
-            dtoLists.add(dto);
+            Product product = productRepository.findById(list.getProduct_id()).orElseThrow(() ->
+                    new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProduct_id()));
+
+            dtoLists.add(list.toCartProductDto(product));
         }
 
-        return new GetCartResponseDto(
-                dtoLists,
-                deliverAddressService.selectMainDeliverAddress(member).getDeliver_address()
-        );
+        return GetCartResponseDto.builder()
+                .cartProductDto(dtoLists)
+                .address(deliverAddressService.selectMainDeliverAddress(member).getDeliver_address())
+                .build();
     }
 
     @Transactional
@@ -104,7 +89,7 @@ public class CartService {
     }
 
     @Transactional
-    public CartDataDto updateCnt(String token, Long product_id, UpdateCartCntRequestDto dto) {
+    public CartProductDto updateCnt(String token, Long product_id, UpdateCartCntRequestDto dto) {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id).orElseThrow(() ->
@@ -119,7 +104,7 @@ public class CartService {
             throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
         }
 
-        return CartDataDto.builder()
+        return CartProductDto.builder()
                 .product_id(product.getId())
                 .name(product.getName())
                 .original_price(product.getOriginal_price())

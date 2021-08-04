@@ -37,7 +37,7 @@ public class Cart {
                 .build();
     }
 
-    public void setCnt(int cnt){
+    public void addCnt(int cnt){
         this.cnt = cnt;
     }
 

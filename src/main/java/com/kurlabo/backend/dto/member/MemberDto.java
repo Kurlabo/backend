@@ -47,7 +47,7 @@ public class MemberDto {
 
     @Range(min = 0, max = 1)
     private int check_term;
-    
+
     @Range(min = 0, max = 3)
     private int check_sns;
 }

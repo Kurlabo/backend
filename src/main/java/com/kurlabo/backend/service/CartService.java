@@ -58,7 +58,6 @@ public class CartService {
                     .cnt(0)
                     .member(member)
                     .build());
-
             cart.setCnt(cart.getCnt() + lists.getCnt());
             cartRepository.save(cart);
         }
@@ -96,7 +95,7 @@ public class CartService {
         Product product = productRepository.findById(product_id).orElseThrow(() ->
                 new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 
-        cart.setCnt(dto.getVariation());
+        cart.updateCnt(dto.getVariation());
 
         cartRepository.save(cart);
 

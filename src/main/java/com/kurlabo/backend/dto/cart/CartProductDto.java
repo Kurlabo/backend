@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartDataDto {
+public class CartProductDto {
     private Long product_id;
     private String name;
     private int original_price;

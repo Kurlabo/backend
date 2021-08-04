@@ -3,7 +3,6 @@ package com.kurlabo.backend.service;
 import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.InvalidCartCntException;
 import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
@@ -97,12 +96,9 @@ public class CartService {
         Product product = productRepository.findById(product_id).orElseThrow(() ->
                 new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 
-        if(cart.getCnt() > 1){
-            cart.setCnt(cart.getCnt() + dto.getVariation());
-            cartRepository.save(cart);
-        } else {
-            throw new InvalidCartCntException("장바구니의 개수는 1개 미만이 될 수 없습니다.");
-        }
+        cart.setCnt(dto.getVariation());
+        
+        cartRepository.save(cart);
 
         return CartProductDto.builder()
                 .product_id(product.getId())

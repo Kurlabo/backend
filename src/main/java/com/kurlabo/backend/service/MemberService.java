@@ -1,7 +1,9 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.member.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.InvalidPasswordException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
@@ -10,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,23 +22,7 @@ public class MemberService {
     private final DeliverAddressService deliverAddressService;
 
     @Transactional
-    public String signUp(MemberDto dto){
-        if (checkUid(new CheckUidDto(dto.getUid())).equals("EXISTED UID")){
-            return "SIGNUP FAILED(EXISTED UID)";
-        }
-        else if (checkEmail(new CheckEmailDto(dto.getEmail())).equals("EXISTED EMAIL")){
-            return "SIGNUP FAILED(EXISTED EMAIL)";
-        }
-
-        Member member = signUpMember(dto);
-
-        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress(), dto.getDetail_address());
-
-        return "SIGNUP SUCCESS";
-    }
-
-    @Transactional
-    public Member signUpMember(MemberDto dto){
+    public MessageResponseDto signUp(MemberDto dto){
         Member member = Member.builder()
                 .uid(dto.getUid())
                 .password(passwordEncoder.encode(dto.getPassword()))
@@ -54,58 +38,46 @@ public class MemberService {
                 .role(MemberRole.MEMBER)
                 .build();
 
-        return memberRepository.save(member);
+        memberRepository.save(member);
+
+        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress(), dto.getDetail_address());
+
+        return MessageResponseDto.builder().message("SIGNUP SUCCESS").build();
     }
 
-    public String checkUid(CheckUidDto dto){
+    public MessageResponseDto checkUid(CheckUidDto dto){
         if(memberRepository.findAllByUid(dto.getCheckUid()).size() > 0){
-            return "EXISTED UID";
+            return MessageResponseDto.builder().message("EXISTED UID").build();
         }
-        return "NOT EXISTED UID";
+        return MessageResponseDto.builder().message("NOT EXISTED UID").build();
     }
 
-    public String checkEmail(CheckEmailDto dto) {
+    public MessageResponseDto checkEmail(CheckEmailDto dto) {
         if(memberRepository.findAllByEmail(dto.getCheckEmail()).size() > 0){
-            return "EXISTED EMAIL";
+            MessageResponseDto.builder().message("EXISTED EMAIL").build();
         }
-        return "NOT EXISTED EMAIL";
+        return MessageResponseDto.builder().message("NOT EXISTED EMAIL").build();
     }
 
+
+    // 이걸 왜 다른 서비스에서 사용하지?
     public Member findById(Long id){
         return memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
     }
 
     public FindIdResponseDto findId(FindIdDto findIdDto) {
-        Optional<Member> memberOptional = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail());
-        Member member;
-
-        if(memberOptional.isPresent()){
-            member = memberOptional.get();
-        } else {
-            throw new DataNotFoundException("NO RESOURCE");
-        }
-
-        String responseUid = member.getUid().substring(0, member.getUid().length() - 3) + "***";
+        Member member = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail()).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
         return FindIdResponseDto.builder()
                 .message("SUCCESS")
-                .uid(responseUid)
+                .uid(member.getUid().substring(0, member.getUid().length() - 3) + "***")
                 .build();
     }
 
     public FindPwResponseDto findPw(FindPwDto findPwDto) {
-        Optional<Member> optionalMember = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail());
-        // StringBuilder sb = new StringBuilder();
-        Member member;
-
-        if(optionalMember.isPresent()){
-            member = optionalMember.get();
-        } else {
-            throw new DataNotFoundException("NO RESOURCE");
-        }
-
-        // int atIdx = member.getEmail().indexOf("@");
-        // sb.append(member.getEmail(), 0, atIdx - 5).append("*******").append(member.getEmail().substring(atIdx));
+        Member member = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail()).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
         return FindPwResponseDto.builder()
                 .message("SUCCESS")
@@ -114,80 +86,62 @@ public class MemberService {
     }
 
     @Transactional
-    public FindPwChangeResponseDto findPwChange(FindPwChangeDto findPwChangeDto) {
-        Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+    public MessageResponseDto findPwChange(FindPwChangeDto findPwChangeDto) {
+        Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + findPwChangeDto.getMember_id()));
 
         member.setPassword(passwordEncoder.encode(findPwChangeDto.getInsertChangePw()));
 
         memberRepository.save(member);
 
-        return FindPwChangeResponseDto.builder()
-                .message("SUCCESS")
-                .build();
+        return MessageResponseDto.builder().message("SUCCESS").build();
     }
 
-    public String checkPhone(CheckPhoneDto dto) {
+    public MessageResponseDto checkPhone(CheckPhoneDto dto) {
         if(!memberRepository.findByPhone(dto.getCheckPhone()).isPresent()){
-            return "NOT EXISTED PHONE NUMBER";
+            throw new DataNotFoundException("NOT EXISTED PHONE NUMBER");
         }
-        return "EXISTED PHONE NUMBER";
+        return MessageResponseDto.builder().message("EXISTED PHONE NUMBER").build();
     }
 
-    public CheckMemberInfoResponseDto checkMemberInfo(Long id, CheckPwDto dto) {
+    public MessageResponseDto checkMemberInfo(Long id, CheckPwDto dto) {
         Member member = memberRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Member is not existed.")
+                () -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id)
         );
 
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            throw new DataNotFoundException("Passwords do not match.");
+            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
-        return CheckMemberInfoResponseDto.builder()
-                .message("SUCCESS")
-                .build();
+        return MessageResponseDto.builder().message("SUCCESS").build();
     }
 
-    public MemberInfoDto getMemberInfo (Long id) {
+    public MemberDto getMemberInfo (Long id) {
         Member member = memberRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Member is not existed.")
+                () -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id)
         );
-        return member.toMemberInfoDto(member);
+        return member.toMemberDto(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberDto dto) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
 
-        // 현재 비밀번호 기입 && 변경 비밀번호 기입
-        if(dto.getCheckPassword() != null && dto.getPassword() != null) {
-            // 현재 비밀번호 불일치
-            if (!passwordEncoder.matches(member.getPassword(), dto.getCheckPassword())) {
-                throw new DataNotFoundException("Passwords do not match.");
-            }
-            member.setPassword(passwordEncoder.encode(dto.getPassword()));
-        }
-
-        member.setName(dto.getName());
-        member.setEmail(dto.getEmail());
-        member.setPhone(dto.getPhone());
-        member.setDate_of_birth(dto.getDate_of_birth());
-        member.setGender(dto.getGender());
-        member.setCheck_term(dto.getCheck_term());
-        member.setCheck_sns(dto.getCheck_sns());
+        member.update(dto, passwordEncoder);
 
         memberRepository.save(member);
     }
 
     @Transactional
-    public void deleteMember(Long id) {
+    public MemberDto deleteMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Member is not existed."));
+                .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
 
         member.setDeleted(true);
 
-        memberRepository.delete(member);
+        memberRepository.save(member);
+
+        return member.toMemberDto(member);
     }
-
-
 }

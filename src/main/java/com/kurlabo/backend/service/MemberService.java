@@ -56,15 +56,13 @@ public class MemberService {
     }
 
     @Transactional
-    public MessageResponseDto deleteMember(Long id) {
+    public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
 
         member.setDeleted(true);
 
         memberRepository.save(member);
-
-        return MessageResponseDto.builder().message("DELETE SUCCESS").build();
     }
 
     public MessageResponseDto checkUid(CheckUidDto dto){

@@ -97,7 +97,7 @@ public class MemberService {
                 .build();
     }
 
-    public FindPwResponseDto findPw(FindPwDto findPwDto) {
+    public FindPwResponseDto findByNameAndUidAndEmail(FindPwDto findPwDto) {
         Member member = memberRepository.findByNameAndUidAndEmail(findPwDto.getName(), findPwDto.getUid(), findPwDto.getEmail()).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 

@@ -8,6 +8,7 @@ import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Order_Sheet_Products;
 import com.kurlabo.backend.model.Orders;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
+import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.OrderSheetProductsRepository;
 import com.kurlabo.backend.repository.OrdersRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
@@ -30,11 +31,12 @@ public class OrderService {
     private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final CartService cartService;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
     public OrderSheetResponseDto getOrderSheet(String token){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
         Deliver_Address da = new Deliver_Address();
         for (Deliver_Address list : daList){
@@ -74,7 +76,8 @@ public class OrderService {
 
     @Transactional
     public String setCheckout(String token, CheckoutRequestDto dto) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         String returnStr = "CHECKOUT SUCCESS";
 
         Orders readyOrder = cartService.getOrderReady();
@@ -101,7 +104,8 @@ public class OrderService {
     }
 
     public Page<OrderListResponseDto> getOrderList (String token, Pageable pageable) {
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Orders> orderList = ordersRepository.findByMemberAndStatus(member, "결제완료");
         List<OrderListResponseDto> responseList = new ArrayList<>();
 

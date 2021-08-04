@@ -1,9 +1,8 @@
 package com.kurlabo.backend.service;
 
-import com.kurlabo.backend.dto.MessageResponse;
+import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.TokenDto;
-import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
@@ -46,10 +45,10 @@ public class LoginService {
         return new TokenDto(jwt);
     }
 
-    public MessageResponse logout(String token) {
+    public MessageResponseDto logout(String token) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
-        return MessageResponse.builder().message("LOGOUT SUCCESS").build();
+        return MessageResponseDto.builder().message("LOGOUT SUCCESS").build();
     }
     
     private void checkMemberStatus(LoginDto loginDto) {

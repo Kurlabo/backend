@@ -79,12 +79,6 @@ public class MemberService {
         return MessageResponseDto.builder().message("NOT EXISTED EMAIL").build();
     }
 
-
-    // 이걸 왜 다른 서비스에서 사용하지?
-    public Member findById(Long id){
-        return memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
-    }
-
     public FindIdResponseDto findByNameAndEmail(FindIdDto findIdDto) {
         Member member = memberRepository.findByNameAndEmail(findIdDto.getName(), findIdDto.getEmail()).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
@@ -104,7 +98,7 @@ public class MemberService {
                 .member_id(member.getId())
                 .build();
     }
-    
+
     @Transactional
     public MessageResponseDto setPassword(FindPwChangeDto findPwChangeDto) {
         Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() ->

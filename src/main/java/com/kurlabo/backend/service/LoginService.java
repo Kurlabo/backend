@@ -1,5 +1,6 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.MessageResponse;
 import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.TokenDto;
 import com.kurlabo.backend.dto.testdto.TestInfoDto;
@@ -45,10 +46,10 @@ public class LoginService {
         return new TokenDto(jwt);
     }
 
-    public void logout(String token) {
+    public MessageResponse logout(String token) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
-        System.out.println("logout 성공");
+        return MessageResponse.builder().message("LOGOUT SUCCESS").build();
     }
     
     private void checkMemberStatus(LoginDto loginDto) {

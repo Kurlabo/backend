@@ -70,16 +70,16 @@ public class Member {
         this.check_sns = dto.getCheck_sns();
     }
 
-    public MemberDto toMemberDto(Member member){
+    public MemberDto toMemberDto(){
         return MemberDto.builder()
-                .uid(member.getUid())
-                .name(member.getName())
-                .phone(member.getPhone())
-                .email(member.getEmail())
-                .gender(member.getGender())
-                .date_of_birth(member.getDate_of_birth())
-                .check_term(member.getCheck_term())
-                .check_sns(member.getCheck_sns())
+                .uid(this.getUid())
+                .name(this.getName())
+                .phone(this.getPhone())
+                .email(this.getEmail())
+                .gender(this.getGender())
+                .date_of_birth(this.getDate_of_birth())
+                .check_term(this.getCheck_term())
+                .check_sns(this.getCheck_sns())
                 .build();
     }
 

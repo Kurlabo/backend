@@ -104,9 +104,9 @@ public class MemberService {
                 .member_id(member.getId())
                 .build();
     }
-
+    
     @Transactional
-    public MessageResponseDto findPwChange(FindPwChangeDto findPwChangeDto) {
+    public MessageResponseDto setPassword(FindPwChangeDto findPwChangeDto) {
         Member member = memberRepository.findById(findPwChangeDto.getMember_id()).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + findPwChangeDto.getMember_id()));
 
@@ -117,14 +117,14 @@ public class MemberService {
         return MessageResponseDto.builder().message("SUCCESS").build();
     }
 
-    public MessageResponseDto checkPhone(CheckPhoneDto dto) {
+    public MessageResponseDto findByPhone(CheckPhoneDto dto) {
         if(!memberRepository.findByPhone(dto.getCheckPhone()).isPresent()){
             throw new DataNotFoundException("NOT EXISTED PHONE NUMBER");
         }
         return MessageResponseDto.builder().message("EXISTED PHONE NUMBER").build();
     }
 
-    public MessageResponseDto checkMemberInfo(Long id, CheckPwDto dto) {
+    public MessageResponseDto checkPassword(Long id, CheckPwDto dto) {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id)
         );

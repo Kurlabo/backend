@@ -65,14 +65,14 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public MessageResponseDto checkUid(CheckUidDto dto){
+    public MessageResponseDto findAllByUid(CheckUidDto dto){
         if(memberRepository.findAllByUid(dto.getCheckUid()).size() > 0){
             return MessageResponseDto.builder().message("EXISTED UID").build();
         }
         return MessageResponseDto.builder().message("NOT EXISTED UID").build();
     }
 
-    public MessageResponseDto checkEmail(CheckEmailDto dto) {
+    public MessageResponseDto findAllByEmail(CheckEmailDto dto) {
         if(memberRepository.findAllByEmail(dto.getCheckEmail()).size() > 0){
             MessageResponseDto.builder().message("EXISTED EMAIL").build();
         }

@@ -134,6 +134,6 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id)
         );
-        return member.toMemberDto(member);
+        return member.toMemberDto();
     }
 }

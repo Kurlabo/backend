@@ -83,8 +83,7 @@ public class FavoriteService {
         return getFavoriteList(token, pageable);
     }
 
-    public Favorite searchFavorite(Member member, Long product_id){
+    private Favorite searchFavorite(Member member, Long product_id){
         return favoriteRepository.findByMemberAndProductId(member, product_id);
     }
-
 }

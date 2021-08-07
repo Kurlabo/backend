@@ -2,13 +2,11 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
-import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
-import com.kurlabo.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +23,6 @@ import javax.validation.Valid;
 @RequestMapping(value="/api/goods")
 public class GoodsController {
 
-    private final MemberService memberService;
     private final CartService cartService;
     private final GoodsService goodsService;
 
@@ -41,8 +38,6 @@ public class GoodsController {
         goodsService.reviewHelpCount(review);
     }
 
-
-    //@AuthenticationPrincipal Member member
     // 장바구니 조회
     @GetMapping("/goods_cart")
     @PreAuthorize("authenticated")
@@ -50,7 +45,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.getCartList(token));
     }
 
-    //@AuthenticationPrincipal Member member,
     // 장바구니 상품 추가
     @PostMapping("/goods_cart")
     @PreAuthorize("authenticated")
@@ -58,7 +52,6 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.insertCart(token, dto));
     }
 
-    // @AuthenticationPrincipal Member member,
     // 장바구니 삭제
     @PostMapping("/goods_cart/delete")
     @PreAuthorize("authenticated")
@@ -66,20 +59,12 @@ public class GoodsController {
         return ResponseEntity.ok(cartService.deleteCart(token, dto.getProduct_id()));
     }
 
-    // @AuthenticationPrincipal Member member,
     // 장바구니 상품 개수 수정
     @PatchMapping("/goods_cart/{product_id}")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> updateCartCnt(@RequestHeader("Authorization") String token, @PathVariable Long product_id
             , @RequestBody @Valid UpdateCartCntRequestDto dto){
         return ResponseEntity.ok(cartService.updateCnt(token, product_id, dto));
-    }
-
-    // 장바구니 주문하기 버튼
-    @PostMapping("/goods_cart/orderSheet")
-    @PreAuthorize("authenticated")
-    public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
-        return ResponseEntity.ok(cartService.setOrdersSheet(token, dto));
     }
 
     // 상품 리스트

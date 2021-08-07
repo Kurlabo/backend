@@ -1,6 +1,6 @@
 package com.kurlabo.backend.repository;
 
-import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Board;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class BoardRepositoryTest {
     void findById(){
         Long boardId = 3L;
 
-        Board board = boardRepository.findById(boardId).orElseThrow(ResourceNotFoundException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new DataNotFoundException("해당 공지사항을 찾을 수 없습니다. Id = " + boardId));
 
         assertThat(board.getId()).isEqualTo(boardId);
         assertThat(board.getTitle()).isEqualTo("에코박스 도입에 따른 한시적 포장 방법 변경 공지(종료 시점 확정)");

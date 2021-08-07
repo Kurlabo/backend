@@ -1,15 +1,14 @@
 package com.kurlabo.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Order_Sheet_Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,13 +2,13 @@ package com.kurlabo.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -35,11 +35,8 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-//    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    private List<Order_Sheet_Products> order_sheet_products;
 
-//    public void addOrderSheetProducts(Order_Sheet_Products osp){
-//        order_sheet_products.add(osp);
-//        osp.setOrders(this);
-//    }
+    public void setStatus(String status){
+        this.status = status;
+    }
 }

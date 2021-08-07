@@ -1,6 +1,6 @@
 package com.kurlabo.backend.repository;
 
-import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,8 @@ class MemberRepositoryTest {
     void findById() {
         Long memberId = 1L;
 
-        Member member = memberRepository.findById(memberId).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         assertThat(member.getId()).isEqualTo(memberId);
         assertThat(member.getName()).isEqualTo("임정우1");
@@ -31,7 +32,8 @@ class MemberRepositoryTest {
     void findByUid() {
         String memberUid = "testid4";
 
-        Member member = memberRepository.findByUid(memberUid).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findByUid(memberUid).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. UID = " + memberUid));
 
         assertThat(member.getUid()).isEqualTo(memberUid);
         assertThat(member.getName()).isEqualTo("임정우4");
@@ -65,7 +67,8 @@ class MemberRepositoryTest {
         String memberName = "임정우1";
         String memberEmail = "limjw01@gmail.com";
 
-        Member member = memberRepository.findByNameAndEmail(memberName, memberEmail).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findByNameAndEmail(memberName, memberEmail).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
         assertThat(member.getName()).isEqualTo(memberName);
         assertThat(member.getEmail()).isEqualTo(memberEmail);
@@ -79,7 +82,8 @@ class MemberRepositoryTest {
         String memberUid = "testid4";
         String memberEmail = "limjw04@gmail.com";
 
-        Member member = memberRepository.findByNameAndUidAndEmail(memberName, memberUid, memberEmail).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findByNameAndUidAndEmail(memberName, memberUid, memberEmail).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
         assertThat(member.getName()).isEqualTo(memberName);
         assertThat(member.getUid()).isEqualTo(memberUid);
@@ -91,7 +95,8 @@ class MemberRepositoryTest {
     void findByPhone() {
         String memberPhone = "01033333333";
 
-        Member member = memberRepository.findByPhone(memberPhone).orElseThrow(ResourceNotFoundException::new);
+        Member member = memberRepository.findByPhone(memberPhone).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다."));
 
         assertThat(member.getPhone()).isEqualTo(memberPhone);
         assertThat(member.getName()).isEqualTo("임정우3");

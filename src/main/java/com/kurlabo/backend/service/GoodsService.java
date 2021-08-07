@@ -114,12 +114,19 @@ public class GoodsService {
 
     private List<String> combineGuides(String guideStr){
         StringBuilder sb = new StringBuilder(guideStr);
+        List<String> guideElements = new ArrayList<>();
+
+        System.out.println("guideStr : " + guideStr);
+
+        if(guideStr.equals("[]")){
+            return guideElements;
+        }
 
         sb.delete(0, 2);
         sb.delete(sb.length() - 2, sb.length());
 
         StringTokenizer st = new StringTokenizer(sb.toString(), "\",");
-        List<String> guideElements = new ArrayList<>();
+
 
         while(st.hasMoreTokens()){
             guideElements.add(st.nextToken());

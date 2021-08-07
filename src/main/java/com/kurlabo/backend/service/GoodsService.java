@@ -4,7 +4,7 @@ import com.kurlabo.backend.dto.goods.GoodsListResponseDto;
 import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.dto.goods.RelatedProductDtoProjection;
 import com.kurlabo.backend.dto.review.ReviewDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.repository.ProductRepository;
@@ -30,7 +30,7 @@ public class GoodsService {
     private final DynamicProductRepository dynamicProductRepository;
 
     public ProductDto goodDetail(Pageable pageable, Long id) {
-        Product product = productRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + id));
 
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
 
@@ -100,6 +100,10 @@ public class GoodsService {
         return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
     }
 
+    public void reviewHelpCount(Review review) {
+        review.increaseHelp();
+    }
+
     private int setCategoryMinValue(int category){
         return (category % 1000) * 10;
     }
@@ -110,21 +114,24 @@ public class GoodsService {
 
     private List<String> combineGuides(String guideStr){
         StringBuilder sb = new StringBuilder(guideStr);
+        List<String> guideElements = new ArrayList<>();
+
+        System.out.println("guideStr : " + guideStr);
+
+        if(guideStr.equals("[]")){
+            return guideElements;
+        }
 
         sb.delete(0, 2);
         sb.delete(sb.length() - 2, sb.length());
 
         StringTokenizer st = new StringTokenizer(sb.toString(), "\",");
-        List<String> guideElements = new ArrayList<>();
+
 
         while(st.hasMoreTokens()){
             guideElements.add(st.nextToken());
         }
 
         return guideElements;
-    }
-
-    public void reviewHelpCount(Review review) {
-        review.increaseHelp();
     }
 }

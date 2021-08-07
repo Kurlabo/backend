@@ -1,10 +1,9 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.TokenDto;
-import com.kurlabo.backend.dto.testdto.TestInfoDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
@@ -45,20 +44,15 @@ public class LoginService {
 
         return new TokenDto(jwt);
     }
-    private void checkMemberStatus(LoginDto loginDto) {
-        Member member = memberRepository
-                .findByUid(loginDto.getUid())
-                .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
-    }
-    public void logout(String token) {
+
+    public MessageResponseDto logout(String token) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(token, token, Duration.ofSeconds(tokenValidityInSeconds));
-        System.out.println("logout 성공");
+        return MessageResponseDto.builder().message("LOGOUT SUCCESS").build();
     }
-
-    public TestInfoDto testInfo(String token){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(ResourceNotFoundException::new);
-
-        return new TestInfoDto(token, member.getId(), member.getUid());
+    
+    private void checkMemberStatus(LoginDto loginDto) {
+        Member member = memberRepository.findByUid(loginDto.getUid())
+                .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
     }
 }

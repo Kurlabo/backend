@@ -1,11 +1,12 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.mypage.FavoriteProductDto;
-import com.kurlabo.backend.exception.ResourceNotFoundException;
+import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Favorite;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.FavoriteRepository;
+import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,17 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final ProductRepository productRepository;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
     public Page<FavoriteProductDto> getFavoriteList(String token, Pageable pageable){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
-        List<Favorite> favoList = favoriteRepository.findByMember(member);
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+        List<Favorite> favouriteList = favoriteRepository.findByMember(member);
         List<FavoriteProductDto> productList = new ArrayList<>();
-        for(Favorite list: favoList){
-            Product product = productRepository.findById(list.getProducts_id()).orElseThrow(ResourceNotFoundException::new);
+        for(Favorite list: favouriteList){
+            Product product = productRepository.findById(list.getProducts_id()).orElseThrow(() ->
+                    new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProducts_id()));
             FavoriteProductDto dto = new FavoriteProductDto(
                     product.getId(),
                     product.getList_image_url(),
@@ -45,13 +48,14 @@ public class FavoriteService {
         }
 
         int start = (int)pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), favoList.size());
-        return new PageImpl<>(productList.subList(start, end), pageable, favoList.size());
+        int end = Math.min((start + pageable.getPageSize()), favouriteList.size());
+        return new PageImpl<>(productList.subList(start, end), pageable, favouriteList.size());
     }
 
     @Transactional
     public Boolean insertFavorite(String token, Long product_id){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         boolean bool = false;
         if(searchFavorite(member, product_id) == null){
             Favorite favorite = new Favorite(null, product_id, member);
@@ -63,7 +67,8 @@ public class FavoriteService {
 
     @Transactional
     public Page<FavoriteProductDto> deleteFavorite(String token, List<Long> product_id, Pageable pageable){
-        Member member = memberService.findById(tokenProvider.parseTokenToGetMemberId(token));
+        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Favorite> deleteLists = new ArrayList<>();
         for (Long idList : product_id) {
             Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList);
@@ -78,8 +83,7 @@ public class FavoriteService {
         return getFavoriteList(token, pageable);
     }
 
-    public Favorite searchFavorite(Member member, Long product_id){
+    private Favorite searchFavorite(Member member, Long product_id){
         return favoriteRepository.findByMemberAndProductId(member, product_id);
     }
-
 }

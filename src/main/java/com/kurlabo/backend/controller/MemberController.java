@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @CrossOrigin
@@ -33,12 +31,12 @@ public class MemberController {
 
     @PostMapping(value = "/signup/checkuid")
     public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto dto) {
-        return ResponseEntity.ok(memberService.checkUid(dto));
+        return ResponseEntity.ok(memberService.findAllByUid(dto));
     }
 
     @PostMapping(value = "/signup/checkemail")
     public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto dto) {
-        return ResponseEntity.ok(memberService.checkEmail(dto));
+        return ResponseEntity.ok(memberService.findAllByEmail(dto));
     }
 
     @PostMapping("/login")
@@ -63,40 +61,35 @@ public class MemberController {
 
     @GetMapping("/logout")
     @PreAuthorize("authenticated")
-    public void logout(@RequestHeader("Authorization") String token){
-        loginService.logout(token);
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(loginService.logout(token));
     }
 
     @PostMapping("/find_id")
     public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto findIdDto) {
-        return ResponseEntity.ok(memberService.findId(findIdDto));
+        return ResponseEntity.ok(memberService.findByNameAndEmail(findIdDto));
     }
 
     @PostMapping("/find_pw")
     public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
-        return ResponseEntity.ok(memberService.findPw(findPwDto));
+        return ResponseEntity.ok(memberService.findByNameAndUidAndEmail(findPwDto));
     }
 
     @PostMapping("/find_pw_change")
     public ResponseEntity<?> findPwChange(@Valid @RequestBody FindPwChangeDto findPwChangeDto){
-        return ResponseEntity.ok(memberService.findPwChange(findPwChangeDto));
-    }
-
-    @GetMapping("/testgetuserinfo")
-    public ResponseEntity<?> userinfo(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(loginService.testInfo(token));
+        return ResponseEntity.ok(memberService.setPassword(findPwChangeDto));
     }
 
     @PostMapping(value = "/checkPhone")
     public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto dto) {
-        return ResponseEntity.ok(memberService.checkPhone(dto));
+        return ResponseEntity.ok(memberService.findByPhone(dto));
     }
 
     @PostMapping(value = "/myinfo")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> checkMemberInfo(@RequestHeader("Authorization") String token,
                                            @Valid @RequestBody CheckPwDto dto) {
-        return ResponseEntity.ok(memberService.checkMemberInfo(tokenProvider.parseTokenToGetMemberId(token), dto));
+        return ResponseEntity.ok(memberService.checkPassword(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 
     @GetMapping(value = "/myinfo")

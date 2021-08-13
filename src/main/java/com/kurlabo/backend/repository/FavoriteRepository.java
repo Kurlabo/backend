@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<Favorite> findByMember(Member member);
 
     @Query("select f from Favorite f where f.member = :member and f.products_id = :product_id")
-    Favorite findByMemberAndProductId(@Param("member") Member member, @Param("product_id") Long product_id);
+    Optional<Favorite> findByMemberAndProductId(@Param("member") Member member, @Param("product_id") Long product_id);
 
 }

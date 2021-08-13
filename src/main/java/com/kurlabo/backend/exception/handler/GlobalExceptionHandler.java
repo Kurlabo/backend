@@ -1,10 +1,7 @@
 package com.kurlabo.backend.exception.handler;
 
 import com.kurlabo.backend.dto.exception.ExceptionDto;
-import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.exception.InvalidCartCntException;
-import com.kurlabo.backend.exception.InvalidPasswordException;
-import com.kurlabo.backend.exception.InvalidTokenException;
+import com.kurlabo.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,7 +36,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionDto InvalidPasswordException(InvalidCartCntException e) {
+    public ExceptionDto InvalidPasswordException(InvalidPasswordException e) {
+        return ExceptionDto.builder()
+                .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(ExistDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDto ExistDataException(ExistDataException e) {
         return ExceptionDto.builder()
                 .message(e.getMessage())
                 .build();

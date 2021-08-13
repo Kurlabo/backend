@@ -129,37 +129,6 @@ public class OrderService {
                 .build();
     }
 
-    // 미리 결제준비였던 데이터들 결제 취소로 만듬.
-    @Transactional
-    void setOrderCancel(){
-        Orders readyOrder = ordersRepository.findByStatus("결제준비").orElseThrow(() ->
-                new DataNotFoundException("결제 준비중인 주문을 찾을 수 없습니다."));
-
-        readyOrder.setStatus("결제취소");
-
-        ordersRepository.save(readyOrder);
-    }
-
-    @Transactional
-    void setOrderSheetProducts(Orders readyOrder, SelectedProductInfoDto dto){
-        List<Order_Sheet_Products> orderSheetProductsList = new ArrayList<>();
-        for(CheckoutProductsDto list : dto.getCheckout_Products()){
-            orderSheetProductsList.add(Order_Sheet_Products.builder()
-                    .id(null)
-                    .product_id(list.getProduct_id())
-                    .product_name(list.getProduct_name())
-                    .product_price(list.getProduct_price())
-                    .discounted_price(list.getDiscount_price())
-                    .product_cnt(list.getProduct_cnt())
-                    .list_image_url(list.getList_image_url())
-                    .orders(readyOrder)
-                    .review_status(list.getReview_status())
-                    .build()
-            );
-        }
-        orderSheetProductsRepository.saveAll(orderSheetProductsList);
-    }
-
     public Page<OrderListResponseDto> getOrderList (String token, Pageable pageable) {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
@@ -206,5 +175,36 @@ public class OrderService {
                 .reciever_visit_method(order.getReciever_visit_method())
                 .arrived_alarm(order.getArrived_alarm())
                 .build();
+    }
+
+    // 미리 결제준비였던 데이터들 결제 취소로 만듬.
+    @Transactional
+    void setOrderCancel(){
+        Orders readyOrder = ordersRepository.findByStatus("결제준비").orElseThrow(() ->
+                new DataNotFoundException("결제 준비중인 주문을 찾을 수 없습니다."));
+
+        readyOrder.setStatus("결제취소");
+
+        ordersRepository.save(readyOrder);
+    }
+
+    @Transactional
+    void setOrderSheetProducts(Orders readyOrder, SelectedProductInfoDto dto){
+        List<Order_Sheet_Products> orderSheetProductsList = new ArrayList<>();
+        for(CheckoutProductsDto list : dto.getCheckout_Products()){
+            orderSheetProductsList.add(Order_Sheet_Products.builder()
+                    .id(null)
+                    .product_id(list.getProduct_id())
+                    .product_name(list.getProduct_name())
+                    .product_price(list.getProduct_price())
+                    .discounted_price(list.getDiscount_price())
+                    .product_cnt(list.getProduct_cnt())
+                    .list_image_url(list.getList_image_url())
+                    .orders(readyOrder)
+                    .review_status(list.getReview_status())
+                    .build()
+            );
+        }
+        orderSheetProductsRepository.saveAll(orderSheetProductsList);
     }
 }

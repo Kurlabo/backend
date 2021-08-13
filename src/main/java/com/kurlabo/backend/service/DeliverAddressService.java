@@ -18,26 +18,6 @@ public class DeliverAddressService {
     private final DeliverAddressRepository deliverAddressRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public Deliver_Address setDeliverAddress(Member member, String address, String detail_addr){
-        if(member == null){
-            return null;
-        }
-
-        Deliver_Address da = new Deliver_Address(
-                null,
-                address,
-                detail_addr,
-                1,
-                "",
-                "",
-                0,
-                member
-        );
-
-        return deliverAddressRepository.save(da);
-    }
-
     public Deliver_Address selectMainDeliverAddress(Member member){
         List<Deliver_Address> lists = deliverAddressRepository.findByMember(member);
         Deliver_Address da = null;

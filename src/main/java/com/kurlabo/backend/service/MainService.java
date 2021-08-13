@@ -30,7 +30,7 @@ public class MainService {
 
     public MainResponseDto getMainPage() {
         return MainResponseDto.builder()
-                .slide_img_list(getSlideImgs())
+                .slide_img_list(getSlideImages())
                 .instaSrcDto(getInstaSrc())
                 .setbyul_img(getSetbyulImg())
                 .howAbout(setHowAbout())
@@ -56,7 +56,7 @@ public class MainService {
         return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size(), member.getUid());
     }
 
-    private List<String> getSlideImgs(){
+    private List<String> getSlideImages(){
         return slideImgRepository.findAllUrl();
     }
 

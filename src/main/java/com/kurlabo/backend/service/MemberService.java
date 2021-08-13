@@ -7,6 +7,7 @@ import com.kurlabo.backend.exception.InvalidPasswordException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.MemberRole;
+import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DeliverAddressService deliverAddressService;
+    private final DeliverAddressRepository deliverAddressRepository;
 
     @Transactional
     public MessageResponseDto signUp(MemberDto dto){
@@ -38,9 +39,19 @@ public class MemberService {
                 .role(MemberRole.MEMBER)
                 .build();
 
-        memberRepository.save(member);
+        Deliver_Address deliver_address = Deliver_Address.builder()
+                .id(null)
+                .deliver_address(dto.getAddress())
+                .deliver_detail_address(dto.getDetail_address())
+                .is_main(1)
+                .reciever("")
+                .reciever_phone("")
+                .checked(0)
+                .member(member)
+                .build();
 
-        Deliver_Address da = deliverAddressService.setDeliverAddress(member, dto.getAddress(), dto.getDetail_address());
+        memberRepository.save(member);
+        deliverAddressRepository.save(deliver_address);
 
         return MessageResponseDto.builder().message("SIGNUP SUCCESS").build();
     }

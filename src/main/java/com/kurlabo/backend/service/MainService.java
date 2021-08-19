@@ -25,7 +25,7 @@ public class MainService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
-    private final DeliverAddressService deliverAddressService;
+    private final DeliverAddressRepository deliverAddressRepository;
     private final TokenProvider tokenProvider;
 
     public MainResponseDto getMainPage() {
@@ -52,8 +52,9 @@ public class MainService {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Cart> cartList = cartRepository.findByMember(member);
-        Deliver_Address da = deliverAddressService.selectMainDeliverAddress(member);
-        return new HeaderDto(member.getGrade(), member.getName(), da.getDeliver_address(), cartList.size(), member.getUid());
+        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+                new DataNotFoundException("해당 주소를 찾을 수 없습니다."));
+        return new HeaderDto(member.getGrade(), member.getName(), deliverAddress.getDeliver_address(), cartList.size(), member.getUid());
     }
 
     private List<String> getSlideImages(){

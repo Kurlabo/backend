@@ -46,7 +46,7 @@ public class MemberService {
                 .is_main(1)
                 .reciever("")
                 .reciever_phone("")
-                .checked(0)
+                .checked(1)
                 .member(member)
                 .build();
 

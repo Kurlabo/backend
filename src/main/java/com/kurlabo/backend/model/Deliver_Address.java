@@ -34,13 +34,11 @@ public class Deliver_Address {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public int updateIsMain () {
+    public void resetIsMain() {
         this.is_main = 0;
-        return this.is_main;
     }
 
-    public int updateChecked () {
+    public void resetChecked() {
         this.checked = 0;
-        return this.checked;
     }
 }

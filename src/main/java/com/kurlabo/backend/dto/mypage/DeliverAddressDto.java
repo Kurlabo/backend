@@ -6,17 +6,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class DeliverAddressDto {
+
     private Long id;
+
+    @NotNull
     private String deliver_address;
+
+    @NotNull
     private String deliver_detail_address;
+
+    @NotNull
     private int is_main;
+
     private String reciever;
+
     private String reciever_phone;
+
     private int checked;
 
     @QueryProjection

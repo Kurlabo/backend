@@ -31,10 +31,9 @@ public class GoodsService {
 
     public ProductDto goodDetail(Pageable pageable, Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + id));
-
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
-
         List<ReviewDto> reviewList = new ArrayList<>();
+
         for(Review review: reviews){
             ReviewDto dto = ReviewDto.builder()
                     .review_id(review.getReview_id())
@@ -80,32 +79,28 @@ public class GoodsService {
     }
 
     public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
-        List<GoodsListResponseDto> responseDtos;
+        List<GoodsListResponseDto> responseDtoList;
 
         if(category >= 0 && category <= 166){
-            responseDtos = dynamicProductRepository.findBySmallCategory(category);
+            responseDtoList = dynamicProductRepository.findBySmallCategory(category);
         } else if (category == 200 || category == 300) {
-            responseDtos = dynamicProductRepository.findCntProducts(90);
-            Collections.shuffle(responseDtos);
+            responseDtoList = dynamicProductRepository.findCntProducts(90);
+            Collections.shuffle(responseDtoList);
         } else if (category == 400) {
-            responseDtos = dynamicProductRepository.findDiscountPercentOverZero(80);
+            responseDtoList = dynamicProductRepository.findDiscountPercentOverZero(80);
         } else if (category >= 1001 && category <= 1016){
-            responseDtos = dynamicProductRepository.findByBigCategory(setCategoryMinValue(category));
+            responseDtoList = dynamicProductRepository.findByBigCategory((category % 1000) * 10);
         } else {
-            return null;
+            throw new DataNotFoundException("카테고리를 잘못 입력하였습니다.");
         }
 
         int start = (int)pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), responseDtos.size());
-        return new PageImpl<>(responseDtos.subList(start, end), pageable, responseDtos.size());
+        int end = Math.min((start + pageable.getPageSize()), responseDtoList.size());
+        return new PageImpl<>(responseDtoList.subList(start, end), pageable, responseDtoList.size());
     }
 
     public void reviewHelpCount(Review review) {
         review.increaseHelp();
-    }
-
-    private int setCategoryMinValue(int category){
-        return (category % 1000) * 10;
     }
 
     private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){
@@ -115,8 +110,6 @@ public class GoodsService {
     private List<String> combineGuides(String guideStr){
         StringBuilder sb = new StringBuilder(guideStr);
         List<String> guideElements = new ArrayList<>();
-
-        System.out.println("guideStr : " + guideStr);
 
         if(guideStr.equals("[]")){
             return guideElements;

@@ -1,6 +1,7 @@
 package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
+import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
@@ -117,7 +118,7 @@ public class MypageController {
     @PostMapping("/destination/list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> createAddress(@RequestHeader("Authorization") String token,
-                                           @RequestBody @Valid Deliver_Address deliverAddress) {
+                                           @RequestBody @Valid DeliverAddressDto deliverAddress) {
         deliverAddressService.creatAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

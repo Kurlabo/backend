@@ -1,14 +1,17 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.MemberRepository;
+import com.kurlabo.backend.repository.dynamic.DynamicDeliverAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,86 +19,49 @@ import java.util.List;
 public class DeliverAddressService {
 
     private final DeliverAddressRepository deliverAddressRepository;
+    private final DynamicDeliverAddressRepository dynamicDeliverAddressRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public Deliver_Address setDeliverAddress(Member member, String address, String detail_addr){
-        if(member == null){
-            return null;
-        }
-
-        Deliver_Address da = new Deliver_Address(
-                null,
-                address,
-                detail_addr,
-                1,
-                "",
-                "",
-                0,
-                member
-        );
-
-        return deliverAddressRepository.save(da);
-    }
-
-    public Deliver_Address selectMainDeliverAddress(Member member){
-        List<Deliver_Address> lists = deliverAddressRepository.findByMember(member);
-        Deliver_Address da = null;
-        for(Deliver_Address list : lists){
-            if(list.getIs_main() == 1)
-                da = list;
-        }
-        if(da == null){
-            da = new Deliver_Address();
-            da.setDeliver_address("등록된 주소가 없습니다");
-        }
-        return da;
-    }
-
-    // 기본 배송지, 선택 배송지 체크
-    public void checkIsMain (Deliver_Address deliverAddress) {
-        List<Deliver_Address> isMainChk = deliverAddressRepository.findByMember(deliverAddress.getMember());
-        for (Deliver_Address mainChk : isMainChk) {
-            if (mainChk.getIs_main() == 1) {
-                mainChk.setIs_main(deliverAddress.updateIsMain());
-            }
-
-            if (mainChk.getChecked() == 1) {
-                mainChk.setChecked(deliverAddress.updateChecked());
-            }
-        } // end for
-    }
-
+    // DeliverAddressDto로 바꿔야함
     public List<Deliver_Address> getAllAddress (Long id){
-        Member member = memberRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Member is not existed.")
-        );
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
 
-        if (deliverAddressRepository.findByMember(member).isEmpty()) {
-            return null;
-        }
-        return deliverAddressRepository.findByMember(member);
+        return deliverAddressRepository.findByMember(member).isEmpty() ? null : deliverAddressRepository.findByMember(member);
     }
 
+    // 수정완료 테스트 필요
     @Transactional
-    public void creatAddress(Long id, Deliver_Address deliverAddress) {
-        Member member = memberRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Member is not existed.")
-        );
+    public void creatAddress(Long id, DeliverAddressDto deliverAddressDto) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
 
-        Deliver_Address newAddress = new Deliver_Address();
+        List<Deliver_Address> updateDA = new ArrayList<>();
 
-        checkIsMain(deliverAddress);
+        if(deliverAddressDto.getIs_main() == 1){
+            Deliver_Address curMainAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElse(null);
+            if(curMainAddress != null){
+                curMainAddress.resetIsMain();
+                updateDA.add(curMainAddress);
+            }
+        }
 
-        newAddress.setIs_main(1);
-        newAddress.setChecked(1);
-        newAddress.setDeliver_address(deliverAddress.getDeliver_address());
-        newAddress.setDeliver_detail_address(deliverAddress.getDeliver_detail_address());
-        newAddress.setReciever(deliverAddress.getReciever());
-        newAddress.setReciever_phone(deliverAddress.getReciever_phone());
-        newAddress.setMember(member);
+        Deliver_Address curCheckedAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
+                new DataNotFoundException("해당 주소가 존재하지 않습니다."));
+        curCheckedAddress.resetChecked();
+        updateDA.add(curCheckedAddress);
 
-        deliverAddressRepository.save(newAddress);
+        Deliver_Address newAddress = Deliver_Address.builder()
+                .id(null)
+                .deliver_address(deliverAddressDto.getDeliver_address())
+                .deliver_detail_address(deliverAddressDto.getDeliver_detail_address())
+                .is_main(deliverAddressDto.getIs_main())
+                .reciever("")
+                .reciever_phone("")
+                .checked(1)
+                .member(member)
+                .build();
+        updateDA.add(newAddress);
+
+        deliverAddressRepository.saveAll(updateDA);
     }
 
     @Transactional
@@ -137,7 +103,7 @@ public class DeliverAddressService {
         );
 
         List<Deliver_Address> daList = deliverAddressRepository.findByMember(member);
-        String msg = "";
+        String msg;
 
         if (daList.size() <= 1) { // 저장된 주소지가 하나 이하면 삭제할 수 없음
             msg = "failed";

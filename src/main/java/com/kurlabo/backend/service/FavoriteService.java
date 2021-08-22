@@ -2,6 +2,7 @@ package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.mypage.FavoriteProductDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.ExistDataException;
 import com.kurlabo.backend.model.Favorite;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
@@ -53,16 +54,25 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Boolean insertFavorite(String token, Long product_id){
+    public String insertFavorite(String token, Long product_id){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        boolean bool = false;
-        if(searchFavorite(member, product_id) == null){
-            Favorite favorite = new Favorite(null, product_id, member);
-            favoriteRepository.save(favorite);
-            bool = true;
+        Favorite insertFavorite = favoriteRepository.findByMemberAndProductId(member, product_id)
+                .orElse(null);
+
+        if(insertFavorite != null){
+            throw new ExistDataException("이미 늘 사는 것 리스트에 상품이 존재합니다.");
         }
-        return bool;
+
+        insertFavorite = Favorite.builder()
+                .id(null)
+                .products_id(product_id)
+                .member(member)
+                .build();
+
+        favoriteRepository.save(insertFavorite);
+
+        return "SUCCESS";
     }
 
     @Transactional
@@ -71,19 +81,12 @@ public class FavoriteService {
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Favorite> deleteLists = new ArrayList<>();
         for (Long idList : product_id) {
-            Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList);
-            if (deleteFavorite == null) {// 만약 들어온 product_id가 Favorite에 없다면 null 리턴 => 나중에 다른 예외처리로 바꿔야함
-                return null;
-            }
+            Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList).orElseThrow(() ->
+                    new DataNotFoundException("해당 상품을 찾을수 없습니다."));
             deleteLists.add(deleteFavorite);
         }
-        // member나 product_id가 맞지 않아 null값이 list에 저장되어 delete 불가 상태에서 오류가 발생하여 예외처리 해야 함.
         favoriteRepository.deleteAll(deleteLists);
 
         return getFavoriteList(token, pageable);
-    }
-
-    private Favorite searchFavorite(Member member, Long product_id){
-        return favoriteRepository.findByMemberAndProductId(member, product_id);
     }
 }

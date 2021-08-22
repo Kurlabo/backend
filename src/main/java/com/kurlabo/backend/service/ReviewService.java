@@ -23,7 +23,6 @@ public class ReviewService {
     private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
-    private final MemberService memberService;
     private final TokenProvider tokenProvider;
 
     // 리뷰 작성 조건 체크
@@ -45,11 +44,7 @@ public class ReviewService {
             return false;
         }
 
-        if (!reviews.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return reviews.isEmpty();
     }
 
     public List<ReviewListDto> reviewList(String token, int stat) {

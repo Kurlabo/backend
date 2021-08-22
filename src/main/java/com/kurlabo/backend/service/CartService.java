@@ -4,9 +4,11 @@ import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.cart.*;
 import com.kurlabo.backend.exception.DataNotFoundException;
 import com.kurlabo.backend.model.Cart;
+import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.CartRepository;
+import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
@@ -23,15 +25,17 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
-    private final DeliverAddressService deliverAddressService;
+    private final DeliverAddressRepository deliverAddressRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
     public GetCartResponseDto getCartList(String token){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        List<CartProductDto> dtoLists = new ArrayList<>();
+        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+                new DataNotFoundException("해당 주소를 찾을 수 없습니다."));
         List<Cart> cartList = cartRepository.findByMember(member);
+        List<CartProductDto> dtoLists = new ArrayList<>();
 
         for(Cart list : cartList){
             Product product = productRepository.findById(list.getProduct_id()).orElseThrow(() ->
@@ -42,7 +46,7 @@ public class CartService {
 
         return GetCartResponseDto.builder()
                 .cartProductDto(dtoLists)
-                .address(deliverAddressService.selectMainDeliverAddress(member).getDeliver_address())
+                .address(deliverAddress.getDeliver_address())
                 .build();
     }
 

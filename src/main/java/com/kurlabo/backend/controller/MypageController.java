@@ -136,8 +136,8 @@ public class MypageController {
     @DeleteMapping("/destination/list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> deleteAddress(@RequestHeader("Authorization") String token,
-                                           @RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.deleteDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
+                                           @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
+        deliverAddressService.deleteDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         // return ResponseEntity.ok(deliverAddressService.deleteDeliverAddress(deliverAddress));
     }

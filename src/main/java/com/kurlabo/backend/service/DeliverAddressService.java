@@ -22,14 +22,14 @@ public class DeliverAddressService {
     private final DynamicDeliverAddressRepository dynamicDeliverAddressRepository;
     private final MemberRepository memberRepository;
 
-    public List<DeliverAddressDto> getAllAddress (Long id){
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+    public List<DeliverAddressDto> getAllAddress (Long memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         return dynamicDeliverAddressRepository.findByMember(member).isEmpty() ? null : dynamicDeliverAddressRepository.findByMember(member);
     }
 
     @Transactional
-    public void creatAddress(Long id, DeliverAddressDto deliverAddressDto) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+    public void creatAddress(Long memberId, DeliverAddressDto deliverAddressDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         List<Deliver_Address> updateDA = new ArrayList<>();
 
@@ -62,8 +62,8 @@ public class DeliverAddressService {
     }
 
     @Transactional
-    public void updateDeliverAddress (Long id, DeliverAddressDto deliverAddressDto){
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+    public void updateDeliverAddress (Long memberId, DeliverAddressDto deliverAddressDto){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         Deliver_Address deliverAddress = deliverAddressRepository.findById(deliverAddressDto.getId()).orElseThrow(
                 () -> new DataNotFoundException("해당 ID의 주소를 찾을 수 없습니다. Id = " + deliverAddressDto.getId())
@@ -88,8 +88,8 @@ public class DeliverAddressService {
     }
 
     @Transactional
-    public void deleteDeliverAddress(Long id, Long deliverAddressId) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+    public void deleteDeliverAddress(Long memberId, Long deliverAddressId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         Deliver_Address deleteDeliverAddress = deliverAddressRepository.findByIdAndMember(deliverAddressId, member).orElseThrow(
                 () -> new DataNotFoundException("해당 ID의 주소를 찾을 수 없습니다. Id = " + deliverAddressId)
         );
@@ -104,8 +104,8 @@ public class DeliverAddressService {
     }
 
     @Transactional
-    public void checkAddress(Long id, Long deliverAddressId) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + id));
+    public void checkAddress(Long memberId, Long deliverAddressId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         Deliver_Address curCheckDeliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(
                 () -> new DataNotFoundException("현재 선택된 주소가 없습니다.")
         );

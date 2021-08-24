@@ -32,12 +32,13 @@ public class DeliverAddressDto {
     private int checked;
 
     @QueryProjection
-    public DeliverAddressDto(Long id, String deliver_address, String deliver_detail_address, int is_main, String reciever, String reciever_phone){
+    public DeliverAddressDto(Long id, String deliver_address, String deliver_detail_address, int is_main, String reciever, String reciever_phone, int checked){
         this.id = id;
         this.deliver_address = deliver_address;
         this.deliver_detail_address = deliver_detail_address;
         this.is_main = is_main;
         this.reciever = reciever;
         this.reciever_phone = reciever_phone;
+        this.checked = checked;
     }
 }

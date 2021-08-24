@@ -79,26 +79,25 @@ public class MypageController {
                 .body(new QnaTestDto(dummyStr, dummyLong, "noah@fastcampus.com", "010-4321-5678"));
     }
 
+    // 작성가능 후기 리스트
     @GetMapping("/writable-reviews")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> writableReviewList(@RequestHeader("Authorization") String token){
-        // 작성가능 후기 리스트
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 0));
     }
 
+    // 작성완료 후기 리스트
     @GetMapping("/written-reviews")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> writtenReviewList(@RequestHeader("Authorization") String token){
-        // 작성완료 후기 리스트
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 1));
     }
 
+    // 후기 작성
     @PostMapping("/mypage_review/{pId}")
     @PreAuthorize("authenticated")
     public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
-        // 후기 작성
         reviewService.create(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

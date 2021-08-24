@@ -84,7 +84,7 @@ public class OrderService {
                 .member(member)
                 .build());
 
-        // 3. 요청받은 장바구니의 상품 개수만큼 dto를 for문으로 돌려 orderSheetProduct를 저장함
+        // 3. 요청받은 장바구니의 상품 개수만큼 dto 를 for 문으로 돌려 orderSheetProduct 를 저장함
         setOrderSheetProducts(readyOrder, dto);
 
         return MessageResponseDto.builder().message("SUCCESS").build();

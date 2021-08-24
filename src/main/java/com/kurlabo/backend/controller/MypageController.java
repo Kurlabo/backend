@@ -5,7 +5,6 @@ import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.testdto.QnaTestDto;
-import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.*;
 import lombok.RequiredArgsConstructor;
@@ -139,14 +138,14 @@ public class MypageController {
                                            @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
         deliverAddressService.deleteDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        // return ResponseEntity.ok(deliverAddressService.deleteDeliverAddress(deliverAddress));
     }
 
+    // 배송지 체크
     @PatchMapping("/destination/list")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> updateChkAddress(@RequestHeader("Authorization") String token,
-                                           @RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.updateChkAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
+    public ResponseEntity<?> checkAddress(@RequestHeader("Authorization") String token,
+                                          @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
+        deliverAddressService.checkAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

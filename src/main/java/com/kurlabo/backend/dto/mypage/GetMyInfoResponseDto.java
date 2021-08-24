@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GetMyInfoReponseDto {
+public class GetMyInfoResponseDto {
     @NotNull @NotEmpty
     private String uid;
 }

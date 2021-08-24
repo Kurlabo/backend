@@ -118,8 +118,8 @@ public class MypageController {
     @PostMapping("/destination/list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> createAddress(@RequestHeader("Authorization") String token,
-                                           @RequestBody @Valid DeliverAddressDto deliverAddress) {
-        deliverAddressService.creatAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
+                                           @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
+        deliverAddressService.creatAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -127,8 +127,8 @@ public class MypageController {
     @PutMapping("/destination/list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> updateAddress(@RequestHeader("Authorization") String token,
-                                           @RequestBody @Valid Deliver_Address deliverAddress) {
-        deliverAddressService.updateDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddress);
+                                           @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
+        deliverAddressService.updateDeliverAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

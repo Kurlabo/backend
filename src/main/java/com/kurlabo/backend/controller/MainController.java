@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class MainController {
 
     private final MainService mainService;
+    private final TokenProvider tokenProvider;
 
     // 메인 페이지
     @GetMapping("/main")
@@ -30,6 +32,6 @@ public class MainController {
     @GetMapping("/header")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> header(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(mainService.setHeader(token));
+        return ResponseEntity.ok(mainService.setHeader(tokenProvider.parseTokenToGetMemberId(token)));
     }
 }

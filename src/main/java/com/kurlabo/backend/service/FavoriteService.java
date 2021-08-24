@@ -35,13 +35,13 @@ public class FavoriteService {
         for(Favorite list: favouriteList){
             Product product = productRepository.findById(list.getProducts_id()).orElseThrow(() ->
                     new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProducts_id()));
-            FavoriteProductDto dto = new FavoriteProductDto(
-                    product.getId(),
-                    product.getList_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price()
-            );
+            FavoriteProductDto dto = FavoriteProductDto.builder()
+                    .product_id(product.getId())
+                    .list_image_url(product.getList_image_url())
+                    .name(product.getName())
+                    .original_price(product.getOriginal_price())
+                    .discounted_price(product.getDiscounted_price())
+                    .build();
 
             productList.add(dto);
         }

@@ -29,8 +29,8 @@ public class GoodsService {
     private final ReviewRepository reviewRepository;
     private final DynamicProductRepository dynamicProductRepository;
 
-    public ProductDto goodDetail(Pageable pageable, Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + id));
+    public ProductDto goodDetail(Pageable pageable, Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
         List<ReviewDto> reviewList = new ArrayList<>();
 

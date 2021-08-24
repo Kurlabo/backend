@@ -110,7 +110,7 @@ public class MypageController {
     // 배송지 리스트
     @GetMapping("/destination/list")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> getAllAddress(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getAddressList(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(deliverAddressService.getAllAddress(tokenProvider.parseTokenToGetMemberId(token)));
     }
 

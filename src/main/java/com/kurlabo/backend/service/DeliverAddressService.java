@@ -96,7 +96,9 @@ public class DeliverAddressService {
         Deliver_Address mainDeliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(
                 () -> new DataNotFoundException("메인 주소를 찾을 수 없습니다.")
         );
+        
         mainDeliverAddress.setChecked(1);
+
         deliverAddressRepository.save(mainDeliverAddress);
         deliverAddressRepository.delete(deleteDeliverAddress);
     }

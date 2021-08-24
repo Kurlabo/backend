@@ -97,7 +97,7 @@ public class MypageController {
     @PostMapping("/mypage_review/{pId}")
     @PreAuthorize("authenticated")
     public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
-        reviewService.create(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);
+        reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

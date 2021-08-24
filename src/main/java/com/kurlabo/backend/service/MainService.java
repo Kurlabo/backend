@@ -52,7 +52,7 @@ public class MainService {
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
         List<Cart> cartList = cartRepository.findByMember(member);
-        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 주소를 찾을 수 없습니다."));
         return new HeaderDto(member.getGrade(), member.getName(), deliverAddress.getDeliver_address(), cartList.size(), member.getUid());
     }

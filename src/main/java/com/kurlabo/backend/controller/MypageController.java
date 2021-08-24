@@ -60,8 +60,8 @@ public class MypageController {
 
     // 주문 상세 페이지
     @GetMapping("/mypage_orderview")
-    public ResponseEntity<?> orderView(@RequestParam Long ordno) {
-        return ResponseEntity.ok(orderService.getOrderView(ordno));
+    public ResponseEntity<?> orderView(@RequestParam Long orderNo) {
+        return ResponseEntity.ok(orderService.getOrderView(orderNo));
     }
 
     @GetMapping("/mypage_qna")
@@ -81,14 +81,14 @@ public class MypageController {
 
     @GetMapping("/writable-reviews")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> writableReviews(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> writableReviewList(@RequestHeader("Authorization") String token){
         // 작성가능 후기 리스트
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 0));
     }
 
     @GetMapping("/written-reviews")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> writtenReviews(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> writtenReviewList(@RequestHeader("Authorization") String token){
         // 작성완료 후기 리스트
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 1));
     }

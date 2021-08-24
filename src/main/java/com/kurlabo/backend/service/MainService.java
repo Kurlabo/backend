@@ -9,7 +9,6 @@ import com.kurlabo.backend.model.Cart;
 import com.kurlabo.backend.model.Deliver_Address;
 import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.*;
-import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,6 @@ public class MainService {
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final DeliverAddressRepository deliverAddressRepository;
-    private final TokenProvider tokenProvider;
 
     public MainResponseDto getMainPage() {
         return MainResponseDto.builder()
@@ -48,9 +46,8 @@ public class MainService {
         return productRepository.findRandProductCategoryRange(categoryRange[0], categoryRange[1]);
     }
 
-    public HeaderDto setHeader(String token) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public HeaderDto setHeader(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         List<Cart> cartList = cartRepository.findByMember(member);
         Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 주소를 찾을 수 없습니다."));

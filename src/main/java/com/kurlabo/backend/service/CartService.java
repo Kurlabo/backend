@@ -32,7 +32,7 @@ public class CartService {
     public GetCartResponseDto getCartList(String token){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 주소를 찾을 수 없습니다."));
         List<Cart> cartList = cartRepository.findByMember(member);
         List<CartProductDto> dtoLists = new ArrayList<>();

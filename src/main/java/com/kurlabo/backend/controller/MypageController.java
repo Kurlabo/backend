@@ -4,7 +4,7 @@ import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
 import com.kurlabo.backend.dto.review.ReviewDto;
-import com.kurlabo.backend.dto.testdto.QnaTestDto;
+import com.kurlabo.backend.dto.mypage.QnaTestDto;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.*;
 import lombok.RequiredArgsConstructor;

@@ -39,7 +39,7 @@ public class OrderService {
     public OrderSheetResponseDto getOrderSheet(String token){
         Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
                 new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        Deliver_Address da = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+        Deliver_Address da = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 회원의 배송지를 찾을 수 없습니다."));
         Orders readyOrder = ordersRepository.findByStatus("결제준비").orElseThrow(() ->
                 new DataNotFoundException("결제 준비중인 주문을 찾을 수 없습니다."));

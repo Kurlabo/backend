@@ -41,4 +41,11 @@ public class Deliver_Address {
     public void resetChecked() {
         this.checked = 0;
     }
+
+    public void updateAddress(String deliver_detail_address, String reciever, String reciever_phone, int is_main) {
+        this.deliver_detail_address = deliver_detail_address;
+        this.reciever = reciever;
+        this.reciever_phone = reciever_phone;
+        this.is_main = is_main;
+    }
 }

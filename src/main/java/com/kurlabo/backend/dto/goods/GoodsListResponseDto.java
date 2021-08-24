@@ -1,7 +1,6 @@
 package com.kurlabo.backend.dto.goods;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

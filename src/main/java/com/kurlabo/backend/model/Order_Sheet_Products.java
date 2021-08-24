@@ -26,7 +26,7 @@ public class Order_Sheet_Products {
 
     private int review_status;
 
-    public void review_status() {
+    public void updateReviewStatus() {
         this.review_status = 1;
     }
 }

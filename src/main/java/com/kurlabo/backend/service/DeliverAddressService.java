@@ -54,8 +54,8 @@ public class DeliverAddressService {
                 .deliver_address(deliverAddressDto.getDeliver_address())
                 .deliver_detail_address(deliverAddressDto.getDeliver_detail_address())
                 .is_main(deliverAddressDto.getIs_main())
-                .reciever("")
-                .reciever_phone("")
+                .reciever(null)
+                .reciever_phone(null)
                 .checked(1)
                 .member(member)
                 .build();

@@ -14,7 +14,6 @@ public class DeliverAddressDto {
 
     private Long id;
 
-    @NotNull
     private String deliver_address;
 
     @NotNull

@@ -75,7 +75,7 @@ public class ReviewService {
 
     // 리뷰작성
     @Transactional
-    public void create(Long memberId, Long product_id, ReviewDto review) {
+    public void createReview(Long memberId, Long product_id, ReviewDto review) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
 

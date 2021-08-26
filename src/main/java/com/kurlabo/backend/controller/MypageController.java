@@ -1,5 +1,6 @@
 package com.kurlabo.backend.controller;
 
+import com.kurlabo.backend.dto.enums.ReviewStatus;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
@@ -64,7 +65,7 @@ public class MypageController {
         return ResponseEntity.ok(orderService.getOrderView(orderNo));
     }
 
-    @GetMapping("/mypage_qna")
+    @GetMapping("/mypageQna")
     public ResponseEntity<?> qnaTest(){
         String[] dummyStr = {
             "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
@@ -80,21 +81,21 @@ public class MypageController {
     }
 
     // 작성가능 후기 리스트
-    @GetMapping("/writable-reviews")
+    @GetMapping("/mypageReview/viewBeforeList")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> writableReviewList(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 0));
+        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITABLE));
     }
 
     // 작성완료 후기 리스트
-    @GetMapping("/written-reviews")
+    @GetMapping("/mypageReview/viewAfterList")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> writtenReviewList(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), 1));
+        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITTEN));
     }
 
     // 후기 작성
-    @PostMapping("/mypage_review/{pId}")
+    @PostMapping("/mypageReview/{pId}")
     @PreAuthorize("authenticated")
     public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);

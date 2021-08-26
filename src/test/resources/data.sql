@@ -395,3 +395,38 @@ values (
 insert into cart (cart_id, cnt, product_id, member_id) values (1, 5, 9, 3);
 insert into cart (cart_id, cnt, product_id, member_id) values (2, 2, 3, 1);
 insert into cart (cart_id, cnt, product_id, member_id) values (3, 5, 15, 1);
+
+-- Deliver_Address
+insert into deliver_address(deliver_address_id, deliver_address, deliver_detail_address, is_main, reciever, reciever_phone, checked, member_id)
+values (
+           1,
+           '서울시 강동구 명일동 11',
+           '115-1304',
+           1,
+           '',
+           '',
+           0,
+           1
+       );
+insert into deliver_address(deliver_address_id, deliver_address, deliver_detail_address, is_main, reciever, reciever_phone, checked, member_id)
+values (
+           2,
+           '서울시 강동구 길동 12',
+           '',
+           0,
+           '임꺽정',
+           '01044448888',
+           0,
+           1
+       );
+insert into deliver_address(deliver_address_id, deliver_address, deliver_detail_address, is_main, reciever, reciever_phone, checked, member_id)
+values (
+           3,
+           '서울시 강동구 고덕동 392',
+           '101-302',
+           0,
+           '임노아',
+           '01082825959',
+           1,
+           1
+       );

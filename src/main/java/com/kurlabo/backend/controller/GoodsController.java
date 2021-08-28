@@ -3,7 +3,6 @@ package com.kurlabo.backend.controller;
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
-import com.kurlabo.backend.dto.goods.ProductDto;
 import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.CartService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
@@ -29,17 +27,17 @@ public class GoodsController {
     private final TokenProvider tokenProvider;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getGoods(@PathVariable(name = "id") Long productId) {
+    public ResponseEntity<?> getGoods(@PathVariable(name = "id") Long productId) {
         return ResponseEntity.ok(goodsService.getGoods(productId));
     }
 
     @GetMapping("/{id}/goods_detail")
-    public ResponseEntity<ProductDto> getGoodsDetail(@PathVariable(name = "id") Long productId) {
+    public ResponseEntity<?> getGoodsDetail(@PathVariable(name = "id") Long productId) {
         return ResponseEntity.ok(goodsService.getGoodsDetail(productId));
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<ProductDto> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
+    public ResponseEntity<?> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
                                                      @PathVariable(name = "id") Long productId) {
         return ResponseEntity.ok(goodsService.getGoodsReview(pageable, productId));
     }

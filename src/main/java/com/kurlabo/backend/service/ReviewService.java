@@ -35,7 +35,7 @@ public class ReviewService {
         for (Orders order : orderList) {
             List<Order_Sheet_Products> orderedProductsList = orderSheetProductsRepository.findAllByOrders(order);
 
-            // 주문번호별 상품들 리뷰 작성했는지 검사
+            // 주문상품들별 리뷰 작성했는지 검사
             for (Order_Sheet_Products orderedProduct : orderedProductsList) {
                 // 주문상품 불러오기
                 Product products = productRepository.findById(orderedProduct.getProduct_id()).orElseThrow(() ->
@@ -70,8 +70,17 @@ public class ReviewService {
                 }
             }
         }
-
         return reviewList;
+    }
+
+    public List<ReviewListDto> reviewBeforeList(Long memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+
+        return null;
+    }
+
+    public List<ReviewListDto> reviewAfterList(Long memberId){
+        return null;
     }
 
     // 리뷰작성

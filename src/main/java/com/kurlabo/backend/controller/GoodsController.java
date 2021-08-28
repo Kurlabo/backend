@@ -29,10 +29,19 @@ public class GoodsController {
     private final TokenProvider tokenProvider;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> goodDetail(@PageableDefault(size = 7) Pageable pageable,
-                                                 @PathVariable(name = "id") Long id) {
+    public ResponseEntity<ProductDto> getGoods(@PathVariable(name = "id") Long productId) {
+        return ResponseEntity.ok(goodsService.getGoods(productId));
+    }
 
-        return ResponseEntity.ok(goodsService.goodDetail(pageable, id));
+    @GetMapping("/{id}/goods_detail")
+    public ResponseEntity<ProductDto> getGoodsDetail(@PathVariable(name = "id") Long productId) {
+        return ResponseEntity.ok(goodsService.getGoodsDetail(productId));
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<ProductDto> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
+                                                     @PathVariable(name = "id") Long productId) {
+        return ResponseEntity.ok(goodsService.getGoodsReview(pageable, productId));
     }
 
     // 리팩토링 필요

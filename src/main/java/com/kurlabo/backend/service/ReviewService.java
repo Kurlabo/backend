@@ -1,5 +1,6 @@
 package com.kurlabo.backend.service;
 
+import com.kurlabo.backend.dto.enums.ReviewStatus;
 import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.review.ReviewListDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
@@ -24,7 +25,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     // status 가 0이면 작성 가능 후기 리스트 찾기 / status 가 1이면 작성 완료 후기 리스트 찾기
-    public List<ReviewListDto> reviewList(Long memberId, int status) {
+    public List<ReviewListDto> reviewList(Long memberId, ReviewStatus status) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         List<ReviewListDto> reviewList = new ArrayList<>();
@@ -42,7 +43,7 @@ public class ReviewService {
                 // 주문상품에서 회원이 작성한 리뷰 불러오기
                 List<Review> writtenReviewList = reviewRepository.findByMemberAndProduct(member, products);
 
-                if (status == 0 && orderedProduct.getReview_status() == 0) { // 작성가능 리뷰
+                if (status == ReviewStatus.WRITABLE && orderedProduct.getReview_status() == 0) { // 작성가능 리뷰
                     ReviewListDto reviewListDto = ReviewListDto.builder()
                             .order_id(orderedProduct.getOrders().getId())
                             .product_id(orderedProduct.getProduct_id())
@@ -53,7 +54,7 @@ public class ReviewService {
                             .written(reviewConditionsCheck(member, products.getId()))
                             .build();
                     reviewList.add(reviewListDto);
-                } else if (status == 1 && orderedProduct.getReview_status() == 1) { // 작성완료 리뷰
+                } else if (status == ReviewStatus.WRITTEN && orderedProduct.getReview_status() == 1) { // 작성완료 리뷰
                     for (Review list : writtenReviewList) {
                         ReviewListDto reviewListDto = ReviewListDto.builder()
                                 .product_id(list.getProduct().getId())

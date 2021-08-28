@@ -59,6 +59,7 @@ public class GoodsService {
 
     public ProductDto getGoodsDetail(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
+        
         return ProductDto.builder()
                 .product_img_url(product.getProduct_img_url())
                 .detail_img_url(product.getDetail_img_url())
@@ -66,7 +67,7 @@ public class GoodsService {
                 .build();
     }
 
-    public ProductDto getGoodsReview(Pageable pageable, Long productId) {
+    public Page<ReviewDto> getGoodsReview(Pageable pageable, Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
         Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
         List<ReviewDto> reviewList = new ArrayList<>();
@@ -86,9 +87,9 @@ public class GoodsService {
             reviewList.add(dto);
         }
 
-        return ProductDto.builder()
-                .reviews(reviewList)
-                .build();
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviewList.size());
+        return new PageImpl<>(reviewList.subList(start, end), pageable, reviewList.size());
     }
 
     public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){

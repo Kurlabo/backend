@@ -83,14 +83,14 @@ public class MypageController {
     // 작성가능 후기 리스트
     @GetMapping("/mypageReview/viewBeforeList")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> writableReviewList(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> reviewBeforeList(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITABLE));
     }
 
     // 작성완료 후기 리스트
     @GetMapping("/mypageReview/viewAfterList")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> writtenReviewList(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> reviewAfterList(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITTEN));
     }
 

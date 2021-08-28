@@ -23,9 +23,9 @@ public class Review {
 
     private LocalDate regdate;
 
-    private Long help;
+    private Integer help;
 
-    private Long cnt;
+    private Integer cnt;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -37,7 +37,7 @@ public class Review {
 
     public void increaseCount() {
         if (cnt == null) {
-            cnt = 0L;
+            cnt = 0;
         }
 
         this.cnt++;
@@ -45,7 +45,7 @@ public class Review {
 
     public void increaseHelp() {
         if (help == null) {
-            help = 0L;
+            help = 0;
         }
 
         this.help++;

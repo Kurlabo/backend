@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -60,8 +61,6 @@ public class ProductDto {
     private String product_img_url;// 상품이미지 대표 이미지
 
     private List<String> guides;
-
-    private List<ReviewDto> reviews;
 
     private List<RelatedProductDtoProjection> related_product;
 

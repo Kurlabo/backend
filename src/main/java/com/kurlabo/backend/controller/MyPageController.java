@@ -1,13 +1,15 @@
 package com.kurlabo.backend.controller;
 
-import com.kurlabo.backend.dto.enums.ReviewStatus;
 import com.kurlabo.backend.dto.mypage.DeleteWishListDto;
 import com.kurlabo.backend.dto.mypage.DeliverAddressDto;
 import com.kurlabo.backend.dto.mypage.InsertWishListDto;
-import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.dto.mypage.QnaTestDto;
+import com.kurlabo.backend.dto.review.ReviewDto;
 import com.kurlabo.backend.security.jwt.TokenProvider;
-import com.kurlabo.backend.service.*;
+import com.kurlabo.backend.service.DeliverAddressService;
+import com.kurlabo.backend.service.FavoriteService;
+import com.kurlabo.backend.service.OrderService;
+import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,8 +24,8 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/api/mypage")
-public class MypageController {
+@RequestMapping(value="/api/myPage")
+public class MyPageController {
 
     private final FavoriteService favoriteService;
     private final ReviewService reviewService;
@@ -32,40 +34,41 @@ public class MypageController {
     private final TokenProvider tokenProvider;
 
     // 늘 사는 것 리스트 불러오기
-    @GetMapping("/mypage_wishlist")
+    @GetMapping("/myPage_wishList")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getAllWishList(@RequestHeader("Authorization") String token, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(favoriteService.getFavoriteList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 늘 사는 것 Insert
-    @PostMapping("/mypage_wishlist")
+    @PostMapping("/myPage_wishList")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> insertWishlist(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertWishListDto dto){
         return ResponseEntity.ok(favoriteService.insertFavorite(tokenProvider.parseTokenToGetMemberId(token), dto.getProduct_id()));
     }
 
     // 늘 사는 것 비우기
-    @DeleteMapping("/mypage_wishlist")
+    @DeleteMapping("/myPage_wishList")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> deleteWishList (@RequestHeader("Authorization") String token, @RequestBody @Valid DeleteWishListDto dto, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<?> deleteWishList (@RequestHeader("Authorization") String token, @RequestBody @Valid DeleteWishListDto dto,
+                                             @PageableDefault(size = 5) Pageable pageable) {
         return ResponseEntity.ok(favoriteService.deleteFavorite(tokenProvider.parseTokenToGetMemberId(token), dto.getProduct_id(), pageable));
     }
 
     // 주문 내역 리스트
-    @GetMapping("/mypage_orderlist")
+    @GetMapping("/myPage_orderList")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> orderList(@RequestHeader("Authorization") String token, @PageableDefault(size = 3) Pageable pageable) {
         return ResponseEntity.ok(orderService.getOrderList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 주문 상세 페이지
-    @GetMapping("/mypage_orderview")
+    @GetMapping("/myPage_orderView")
     public ResponseEntity<?> orderView(@RequestParam Long orderNo) {
         return ResponseEntity.ok(orderService.getOrderView(orderNo));
     }
 
-    @GetMapping("/mypageQna")
+    @GetMapping("/myPageQna")
     public ResponseEntity<?> qnaTest(){
         String[] dummyStr = {
             "배송지연/불만","컬리패스 (무료배송)", "반품문의", "A/S문의", "환불문의", "주문결제문의", "회원정보문의", "취소문의", "교환문의", "상품정보문의", "기타문의"
@@ -81,21 +84,21 @@ public class MypageController {
     }
 
     // 작성가능 후기 리스트
-    @GetMapping("/mypageReview/viewBeforeList")
+    @GetMapping("/myPageReview/viewBeforeList")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> reviewBeforeList(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITABLE));
+    public ResponseEntity<?> reviewBeforeList(@RequestHeader("Authorization") String token, @PageableDefault(size = 3) Pageable pageable){
+        return ResponseEntity.ok().body(reviewService.reviewBeforeList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 작성완료 후기 리스트
-    @GetMapping("/mypageReview/viewAfterList")
+    @GetMapping("/myPageReview/viewAfterList")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> reviewAfterList(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok().body(reviewService.reviewList(tokenProvider.parseTokenToGetMemberId(token), ReviewStatus.WRITTEN));
+    public ResponseEntity<?> reviewAfterList(@RequestHeader("Authorization") String token, @PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.ok().body(reviewService.reviewAfterList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 후기 작성
-    @PostMapping("/mypageReview/{pId}")
+    @PostMapping("/myPageReview/{pId}")
     @PreAuthorize("authenticated")
     public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
         reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);

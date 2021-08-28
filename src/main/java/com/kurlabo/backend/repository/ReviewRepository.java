@@ -13,8 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long > {
 
     Page<Review> findAllByProduct(Product product, Pageable pageable);
 
-    List<Review> findByMember(Member member, Pageable pageable);
-
     // @Query("select r from Review r where r.member = :member and r.product = :product")
     List<Review> findByMemberAndProduct(Member member, Product product);
 }

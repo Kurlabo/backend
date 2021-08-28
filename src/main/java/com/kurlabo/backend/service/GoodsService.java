@@ -29,25 +29,8 @@ public class GoodsService {
     private final ReviewRepository reviewRepository;
     private final DynamicProductRepository dynamicProductRepository;
 
-    public ProductDto goodDetail(Pageable pageable, Long productId) {
+    public ProductDto getGoods(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
-        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
-        List<ReviewDto> reviewList = new ArrayList<>();
-
-        for(Review review: reviews){
-            ReviewDto dto = ReviewDto.builder()
-                    .review_id(review.getReview_id())
-                    .member_id(review.getMember().getId())
-                    .product_id(review.getProduct().getId())
-                    .title(review.getTitle())
-                    .content(review.getContent())
-                    .writer(review.getMember().getName())
-                    .regdate(review.getRegdate())
-                    .help(review.getHelp())
-                    .cnt(review.getHelp())
-                    .build();
-            reviewList.add(dto);
-        }
 
         return ProductDto.builder()
                 .product_id(product.getId())
@@ -68,13 +51,43 @@ public class GoodsService {
                 .main_image_url(product.getMain_image_url())
                 .list_image_url(product.getList_image_url())
                 .sticker_image_url(product.getSticker_image_url())
-                .detail_img_url(product.getDetail_img_url())
-                .detail_context(product.getDetail_context())
-                .product_img_url(product.getProduct_img_url())
                 .guides(combineGuides(product.getGuides()))
                 .packing_type_text(product.getPacking_type_text())
-                .reviews(reviewList)
                 .related_product(findRelatedProductDtoList(product.getCategory() / 10 * 10, (product.getCategory() / 10 * 10) + 10))
+                .build();
+    }
+
+    public ProductDto getGoodsDetail(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
+        return ProductDto.builder()
+                .product_img_url(product.getProduct_img_url())
+                .detail_img_url(product.getDetail_img_url())
+                .detail_context(product.getDetail_context())
+                .build();
+    }
+
+    public ProductDto getGoodsReview(Pageable pageable, Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
+        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+        List<ReviewDto> reviewList = new ArrayList<>();
+
+        for(Review review: reviews){
+            ReviewDto dto = ReviewDto.builder()
+                    .review_id(review.getReview_id())
+                    .member_id(review.getMember().getId())
+                    .product_id(review.getProduct().getId())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .writer(review.getMember().getName())
+                    .regdate(review.getRegdate())
+                    .help(review.getHelp())
+                    .cnt(review.getHelp())
+                    .build();
+            reviewList.add(dto);
+        }
+
+        return ProductDto.builder()
+                .reviews(reviewList)
                 .build();
     }
 
@@ -127,4 +140,5 @@ public class GoodsService {
 
         return guideElements;
     }
+
 }

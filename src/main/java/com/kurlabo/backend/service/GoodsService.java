@@ -59,7 +59,7 @@ public class GoodsService {
 
     public ProductDto getGoodsDetail(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
-        
+
         return ProductDto.builder()
                 .product_img_url(product.getProduct_img_url())
                 .detail_img_url(product.getDetail_img_url())

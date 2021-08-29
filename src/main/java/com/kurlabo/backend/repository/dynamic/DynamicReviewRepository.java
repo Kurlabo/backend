@@ -20,7 +20,7 @@ public class DynamicReviewRepository {
 
     public List<ReviewDto> findByMember(Member member){
         return jpaQueryFactory
-                .select(new QReviewDto(qReview.review_id, qReview.product.id, qReview.product.name, qReview.title,
+                .select(new QReviewDto(qReview.id, qReview.product.id, qReview.product.name, qReview.title,
                         qReview.content, qReview.regDate, qReview.help))
                 .from(qReview)
                 .where(qReview.member.eq(member))

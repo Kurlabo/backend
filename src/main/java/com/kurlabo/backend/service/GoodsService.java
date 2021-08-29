@@ -74,15 +74,13 @@ public class GoodsService {
 
         for(Review review: reviews){
             ReviewDto dto = ReviewDto.builder()
-                    .review_id(review.getReview_id())
-                    .member_id(review.getMember().getId())
-                    .product_id(review.getProduct().getId())
+                    .review_id(review.getId())
                     .title(review.getTitle())
                     .content(review.getContent())
-                    .writer(review.getMember().getName())
+                    .writer(review.getWriter())
                     .regDate(review.getRegDate())
                     .help(review.getHelp())
-                    .cnt(review.getHelp())
+                    .cnt(review.getCnt())
                     .build();
             reviewList.add(dto);
         }

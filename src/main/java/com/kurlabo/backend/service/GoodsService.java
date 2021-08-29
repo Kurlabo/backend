@@ -80,7 +80,7 @@ public class GoodsService {
                     .title(review.getTitle())
                     .content(review.getContent())
                     .writer(review.getMember().getName())
-                    .regdate(review.getRegdate())
+                    .regDate(review.getRegDate())
                     .help(review.getHelp())
                     .cnt(review.getHelp())
                     .build();

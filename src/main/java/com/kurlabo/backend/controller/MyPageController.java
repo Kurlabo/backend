@@ -98,10 +98,10 @@ public class MyPageController {
     }
 
     // 후기 작성
-    @PostMapping("/myPageReview/{pId}")
+    @PostMapping("/myPageReview")
     @PreAuthorize("authenticated")
-    public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @PathVariable Long pId, @RequestBody ReviewDto reviewDto) {
-        reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), pId, reviewDto);
+    public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @RequestBody ReviewDto reviewDto) {
+        reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), reviewDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

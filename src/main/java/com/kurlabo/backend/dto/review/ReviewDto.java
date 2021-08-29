@@ -13,9 +13,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class ReviewDto {
+    private Long orders_id;
+
     private Long review_id;
 
     private Long product_id;
+
+    private Long orderSheetProduct_id;
 
     private Long member_id;
 
@@ -29,7 +33,7 @@ public class ReviewDto {
 
     private String list_img_url;
 
-    private LocalDate regdate;
+    private LocalDate regDate;
 
     private String delivery_condition;
 
@@ -40,13 +44,13 @@ public class ReviewDto {
     private boolean isWritten;
 
     @QueryProjection
-    public ReviewDto(Long review_id, Long product_id, String product_name, String title, String content, LocalDate regdate, int help) {
+    public ReviewDto(Long review_id, Long product_id, String product_name, String title, String content, LocalDate regDate, int help) {
         this.review_id = review_id;
         this.product_id = product_id;
         this.product_name = product_name;
         this.title = title;
         this.content = content;
-        this.regdate = regdate;
+        this.regDate = regDate;
         this.help = help;
     }
 }

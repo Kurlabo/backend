@@ -21,7 +21,7 @@ public class Review {
 
     private String writer;
 
-    private LocalDate regdate;
+    private LocalDate regDate;
 
     private int help;
 

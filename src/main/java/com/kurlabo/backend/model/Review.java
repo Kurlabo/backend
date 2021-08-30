@@ -37,10 +37,10 @@ public class Review {
     private Member member;
 
     public void increaseCount() {
-        this.cnt++;
+        this.cnt += 1;
     }
 
     public void increaseHelp() {
-        this.help++;
+        this.help += 1;
     }
 }

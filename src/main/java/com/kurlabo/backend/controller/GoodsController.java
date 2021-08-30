@@ -3,7 +3,6 @@ package com.kurlabo.backend.controller;
 import com.kurlabo.backend.dto.cart.DeleteCartRequestDto;
 import com.kurlabo.backend.dto.cart.InsertCartRequestDto;
 import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
-import com.kurlabo.backend.model.Review;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
@@ -39,13 +38,7 @@ public class GoodsController {
     @GetMapping("/{id}/reviews")
     public ResponseEntity<?> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
                                                      @PathVariable(name = "id") Long productId) {
-        return ResponseEntity.ok(goodsService.getGoodsReview(pageable, productId));
-    }
-
-    // 리팩토링 필요
-    @PostMapping("/{pid}/{rid}")
-    public void reviewHelpCount(@PathVariable(name = "rid") Long rid, @PathVariable(name = "pid") Long pid, Review review) {
-        goodsService.reviewHelpCount(review);
+        return ResponseEntity.ok(goodsService.getGoodsReview(productId, pageable));
     }
 
     // 장바구니 조회

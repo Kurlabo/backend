@@ -67,9 +67,9 @@ public class GoodsService {
                 .build();
     }
 
-    public Page<ReviewDto> getGoodsReview(Pageable pageable, Long productId) {
+    public Page<ReviewDto> getGoodsReview(Long productId, Pageable pageable) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
-        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
+        List<Review> reviews = reviewRepository.findAllByProduct(product);
         List<ReviewDto> reviewList = new ArrayList<>();
 
         for(Review review: reviews){
@@ -109,10 +109,6 @@ public class GoodsService {
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), responseDtoList.size());
         return new PageImpl<>(responseDtoList.subList(start, end), pageable, responseDtoList.size());
-    }
-
-    public void reviewHelpCount(Review review) {
-        review.increaseHelp();
     }
 
     private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){

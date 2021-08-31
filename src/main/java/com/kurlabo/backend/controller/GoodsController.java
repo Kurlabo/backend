@@ -6,6 +6,7 @@ import com.kurlabo.backend.dto.cart.UpdateCartCntRequestDto;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.CartService;
 import com.kurlabo.backend.service.GoodsService;
+import com.kurlabo.backend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,9 +21,9 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping(value="/api/goods")
 public class GoodsController {
-
     private final CartService cartService;
     private final GoodsService goodsService;
+    private final ReviewService reviewService;
     private final TokenProvider tokenProvider;
 
     @GetMapping("/{id}")
@@ -39,6 +40,16 @@ public class GoodsController {
     public ResponseEntity<?> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
                                                      @PathVariable(name = "id") Long productId) {
         return ResponseEntity.ok(goodsService.getGoodsReview(productId, pageable));
+    }
+
+    @GetMapping("/increaseReviewCnt/{id}")
+    public ResponseEntity<?> increaseReviewCnt(@PathVariable(name = "id") Long reviewId){
+        return ResponseEntity.ok(reviewService.increaseReviewCnt(reviewId));
+    }
+
+    @GetMapping("/increaseReviewHelp/{id}")
+    public ResponseEntity<?> increaseReviewHelp(@PathVariable(name = "id") Long reviewId){
+        return ResponseEntity.ok(reviewService.increaseReviewHelp(reviewId));
     }
 
     // 장바구니 조회

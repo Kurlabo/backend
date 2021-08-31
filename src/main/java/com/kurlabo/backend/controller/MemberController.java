@@ -31,12 +31,12 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signUp(dto));
     }
 
-    @PostMapping(value = "/signup/checkuid")
+    @PostMapping(value = "/signup/checkUid")
     public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto dto) {
         return ResponseEntity.ok(memberService.findAllByUid(dto));
     }
 
-    @PostMapping(value = "/signup/checkemail")
+    @PostMapping(value = "/signup/checkEmail")
     public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto dto) {
         return ResponseEntity.ok(memberService.findAllByEmail(dto));
     }
@@ -65,17 +65,17 @@ public class MemberController {
         return ResponseEntity.ok(loginService.logout(token));
     }
 
-    @PostMapping("/find_id")
+    @PostMapping("/findId")
     public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto findIdDto) {
         return ResponseEntity.ok(memberService.findByNameAndEmail(findIdDto));
     }
 
-    @PostMapping("/find_pw")
+    @PostMapping("/findPw")
     public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
         return ResponseEntity.ok(memberService.findByNameAndUidAndEmail(findPwDto));
     }
 
-    @PostMapping("/find_pw_change")
+    @PostMapping("/findPwChange")
     public ResponseEntity<?> findPwChange(@Valid @RequestBody FindPwChangeDto findPwChangeDto){
         return ResponseEntity.ok(memberService.setPassword(findPwChangeDto));
     }
@@ -85,27 +85,27 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findByPhone(dto));
     }
 
-    @PostMapping(value = "/myinfo")
+    @PostMapping(value = "/myInfo")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> checkMemberInfo(@RequestHeader("Authorization") String token,
                                            @Valid @RequestBody CheckPwDto dto) {
         return ResponseEntity.ok(memberService.checkPassword(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 
-    @GetMapping(value = "/myinfo")
+    @GetMapping(value = "/myInfo")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
-    @PutMapping(value = "/myinfo")
+    @PutMapping(value = "/myInfo")
     @PreAuthorize("authenticated")
     public void updateMember (@RequestHeader("Authorization") String token,
                               @Valid @RequestBody MemberDto dto) {
         memberService.updateMember(tokenProvider.parseTokenToGetMemberId(token), dto);
     }
 
-    @DeleteMapping(value = "/myinfo")
+    @DeleteMapping(value = "/myInfo")
     @PreAuthorize("authenticated")
     public void deleteMember (@RequestHeader("Authorization") String token) {
         memberService.deleteMember(tokenProvider.parseTokenToGetMemberId(token));

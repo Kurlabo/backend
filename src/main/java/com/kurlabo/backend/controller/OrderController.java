@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @GetMapping("/orderEnd")
-    public ResponseEntity<?> orderEnd(@RequestParam Long ordno){
-        return ResponseEntity.ok(orderService.setOrderEnd(ordno));
+    public ResponseEntity<?> orderEnd(@RequestParam Long ordNo){
+        return ResponseEntity.ok(orderService.setOrderEnd(ordNo));
     }
 }

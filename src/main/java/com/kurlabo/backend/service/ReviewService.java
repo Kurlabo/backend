@@ -104,6 +104,28 @@ public class ReviewService {
                 .build());
     }
 
+    @Transactional
+    public String increaseReviewCnt(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new DataNotFoundException("해당 후기를 찾을 수 없습니다. reviewId = " + reviewId));
+
+        review.increaseCount();
+
+        reviewRepository.save(review);
+
+        return "Success increase Review Count";
+    }
+
+    @Transactional
+    public String increaseReviewHelp(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new DataNotFoundException("해당 후기를 찾을 수 없습니다. reviewId = " + reviewId));
+
+        review.increaseHelp();
+
+        reviewRepository.save(review);
+
+        return "Success increase Review Help";
+    }
+
     private String memberNameToDtoName(Member member){
         StringBuilder sb = new StringBuilder(member.getName());
         for(int i = 1; i < member.getName().length(); i += 2){

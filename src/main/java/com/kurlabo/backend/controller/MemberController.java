@@ -45,19 +45,14 @@ public class MemberController {
     public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         TokenDto dto = loginService.login(loginDto);
 
-        //
         Cookie cookie = new Cookie("refreshToken", dto.getAccessToken());
-
         cookie.setMaxAge(5 * 60);
-
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setDomain("kurlabo.cf");
 
         response.addCookie(cookie);
-        //
-
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + dto.getAccessToken());

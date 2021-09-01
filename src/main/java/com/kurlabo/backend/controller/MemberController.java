@@ -26,17 +26,17 @@ public class MemberController {
     private final LoginService loginService;
     private final TokenProvider tokenProvider;
 
-    @PostMapping(value = "/signup")
+    @PostMapping(value = "/sign-up")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto requestDto) {
         return ResponseEntity.ok(memberService.signUp(requestDto));
     }
 
-    @PostMapping(value = "/signup/check-uid")
+    @PostMapping(value = "/sign-up/check-uid")
     public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto requestDto) {
         return ResponseEntity.ok(memberService.findAllByUid(requestDto));
     }
 
-    @PostMapping(value = "/signup/check-email")
+    @PostMapping(value = "/sign-up/check-email")
     public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto requestDto) {
         return ResponseEntity.ok(memberService.findAllByEmail(requestDto));
     }

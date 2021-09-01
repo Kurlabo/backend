@@ -104,7 +104,7 @@ public class DeliverAddressService {
     }
 
     @Transactional
-    public void checkAddress(Long memberId, Long deliverAddressId) {
+    public void setCheckedAddress(Long memberId, Long deliverAddressId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         Deliver_Address curCheckDeliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(
                 () -> new DataNotFoundException("현재 선택된 주소가 없습니다.")

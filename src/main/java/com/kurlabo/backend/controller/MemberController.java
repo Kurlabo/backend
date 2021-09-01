@@ -27,23 +27,23 @@ public class MemberController {
     private final TokenProvider tokenProvider;
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto dto) {
-        return ResponseEntity.ok(memberService.signUp(dto));
+    public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto requestDto) {
+        return ResponseEntity.ok(memberService.signUp(requestDto));
     }
 
-    @PostMapping(value = "/signup/checkUid")
-    public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto dto) {
-        return ResponseEntity.ok(memberService.findAllByUid(dto));
+    @PostMapping(value = "/signup/check-uid")
+    public ResponseEntity<?> checkUid(@Valid @RequestBody CheckUidDto requestDto) {
+        return ResponseEntity.ok(memberService.findAllByUid(requestDto));
     }
 
-    @PostMapping(value = "/signup/checkEmail")
-    public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto dto) {
-        return ResponseEntity.ok(memberService.findAllByEmail(dto));
+    @PostMapping(value = "/signup/check-email")
+    public ResponseEntity<?> CheckEmail(@Valid @RequestBody CheckEmailDto requestDto) {
+        return ResponseEntity.ok(memberService.findAllByEmail(requestDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        TokenDto dto = loginService.login(loginDto);
+    public ResponseEntity<TokenDto> login (@Valid @RequestBody LoginDto requestDto, HttpServletResponse response) {
+        TokenDto dto = loginService.login(requestDto);
 
         Cookie cookie = new Cookie("refreshToken", dto.getAccessToken());
         cookie.setMaxAge(5 * 60);
@@ -65,47 +65,47 @@ public class MemberController {
         return ResponseEntity.ok(loginService.logout(token));
     }
 
-    @PostMapping("/findId")
-    public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto findIdDto) {
-        return ResponseEntity.ok(memberService.findByNameAndEmail(findIdDto));
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findId(@Valid @RequestBody FindIdDto requestDto) {
+        return ResponseEntity.ok(memberService.findByNameAndEmail(requestDto));
     }
 
-    @PostMapping("/findPw")
-    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto findPwDto) {
-        return ResponseEntity.ok(memberService.findByNameAndUidAndEmail(findPwDto));
+    @PostMapping("/find-pw")
+    public ResponseEntity<?> findPw(@Valid @RequestBody FindPwDto requestDto) {
+        return ResponseEntity.ok(memberService.findByNameAndUidAndEmail(requestDto));
     }
 
-    @PostMapping("/findPwChange")
-    public ResponseEntity<?> findPwChange(@Valid @RequestBody FindPwChangeDto findPwChangeDto){
-        return ResponseEntity.ok(memberService.setPassword(findPwChangeDto));
+    @PatchMapping("/find-pw")
+    public ResponseEntity<?> findPwChange(@Valid @RequestBody FindPwChangeDto requestDto){
+        return ResponseEntity.ok(memberService.setPassword(requestDto));
     }
 
-    @PostMapping(value = "/checkPhone")
-    public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto dto) {
-        return ResponseEntity.ok(memberService.findByPhone(dto));
+    @PostMapping(value = "/check-phone")
+    public ResponseEntity<?> checkPhone(@Valid @RequestBody CheckPhoneDto requestDto) {
+        return ResponseEntity.ok(memberService.findByPhone(requestDto));
     }
 
-    @PostMapping(value = "/myInfo")
+    @PostMapping(value = "/my-info")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> checkMemberInfo(@RequestHeader("Authorization") String token,
-                                           @Valid @RequestBody CheckPwDto dto) {
-        return ResponseEntity.ok(memberService.checkPassword(tokenProvider.parseTokenToGetMemberId(token), dto));
+    public ResponseEntity<?> checkMemberPassword(@RequestHeader("Authorization") String token,
+                                                 @Valid @RequestBody CheckPwDto requestDto) {
+        return ResponseEntity.ok(memberService.checkPassword(tokenProvider.parseTokenToGetMemberId(token), requestDto));
     }
 
-    @GetMapping(value = "/myInfo")
+    @GetMapping(value = "/my-info")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getMemberInfo(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(memberService.getMemberInfo(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
-    @PutMapping(value = "/myInfo")
+    @PutMapping(value = "/my-info")
     @PreAuthorize("authenticated")
-    public void updateMember (@RequestHeader("Authorization") String token,
-                              @Valid @RequestBody MemberDto dto) {
-        memberService.updateMember(tokenProvider.parseTokenToGetMemberId(token), dto);
+    public void updateMemberInfo(@RequestHeader("Authorization") String token,
+                                 @Valid @RequestBody MemberDto requestDto) {
+        memberService.updateMember(tokenProvider.parseTokenToGetMemberId(token), requestDto);
     }
 
-    @DeleteMapping(value = "/myInfo")
+    @DeleteMapping(value = "/my-info")
     @PreAuthorize("authenticated")
     public void deleteMember (@RequestHeader("Authorization") String token) {
         memberService.deleteMember(tokenProvider.parseTokenToGetMemberId(token));

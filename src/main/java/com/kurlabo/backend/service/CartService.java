@@ -86,12 +86,12 @@ public class CartService {
     }
 
     @Transactional
-    public CartProductDto updateCnt(Long memberId, Long product_id, UpdateCartCntRequestDto dto) {
+    public CartProductDto updateCnt(Long memberId, UpdateCartCntRequestDto dto) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
-        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id).orElseThrow(() ->
-                new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + product_id));
-        Product product = productRepository.findById(product_id).orElseThrow(() ->
-                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, dto.getProduct_id()).orElseThrow(() ->
+                new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + dto.getProduct_id()));
+        Product product = productRepository.findById(dto.getProduct_id()).orElseThrow(() ->
+                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + dto.getProduct_id()));
 
         cart.updateCnt(dto.getVariation());
 

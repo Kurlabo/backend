@@ -26,63 +26,62 @@ public class GoodsController {
     private final ReviewService reviewService;
     private final TokenProvider tokenProvider;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getGoods(@PathVariable(name = "id") Long productId) {
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getGoods(@PathVariable Long productId) {
         return ResponseEntity.ok(goodsService.getGoods(productId));
     }
 
-    @GetMapping("/{id}/goods_detail")
-    public ResponseEntity<?> getGoodsDetail(@PathVariable(name = "id") Long productId) {
+    @GetMapping("/{productId}/goods-detail")
+    public ResponseEntity<?> getGoodsDetail(@PathVariable Long productId) {
         return ResponseEntity.ok(goodsService.getGoodsDetail(productId));
     }
 
-    @GetMapping("/{id}/reviews")
+    @GetMapping("/{productId}/reviews")
     public ResponseEntity<?> getGoodsReviews(@PageableDefault(size = 7) Pageable pageable,
-                                                     @PathVariable(name = "id") Long productId) {
+                                                     @PathVariable Long productId) {
         return ResponseEntity.ok(goodsService.getGoodsReview(productId, pageable));
     }
 
-    @GetMapping("/increaseReviewCnt/{id}")
-    public ResponseEntity<?> increaseReviewCnt(@PathVariable(name = "id") Long reviewId){
+    @GetMapping("/increase-review-cnt/{reviewId}")
+    public ResponseEntity<?> increaseReviewCnt(@PathVariable Long reviewId){
         return ResponseEntity.ok(reviewService.increaseReviewCnt(reviewId));
     }
 
-    @GetMapping("/increaseReviewHelp/{id}")
-    public ResponseEntity<?> increaseReviewHelp(@PathVariable(name = "id") Long reviewId){
+    @GetMapping("/increase-review-help/{reviewId}")
+    public ResponseEntity<?> increaseReviewHelp(@PathVariable Long reviewId){
         return ResponseEntity.ok(reviewService.increaseReviewHelp(reviewId));
     }
 
     // 장바구니 조회
-    @GetMapping("/goods_cart")
+    @GetMapping("/goods-cart")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getCart(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(cartService.getCartList(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     // 장바구니 상품 추가
-    @PostMapping("/goods_cart")
+    @PostMapping("/goods-cart")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> insertAndUpdateCart(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertCartRequestDto dto){
-        return ResponseEntity.ok(cartService.insertCart(tokenProvider.parseTokenToGetMemberId(token), dto));
+    public ResponseEntity<?> insertAndUpdateCart(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertCartRequestDto requestDto){
+        return ResponseEntity.ok(cartService.insertCart(tokenProvider.parseTokenToGetMemberId(token), requestDto));
     }
 
     // 장바구니 삭제
-    @PostMapping("/goods_cart/delete")
+    @DeleteMapping("/goods-cart")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> deleteCart(@RequestHeader("Authorization") String token, @RequestBody DeleteCartRequestDto dto) {
-        return ResponseEntity.ok(cartService.deleteCart(tokenProvider.parseTokenToGetMemberId(token), dto.getProduct_id()));
+    public ResponseEntity<?> deleteCart(@RequestHeader("Authorization") String token, @RequestBody DeleteCartRequestDto requestDto) {
+        return ResponseEntity.ok(cartService.deleteCart(tokenProvider.parseTokenToGetMemberId(token), requestDto.getProduct_id()));
     }
 
     // 장바구니 상품 개수 수정
-    @PatchMapping("/goods_cart/{product_id}")
+    @PatchMapping("/goods-cart")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> updateCartCnt(@RequestHeader("Authorization") String token, @PathVariable Long product_id
-            , @RequestBody @Valid UpdateCartCntRequestDto dto){
-        return ResponseEntity.ok(cartService.updateCnt(tokenProvider.parseTokenToGetMemberId(token), product_id, dto));
+    public ResponseEntity<?> updateCartCnt(@RequestHeader("Authorization") String token, @RequestBody @Valid UpdateCartCntRequestDto requestDto){
+        return ResponseEntity.ok(cartService.updateCnt(tokenProvider.parseTokenToGetMemberId(token), requestDto));
     }
 
     // 상품 리스트
-    @GetMapping("/goods_list")
+    @GetMapping("/goods-list")
     public ResponseEntity<?> goodsList(@RequestParam int category, @PageableDefault(size = 6) Pageable pageable){
         return ResponseEntity.ok(goodsService.getGoodsList(category, pageable));
     }

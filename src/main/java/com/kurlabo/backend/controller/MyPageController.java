@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/api/myPage")
+@RequestMapping(value="/api/mypage")
 public class MyPageController {
 
     private final FavoriteService favoriteService;
@@ -34,21 +34,21 @@ public class MyPageController {
     private final TokenProvider tokenProvider;
 
     // 늘 사는 것 리스트 불러오기
-    @GetMapping("/myPage_wishList")
+    @GetMapping("/wish-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getAllWishList(@RequestHeader("Authorization") String token, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok(favoriteService.getFavoriteList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 늘 사는 것 Insert
-    @PostMapping("/myPage_wishList")
+    @PostMapping("/wish-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> insertWishlist(@RequestHeader("Authorization") String token, @RequestBody @Valid InsertWishListDto dto){
         return ResponseEntity.ok(favoriteService.insertFavorite(tokenProvider.parseTokenToGetMemberId(token), dto.getProduct_id()));
     }
 
     // 늘 사는 것 비우기
-    @DeleteMapping("/myPage_wishList")
+    @DeleteMapping("/wish-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> deleteWishList (@RequestHeader("Authorization") String token, @RequestBody @Valid DeleteWishListDto dto,
                                              @PageableDefault(size = 5) Pageable pageable) {
@@ -56,14 +56,14 @@ public class MyPageController {
     }
 
     // 주문 내역 리스트
-    @GetMapping("/myPage_orderList")
+    @GetMapping("/order-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> orderList(@RequestHeader("Authorization") String token, @PageableDefault(size = 3) Pageable pageable) {
         return ResponseEntity.ok(orderService.getOrderList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 주문 상세 페이지
-    @GetMapping("/myPage_orderView")
+    @GetMapping("/order-view")
     public ResponseEntity<?> orderView(@RequestParam Long orderNo) {
         return ResponseEntity.ok(orderService.getOrderView(orderNo));
     }
@@ -84,21 +84,21 @@ public class MyPageController {
     }
 
     // 작성가능 후기 리스트
-    @GetMapping("/myPageReview/viewBeforeList")
+    @GetMapping("/review/view-before-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> reviewBeforeList(@RequestHeader("Authorization") String token, @PageableDefault(size = 3) Pageable pageable){
         return ResponseEntity.ok().body(reviewService.reviewBeforeList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 작성완료 후기 리스트
-    @GetMapping("/myPageReview/viewAfterList")
+    @GetMapping("/review/view-after-list")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> reviewAfterList(@RequestHeader("Authorization") String token, @PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.ok().body(reviewService.reviewAfterList(tokenProvider.parseTokenToGetMemberId(token), pageable));
     }
 
     // 후기 작성
-    @PostMapping("/myPageReview")
+    @PostMapping("/review")
     @PreAuthorize("authenticated")
     public ResponseEntity<Void> create (@RequestHeader("Authorization") String token, @RequestBody ReviewDto reviewDto) {
         reviewService.createReview(tokenProvider.parseTokenToGetMemberId(token), reviewDto);
@@ -106,14 +106,14 @@ public class MyPageController {
     }
 
     // 배송지 리스트
-    @GetMapping("/destination/list")
+    @GetMapping("/destinations")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getAddressList(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(deliverAddressService.getAllAddress(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     // 배송지 추가
-    @PostMapping("/destination/list")
+    @PostMapping("/destinations")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> createAddress(@RequestHeader("Authorization") String token,
                                            @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
@@ -122,7 +122,7 @@ public class MyPageController {
     }
 
     // 배송지 수정
-    @PutMapping("/destination/list")
+    @PutMapping("/destinations")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> updateAddress(@RequestHeader("Authorization") String token,
                                            @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
@@ -131,7 +131,7 @@ public class MyPageController {
     }
 
     // 배송지 삭제
-    @DeleteMapping("/destination/list")
+    @DeleteMapping("/destinations")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> deleteAddress(@RequestHeader("Authorization") String token,
                                            @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
@@ -140,11 +140,11 @@ public class MyPageController {
     }
 
     // 배송지 체크
-    @PatchMapping("/destination/list")
+    @PatchMapping("/destinations")
     @PreAuthorize("authenticated")
-    public ResponseEntity<?> checkAddress(@RequestHeader("Authorization") String token,
-                                          @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
-        deliverAddressService.checkAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto.getId());
+    public ResponseEntity<?> setCheckedAddress(@RequestHeader("Authorization") String token,
+                                               @RequestBody @Valid DeliverAddressDto deliverAddressDto) {
+        deliverAddressService.setCheckedAddress(tokenProvider.parseTokenToGetMemberId(token), deliverAddressDto.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

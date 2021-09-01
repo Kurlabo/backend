@@ -21,14 +21,14 @@ public class OrderController {
     private final TokenProvider tokenProvider;
 
     // 주문서
-    @GetMapping("/orderSheet")
+    @GetMapping("/order-sheet")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getOrderSheet(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(orderService.getOrderSheet(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     // 장바구니 주문하기 버튼
-    @PostMapping("/orderSheet")
+    @PostMapping("/order-sheet")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
         return ResponseEntity.ok(orderService.setOrdersSheet(tokenProvider.parseTokenToGetMemberId(token), dto));
@@ -41,7 +41,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.setCheckout(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 
-    @GetMapping("/orderEnd")
+    @GetMapping("/order-end")
     public ResponseEntity<?> orderEnd(@RequestParam Long ordNo){
         return ResponseEntity.ok(orderService.setOrderEnd(ordNo));
     }

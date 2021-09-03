@@ -11,7 +11,6 @@ import com.kurlabo.backend.repository.CartRepository;
 import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
-import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +26,10 @@ public class CartService {
     private final ProductRepository productRepository;
     private final DeliverAddressRepository deliverAddressRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
-    public GetCartResponseDto getCartList(String token){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+    public GetCartResponseDto getCartList(Long memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원을 찾을 수 없습니다. Id = " + memberId));
+        Deliver_Address deliverAddress = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 주소를 찾을 수 없습니다."));
         List<Cart> cartList = cartRepository.findByMember(member);
         List<CartProductDto> dtoLists = new ArrayList<>();
@@ -51,9 +48,8 @@ public class CartService {
     }
 
     @Transactional
-    public MessageResponseDto insertCart(String token, InsertCartRequestDto dto){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public MessageResponseDto insertCart(Long memberId, InsertCartRequestDto dto){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         for (InsertCartDto lists: dto.getInsertCartList()){
             Cart cart = cartRepository.findByMemberAndProduct_id(member, lists.getProduct_id()).orElse(Cart.builder()
@@ -70,9 +66,8 @@ public class CartService {
     }
 
     @Transactional
-    public DeleteCartResponseDto deleteCart(String token, List<Long> idList) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public DeleteCartResponseDto deleteCart(Long memberId, List<Long> idList) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         List<Cart> deleteLists = new ArrayList<>();
         List<Long> longLists = new ArrayList<>();
 
@@ -91,13 +86,12 @@ public class CartService {
     }
 
     @Transactional
-    public CartProductDto updateCnt(String token, Long product_id, UpdateCartCntRequestDto dto) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        Cart cart = cartRepository.findByMemberAndProduct_id(member, product_id).orElseThrow(() ->
-                new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + product_id));
-        Product product = productRepository.findById(product_id).orElseThrow(() ->
-                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
+    public CartProductDto updateCnt(Long memberId, UpdateCartCntRequestDto dto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+        Cart cart = cartRepository.findByMemberAndProduct_id(member, dto.getProduct_id()).orElseThrow(() ->
+                new DataNotFoundException("해당 장바구니 상품을 찾을 수 없습니다. Id = " + dto.getProduct_id()));
+        Product product = productRepository.findById(dto.getProduct_id()).orElseThrow(() ->
+                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + dto.getProduct_id()));
 
         cart.updateCnt(dto.getVariation());
 

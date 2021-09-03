@@ -5,16 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReviewProductDto {
-    private Long product_id;
+public class WritableReviewListDto {
 
-    private String name;
+    private Long order_id;
 
-    private int checkout_price;
-
-    private int cnt;
+    private List<ReviewDto> writableReviewList;
 }

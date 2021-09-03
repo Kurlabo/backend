@@ -29,25 +29,8 @@ public class GoodsService {
     private final ReviewRepository reviewRepository;
     private final DynamicProductRepository dynamicProductRepository;
 
-    public ProductDto goodDetail(Pageable pageable, Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + id));
-        Page<Review> reviews = reviewRepository.findAllByProduct(product, pageable);
-        List<ReviewDto> reviewList = new ArrayList<>();
-
-        for(Review review: reviews){
-            ReviewDto dto = ReviewDto.builder()
-                    .review_id(review.getReview_id())
-                    .member_id(review.getMember().getId())
-                    .product_id(review.getProduct().getId())
-                    .title(review.getTitle())
-                    .content(review.getContent())
-                    .writer(review.getMember().getName())
-                    .regdate(review.getRegdate())
-                    .help(review.getHelp())
-                    .cnt(review.getHelp())
-                    .build();
-            reviewList.add(dto);
-        }
+    public ProductDto getGoods(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
 
         return ProductDto.builder()
                 .product_id(product.getId())
@@ -68,14 +51,43 @@ public class GoodsService {
                 .main_image_url(product.getMain_image_url())
                 .list_image_url(product.getList_image_url())
                 .sticker_image_url(product.getSticker_image_url())
-                .detail_img_url(product.getDetail_img_url())
-                .detail_context(product.getDetail_context())
-                .product_img_url(product.getProduct_img_url())
                 .guides(combineGuides(product.getGuides()))
                 .packing_type_text(product.getPacking_type_text())
-                .reviews(reviewList)
                 .related_product(findRelatedProductDtoList(product.getCategory() / 10 * 10, (product.getCategory() / 10 * 10) + 10))
                 .build();
+    }
+
+    public ProductDto getGoodsDetail(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
+
+        return ProductDto.builder()
+                .product_img_url(product.getProduct_img_url())
+                .detail_img_url(product.getDetail_img_url())
+                .detail_context(product.getDetail_context())
+                .build();
+    }
+
+    public Page<ReviewDto> getGoodsReview(Long productId, Pageable pageable) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + productId));
+        List<Review> reviews = reviewRepository.findAllByProduct(product);
+        List<ReviewDto> reviewList = new ArrayList<>();
+
+        for(Review review: reviews){
+            ReviewDto dto = ReviewDto.builder()
+                    .review_id(review.getId())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .writer(review.getWriter())
+                    .regDate(review.getRegDate())
+                    .help(review.getHelp())
+                    .cnt(review.getCnt())
+                    .build();
+            reviewList.add(dto);
+        }
+
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviewList.size());
+        return new PageImpl<>(reviewList.subList(start, end), pageable, reviewList.size());
     }
 
     public Page<GoodsListResponseDto> getGoodsList(int category, Pageable pageable){
@@ -97,10 +109,6 @@ public class GoodsService {
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), responseDtoList.size());
         return new PageImpl<>(responseDtoList.subList(start, end), pageable, responseDtoList.size());
-    }
-
-    public void reviewHelpCount(Review review) {
-        review.increaseHelp();
     }
 
     private List<RelatedProductDtoProjection> findRelatedProductDtoList (int min, int max){
@@ -127,4 +135,5 @@ public class GoodsService {
 
         return guideElements;
     }
+
 }

@@ -13,7 +13,8 @@ import java.time.LocalDate;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long review_id;
+    @Column(name = "review_id")
+    private Long id;
 
     private String title;
 
@@ -21,11 +22,11 @@ public class Review {
 
     private String writer;
 
-    private LocalDate regdate;
+    private LocalDate regDate;
 
-    private Long help;
+    private int help;
 
-    private Long cnt;
+    private int cnt;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -36,18 +37,10 @@ public class Review {
     private Member member;
 
     public void increaseCount() {
-        if (cnt == null) {
-            cnt = 0L;
-        }
-
-        this.cnt++;
+        this.cnt += 1;
     }
 
     public void increaseHelp() {
-        if (help == null) {
-            help = 0L;
-        }
-
-        this.help++;
+        this.help += 1;
     }
 }

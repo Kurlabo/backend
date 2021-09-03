@@ -11,5 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UpdateCartCntRequestDto {
     @NotNull
+    private Long product_id;
+    @NotNull
     private int variation;
 }

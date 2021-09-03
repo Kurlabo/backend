@@ -13,7 +13,6 @@ import com.kurlabo.backend.repository.DeliverAddressRepository;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.OrderSheetProductsRepository;
 import com.kurlabo.backend.repository.OrdersRepository;
-import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,12 +33,11 @@ public class OrderService {
     private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
-    public OrderSheetResponseDto getOrderSheet(String token){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
-        Deliver_Address da = deliverAddressRepository.findByMemberAndIs_main(member, 1).orElseThrow(() ->
+    public OrderSheetResponseDto getOrderSheet(Long memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+        Deliver_Address da = deliverAddressRepository.findByMemberAndChecked(member, 1).orElseThrow(() ->
                 new DataNotFoundException("해당 회원의 배송지를 찾을 수 없습니다."));
         Orders readyOrder = ordersRepository.findByStatus("결제준비").orElseThrow(() ->
                 new DataNotFoundException("결제 준비중인 주문을 찾을 수 없습니다."));
@@ -59,9 +57,9 @@ public class OrderService {
     }
 
     @Transactional
-    public MessageResponseDto setOrdersSheet(String token, SelectedProductInfoDto dto){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public MessageResponseDto setOrdersSheet(Long memberId, SelectedProductInfoDto dto){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         // 1. 이전에 결제 준비 상태의 데이터를 결제 취소 상태로
         setOrderCancel();
@@ -86,16 +84,16 @@ public class OrderService {
                 .member(member)
                 .build());
 
-        // 3. 요청받은 장바구니의 상품 개수만큼 dto를 for문으로 돌려 orderSheetProduct를 저장함
+        // 3. 요청받은 장바구니의 상품 개수만큼 dto 를 for 문으로 돌려 orderSheetProduct 를 저장함
         setOrderSheetProducts(readyOrder, dto);
 
         return MessageResponseDto.builder().message("SUCCESS").build();
     }
 
     @Transactional
-    public MessageResponseDto setCheckout(String token, CheckoutRequestDto dto) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public MessageResponseDto setCheckout(Long memberId, CheckoutRequestDto dto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
 
         ordersRepository.save(Orders.builder()
                 .id(null)
@@ -129,9 +127,9 @@ public class OrderService {
                 .build();
     }
 
-    public Page<OrderListResponseDto> getOrderList (String token, Pageable pageable) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public Page<OrderListResponseDto> getOrderList (Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         List<Orders> orderList = ordersRepository.findByMemberAndStatus(member, "결제완료");
         List<OrderListResponseDto> responseList = new ArrayList<>();
 

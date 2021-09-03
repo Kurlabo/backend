@@ -3,7 +3,6 @@ package com.kurlabo.backend.repository.dynamic;
 import com.kurlabo.backend.dto.goods.GoodsListResponseDto;
 import com.kurlabo.backend.dto.goods.QGoodsListResponseDto;
 import com.kurlabo.backend.model.QProduct;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

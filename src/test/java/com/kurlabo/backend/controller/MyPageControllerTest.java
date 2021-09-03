@@ -18,7 +18,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
-class MypageControllerTest {
+class MyPageControllerTest {
 
     private MockMvc mockMvc;
     private TokenDto token;

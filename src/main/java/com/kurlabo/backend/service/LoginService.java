@@ -4,7 +4,6 @@ import com.kurlabo.backend.dto.MessageResponseDto;
 import com.kurlabo.backend.dto.member.LoginDto;
 import com.kurlabo.backend.dto.member.TokenDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
-import com.kurlabo.backend.model.Member;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +31,14 @@ public class LoginService {
 
     public TokenDto login(LoginDto loginDto) {
         checkMemberStatus(loginDto);
-        // UID와 Password를 받아 UsernamePasswordAuthenticationToken을 생성
+        // UID 와 Password 를 받아 UsernamePasswordAuthenticationToken 을 생성
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUid(), loginDto.getPassword());
-        // authenticationToken을 이용해 Authentication 객체를 생성하기 위해 authenticate가 실행이 될 때 loadUserByUsername 메소드가 실행됨. 이 결과 값으로 Authentication 객체가 생성됨
+        // authenticationToken 을 이용해 Authentication 객체를 생성하기 위해 authenticate 가 실행이 될 때 loadUserByUsername 메소드가 실행됨. 이 결과 값으로 Authentication 객체가 생성됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        // Authentication 객체를 SecurityContext에 저장
+        // Authentication 객체를 SecurityContext 에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        // tokenProvider의 createToken 메소드를 통해서 JWT Token을 생성해서 리턴
+        // tokenProvider 의 createToken 메소드를 통해서 JWT Token 을 생성해서 리턴
         String jwt = tokenProvider.createToken(authentication);
 
         return new TokenDto(jwt);
@@ -52,7 +51,6 @@ public class LoginService {
     }
     
     private void checkMemberStatus(LoginDto loginDto) {
-        Member member = memberRepository.findByUid(loginDto.getUid())
-                .orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
+        memberRepository.findByUid(loginDto.getUid()).orElseThrow(() -> new DataNotFoundException("로그인할 멤버가 존재하지 않습니다."));
     }
 }

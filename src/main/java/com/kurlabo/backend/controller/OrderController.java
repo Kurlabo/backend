@@ -2,6 +2,7 @@ package com.kurlabo.backend.controller;
 
 import com.kurlabo.backend.dto.cart.SelectedProductInfoDto;
 import com.kurlabo.backend.dto.order.CheckoutRequestDto;
+import com.kurlabo.backend.security.jwt.TokenProvider;
 import com.kurlabo.backend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,30 +18,31 @@ import javax.validation.Valid;
 public class OrderController {
 
     private final OrderService orderService;
+    private final TokenProvider tokenProvider;
 
     // 주문서
-    @GetMapping("/orderSheet")
+    @GetMapping("/order-sheet")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> getOrderSheet(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(orderService.getOrderSheet(token));
+        return ResponseEntity.ok(orderService.getOrderSheet(tokenProvider.parseTokenToGetMemberId(token)));
     }
 
     // 장바구니 주문하기 버튼
-    @PostMapping("/orderSheet")
+    @PostMapping("/order-sheet")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> setOrderSheet(@RequestHeader("Authorization") String token, @RequestBody SelectedProductInfoDto dto){
-        return ResponseEntity.ok(orderService.setOrdersSheet(token, dto));
+        return ResponseEntity.ok(orderService.setOrdersSheet(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 
     // 결제하기
     @PostMapping("/checkout")
     @PreAuthorize("authenticated")
     public ResponseEntity<?> setCheckout(@RequestHeader("Authorization") String token, @RequestBody @Valid CheckoutRequestDto dto) {
-        return ResponseEntity.ok(orderService.setCheckout(token, dto));
+        return ResponseEntity.ok(orderService.setCheckout(tokenProvider.parseTokenToGetMemberId(token), dto));
     }
 
-    @GetMapping("/orderEnd")
-    public ResponseEntity<?> orderEnd(@RequestParam Long ordno){
-        return ResponseEntity.ok(orderService.setOrderEnd(ordno));
+    @GetMapping("/order-end")
+    public ResponseEntity<?> orderEnd(@RequestParam Long ordNo){
+        return ResponseEntity.ok(orderService.setOrderEnd(ordNo));
     }
 }

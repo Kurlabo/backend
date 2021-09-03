@@ -1,4 +1,4 @@
-package com.kurlabo.backend.dto.testdto;
+package com.kurlabo.backend.dto.mypage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

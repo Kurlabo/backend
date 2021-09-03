@@ -21,7 +21,7 @@ public class DynamicDeliverAddressRepository {
     public List<DeliverAddressDto> findByMember(Member member){
         return queryFactory
                 .select(new QDeliverAddressDto(qDeliverAddress.id, qDeliverAddress.deliver_address, qDeliverAddress.deliver_detail_address,
-                        qDeliverAddress.is_main, qDeliverAddress.reciever, qDeliverAddress.reciever_phone))
+                        qDeliverAddress.is_main, qDeliverAddress.reciever, qDeliverAddress.reciever_phone, qDeliverAddress.checked))
                 .from(qDeliverAddress)
                 .where(qDeliverAddress.member.eq(member))
                 .fetch();

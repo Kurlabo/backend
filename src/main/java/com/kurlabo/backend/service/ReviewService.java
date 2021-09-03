@@ -1,16 +1,21 @@
 package com.kurlabo.backend.service;
 
 import com.kurlabo.backend.dto.review.ReviewDto;
-import com.kurlabo.backend.dto.review.ReviewListDto;
+import com.kurlabo.backend.dto.review.WritableReviewListDto;
 import com.kurlabo.backend.exception.DataNotFoundException;
+import com.kurlabo.backend.exception.ExistDataException;
 import com.kurlabo.backend.model.*;
 import com.kurlabo.backend.repository.*;
-import com.kurlabo.backend.security.jwt.TokenProvider;
+import com.kurlabo.backend.repository.dynamic.DynamicReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,100 +28,109 @@ public class ReviewService {
     private final OrdersRepository ordersRepository;
     private final OrderSheetProductsRepository orderSheetProductsRepository;
     private final ReviewRepository reviewRepository;
-    private final TokenProvider tokenProvider;
+    private final DynamicReviewRepository dynamicReviewRepository;
 
-    // 리뷰 작성 조건 체크
-    public boolean conditionsChk(Long product_id) {
-        Member member = memberRepository.findById(1L).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + product_id)
-        );
+    public Page<WritableReviewListDto> reviewBeforeList(Long memberId, Pageable pageable){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+        List<Orders> ordersList = ordersRepository.findByMember(member);
+        List<WritableReviewListDto> responseDtoList = new ArrayList<>();
 
-        // 상품 정보가 없음
-        Product product = productRepository.findById(product_id).orElseThrow(() ->
-                new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
+        for(Orders order : ordersList){
+            if(ChronoUnit.DAYS.between(order.getCheckoutDate(), LocalDate.now()) > 30){
+                continue;
+            }
+            List<Order_Sheet_Products> orderSheetProductsList = orderSheetProductsRepository.findAllByOrders(order);
+            List<ReviewDto> reviewDtoList = new ArrayList<>();
 
-        LocalDate fromDate = LocalDate.now();
-        LocalDate chkDate = fromDate.minusMonths(1L);
-        List<Orders> orderList = ordersRepository.findByMemberAndCheckoutDate(member, chkDate, fromDate);
-        List<Review> reviews = reviewRepository.findByMemberAndProduct(member, product);
-
-        if (orderList.isEmpty()) {
-            return false;
+            for(Order_Sheet_Products product : orderSheetProductsList){
+                reviewDtoList.add(ReviewDto.builder()
+                        .orderSheetProduct_id(product.getId())
+                        .product_id(product.getProduct_id())
+                        .product_name(product.getProduct_name())
+                        .list_img_url(product.getList_image_url())
+                        .cnt(product.getProduct_cnt())
+                        .delivery_condition(order.getDelivery_condition())
+                        .isWritten(product.getReview_status() == 1)
+                        .build()
+                );
+            }
+            responseDtoList.add(WritableReviewListDto.builder()
+                    .order_id(order.getId())
+                    .writableReviewList(reviewDtoList)
+                    .build()
+            );
         }
 
-        return reviews.isEmpty();
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), responseDtoList.size());
+        return new PageImpl<>(responseDtoList.subList(start, end), pageable, responseDtoList.size());
     }
 
-    public List<ReviewListDto> reviewList(String token, int stat) {
-        // 사용자 검색
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public Page<ReviewDto> reviewAfterList(Long memberId, Pageable pageable){
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+        List<ReviewDto> reviewList = dynamicReviewRepository.findByMember(member);
 
-        List<ReviewListDto> list = new ArrayList<>();
-        List<Orders> orderList = ordersRepository.findByMember(member);
-
-        for (Orders order : orderList) {
-            List<Order_Sheet_Products> productsList = orderSheetProductsRepository.findAllByOrders(order);
-
-            for (Order_Sheet_Products product : productsList) {
-                Product products = productRepository.findById(product.getProduct_id()).orElseThrow(() ->
-                        new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product.getProduct_id()));
-                List<Review> reviewChk = reviewRepository.findByMemberAndProduct(member, products);
-
-                if (stat == 0 && product.getReview_status() == 0) { // 작성가능 리뷰
-                    ReviewListDto reviewListDto = new ReviewListDto();
-                    reviewListDto.setWritten(conditionsChk(products.getId()));
-                    reviewListDto.setOrder_id(product.getOrders().getId());
-                    reviewListDto.setProduct_id(product.getId());
-                    reviewListDto.setProduct_name(product.getProduct_name());
-                    reviewListDto.setDelivery_condition(product.getOrders().getDelivery_condition());
-                    reviewListDto.setCnt(product.getProduct_cnt());
-                    reviewListDto.setList_img_url(product.getList_image_url());
-                    list.add(reviewListDto);
-                } else if (stat == 1 && product.getReview_status() == 1) { // 작성완료 리뷰
-                    for (Review r : reviewChk) {
-                        ReviewListDto reviewListDto = new ReviewListDto();
-                        reviewListDto.setReview_id(r.getReview_id());
-                        reviewListDto.setProduct_id(r.getProduct().getId());
-                        reviewListDto.setProduct_name(r.getProduct().getName());
-                        reviewListDto.setTitle(r.getTitle());
-                        reviewListDto.setContent(r.getContent());
-                        reviewListDto.setHelp(r.getHelp());
-                        reviewListDto.setRegdate(r.getRegdate());
-                        list.add(reviewListDto);
-                    } // end for
-                }
-            } // end for
-
-        } // end for
-
-        return list;
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviewList.size());
+        return new PageImpl<>(reviewList.subList(start, end), pageable, reviewList.size());
     }
 
-    // 리뷰작성
-    public boolean create(String token, Long product_id, ReviewDto review) {
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    @Transactional
+    public void createReview(Long memberId, ReviewDto reviewDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+        Product product = productRepository.findById(reviewDto.getProduct_id()).orElseThrow(
+                () -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + reviewDto.getProduct_id()));
+        Orders orders = ordersRepository.findById(reviewDto.getOrders_id()).orElseThrow(
+                () -> new DataNotFoundException("해당 주문내역을 찾을 수 없습니다. Id = " + reviewDto.getOrders_id()));
+        Order_Sheet_Products orderSheetProducts = orderSheetProductsRepository.findByOrdersAndProduct_id(orders, product.getId()).orElseThrow(
+                () -> new DataNotFoundException("해당 주문내역에서 주문 상품을 찾을 수 없습니다. productId = " + product.getId()));
 
-        Product product = productRepository.findById(product_id).orElseThrow(() -> new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + product_id));
-
-        if (conditionsChk(review.getProduct_id())) {
-            Review newReview = new Review();
-            newReview.setTitle(review.getTitle());
-            newReview.setContent(review.getContent());
-            newReview.setWriter(review.getWriter());
-            newReview.setRegdate(LocalDate.now());
-            newReview.setHelp(0L);
-            newReview.setCnt(0L);
-            newReview.setMember(member);
-            newReview.setProduct(product);
-
-            reviewRepository.save(newReview);
-            Order_Sheet_Products order_sheet_products = new Order_Sheet_Products();
-            order_sheet_products.review_status();
-        } else {
-            return false;
+        if(orderSheetProducts.getReview_status() == 1){
+            throw new ExistDataException("해당 주문 상품의 후기가 이미 존재합니다.");
         }
-        return true;
+
+        orderSheetProducts.updateReviewStatus();
+
+        orderSheetProductsRepository.save(orderSheetProducts);
+        reviewRepository.save(Review.builder()
+                .title(reviewDto.getTitle())
+                .content(reviewDto.getContent())
+                .regDate(LocalDate.now())
+                .writer(memberNameToDtoName(member))
+                .cnt(orderSheetProducts.getProduct_cnt())
+                .help(0)
+                .member(member)
+                .product(product)
+                .build());
+    }
+
+    @Transactional
+    public String increaseReviewCnt(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new DataNotFoundException("해당 후기를 찾을 수 없습니다. reviewId = " + reviewId));
+
+        review.increaseCount();
+
+        reviewRepository.save(review);
+
+        return "Success increase Review Count";
+    }
+
+    @Transactional
+    public String increaseReviewHelp(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new DataNotFoundException("해당 후기를 찾을 수 없습니다. reviewId = " + reviewId));
+
+        review.increaseHelp();
+
+        reviewRepository.save(review);
+
+        return "Success increase Review Help";
+    }
+
+    private String memberNameToDtoName(Member member){
+        StringBuilder sb = new StringBuilder(member.getName());
+        for(int i = 1; i < member.getName().length(); i += 2){
+            sb.replace(i, i + 1, "*");
+        }
+        return sb.toString();
     }
 }

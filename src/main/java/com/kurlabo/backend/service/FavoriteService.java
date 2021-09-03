@@ -9,7 +9,6 @@ import com.kurlabo.backend.model.Product;
 import com.kurlabo.backend.repository.FavoriteRepository;
 import com.kurlabo.backend.repository.MemberRepository;
 import com.kurlabo.backend.repository.ProductRepository;
-import com.kurlabo.backend.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,23 +26,22 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
-    public Page<FavoriteProductDto> getFavoriteList(String token, Pageable pageable){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public Page<FavoriteProductDto> getFavoriteList(Long memberId, Pageable pageable){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         List<Favorite> favouriteList = favoriteRepository.findByMember(member);
         List<FavoriteProductDto> productList = new ArrayList<>();
         for(Favorite list: favouriteList){
             Product product = productRepository.findById(list.getProducts_id()).orElseThrow(() ->
                     new DataNotFoundException("해당 상품을 찾을 수 없습니다. Id = " + list.getProducts_id()));
-            FavoriteProductDto dto = new FavoriteProductDto(
-                    product.getId(),
-                    product.getList_image_url(),
-                    product.getName(),
-                    product.getOriginal_price(),
-                    product.getDiscounted_price()
-            );
+            FavoriteProductDto dto = FavoriteProductDto.builder()
+                    .product_id(product.getId())
+                    .list_image_url(product.getList_image_url())
+                    .name(product.getName())
+                    .original_price(product.getOriginal_price())
+                    .discounted_price(product.getDiscounted_price())
+                    .build();
 
             productList.add(dto);
         }
@@ -54,9 +52,9 @@ public class FavoriteService {
     }
 
     @Transactional
-    public String insertFavorite(String token, Long product_id){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public String insertFavorite(Long memberId, Long product_id){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
         Favorite insertFavorite = favoriteRepository.findByMemberAndProductId(member, product_id)
                 .orElse(null);
 
@@ -76,17 +74,20 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Page<FavoriteProductDto> deleteFavorite(String token, List<Long> product_id, Pageable pageable){
-        Member member = memberRepository.findById(tokenProvider.parseTokenToGetMemberId(token)).orElseThrow(() ->
-                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + tokenProvider.parseTokenToGetMemberId(token)));
+    public Page<FavoriteProductDto> deleteFavorite(Long memberId, List<Long> product_id, Pageable pageable){
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new DataNotFoundException("해당 회원정보를 찾을 수 없습니다. Id = " + memberId));
+
         List<Favorite> deleteLists = new ArrayList<>();
+
         for (Long idList : product_id) {
             Favorite deleteFavorite = favoriteRepository.findByMemberAndProductId(member, idList).orElseThrow(() ->
                     new DataNotFoundException("해당 상품을 찾을수 없습니다."));
             deleteLists.add(deleteFavorite);
         }
+
         favoriteRepository.deleteAll(deleteLists);
 
-        return getFavoriteList(token, pageable);
+        return getFavoriteList(memberId, pageable);
     }
 }

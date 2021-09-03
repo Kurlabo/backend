@@ -12,6 +12,9 @@ public interface DeliverAddressRepository extends JpaRepository<Deliver_Address,
 
     List<Deliver_Address> findByMember(Member member);
 
+    @Query("select da from Deliver_Address da where da.id = :id and da.member = :member")
+    Optional<Deliver_Address> findByIdAndMember(Long id, Member member);
+
     @Query("select da from Deliver_Address da where da.member = :member and da.is_main = :isMain")
     Optional<Deliver_Address> findByMemberAndIs_main(Member member, int isMain);
 
